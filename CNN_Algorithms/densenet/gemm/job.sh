@@ -1,11 +1,11 @@
 #!/bin/bash
 #SBATCH -J densenet_gemm_gpu      # Job name
 #SBATCH -o densenet_gemm_gpu.out  # Output file
-#SBATCH --time=20:00:00          # 20 hours of wall time
+#SBATCH --time=24:00:00          # 24 hours of wall time (increased from 20)
 #SBATCH -p gpu                   # GPU partition
 #SBATCH -A sxk1942              # Account/Project ID
 #SBATCH -c 4                    # 4 processors
-#SBATCH --mem=32GB             # 32GB memory
+#SBATCH --mem=48GB             # 48GB memory (increased from 32GB)
 #SBATCH --gpus=1               # Request 1 GPU
 
 # Exit on any error
@@ -19,6 +19,8 @@ ls -la
 echo "SLURM_SUBMIT_DIR: $SLURM_SUBMIT_DIR"
 echo "HOME directory: $HOME"
 echo "PFSDIR: $PFSDIR"
+echo "SLURM_JOB_ID: $SLURM_JOB_ID"
+echo "Date/Time: $(date)"
 
 # Check if virtual environment exists
 if [ ! -d "$HOME/ai3_env" ]; then
@@ -124,3 +126,4 @@ fi
 deactivate
 
 echo "Job completed successfully. Results are in: $RESULTS_DIR"
+echo "Job finished at: $(date)"

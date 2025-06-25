@@ -1,6 +1,5 @@
 import torch
 import torchvision.models as models
-import ai3
 import time
 import os
 import csv
@@ -18,29 +17,14 @@ class LayerTimer:
 
     def register_hooks(self, model):
         for name, module in model.named_modules():
-            if isinstance(module, torch.nn.Conv2d) or hasattr(module, 'algorithm'):
-                if isinstance(module, torch.nn.Conv2d):
-                    self.layer_info[name] = {
-                        'in_channels': module.in_channels,
-                        'out_channels': module.out_channels,
-                        'kernel_size': module.kernel_size,
-                        'stride': module.stride,
-                        'padding': module.padding
-                    }
-                elif hasattr(module, 'algorithm'):
-                    if hasattr(module, 'weight'):
-                        weight_shape = module.weight.shape
-                        self.layer_info[name] = {
-                            'out_channels': weight_shape[0],
-                            'in_channels': weight_shape[1],
-                            'kernel_size': (weight_shape[2], weight_shape[3]),
-                            'algorithm': module.algorithm if hasattr(module, 'algorithm') else 'unknown'
-                        }
-                        if hasattr(module, 'stride'):
-                            self.layer_info[name]['stride'] = module.stride
-                        if hasattr(module, 'padding'):
-                            self.layer_info[name]['padding'] = module.padding
-
+            if isinstance(module, torch.nn.Conv2d):
+                self.layer_info[name] = {
+                    'in_channels': module.in_channels,
+                    'out_channels': module.out_channels,
+                    'kernel_size': module.kernel_size,
+                    'stride': module.stride,
+                    'padding': module.padding
+                }
                 pre_hook = module.register_forward_pre_hook(
                     self._create_pre_hook(name))
                 post_hook = module.register_forward_hook(
@@ -51,9 +35,7 @@ class LayerTimer:
     def _create_pre_hook(self, name):
         def hook(module, input):
             entry = {'start': time.time()}
-            # Record input spatial size if possible
             if input and hasattr(input[0], 'shape') and len(input[0].shape) >= 4:
-                # For Conv2d: input[0] is (batch, channels, H, W)
                 entry['input_hw'] = (input[0].shape[2], input[0].shape[3])
             self.layer_times[name].append(entry)
         return hook
@@ -90,55 +72,10 @@ class LayerTimer:
         return self.layer_info
 
 
-def move_ai3_conv2d_params_to_device(model, device):
-    """Move all ai3 custom layer parameters and BatchNorm parameters/buffers to device"""
-    print("Moving ai3 custom layer and BatchNorm parameters to device...")
-    moved_count = 0
-
-    for name, module in model.named_modules():
-        # Handle ai3 custom layers (Conv2D, etc.)
-        if module.__class__.__name__ == "Conv2D":
-            if hasattr(module, "weight") and module.weight.device != device:
-                module.weight = module.weight.to(device)
-                moved_count += 1
-                print(f"  Moved {name}.weight to {device}")
-            if hasattr(module, "bias") and module.bias is not None and module.bias.device != device:
-                module.bias = module.bias.to(device)
-                moved_count += 1
-                print(f"  Moved {name}.bias to {device}")
-
-        # Handle BatchNorm layers specifically
-        elif isinstance(module, torch.nn.BatchNorm2d):
-            if hasattr(module, 'weight') and module.weight is not None and module.weight.device != device:
-                module.weight.data = module.weight.data.to(device)
-                moved_count += 1
-                print(f"  Moved BatchNorm {name}.weight to {device}")
-            if hasattr(module, 'bias') and module.bias is not None and module.bias.device != device:
-                module.bias.data = module.bias.data.to(device)
-                moved_count += 1
-                print(f"  Moved BatchNorm {name}.bias to {device}")
-            if hasattr(module, 'running_mean') and module.running_mean.device != device:
-                module.running_mean.data = module.running_mean.data.to(device)
-                moved_count += 1
-                print(f"  Moved BatchNorm {name}.running_mean to {device}")
-            if hasattr(module, 'running_var') and module.running_var.device != device:
-                module.running_var.data = module.running_var.data.to(device)
-                moved_count += 1
-                print(f"  Moved BatchNorm {name}.running_var to {device}")
-            if hasattr(module, 'num_batches_tracked') and module.num_batches_tracked.device != device:
-                module.num_batches_tracked.data = module.num_batches_tracked.data.to(
-                    device)
-                moved_count += 1
-                print(
-                    f"  Moved BatchNorm {name}.num_batches_tracked to {device}")
-
-    print(f"Moved {moved_count} parameters/buffers to {device}")
-
-
 def main():
     # Configuration
     model_name = "DenseNet121"
-    algorithm = "implicit precomp gemm"
+    algorithm = "pytorch default"
     device = "cuda"  # Using CUDA for GPU acceleration
     batch_size = 1
     iterations = 10
@@ -174,37 +111,11 @@ def main():
     model.eval()
     print("Model loaded successfully")
 
-    # Apply ai3 algorithm
-    print(f"Applying {algorithm} algorithm...")
-    ai3.swap_conv2d(model, algorithm)
-    print("Algorithm applied successfully")
-
-    # Move model to GPU and set to evaluation mode (after ai3 swap)
-    print("Moving model to CUDA after ai3 swap...")
+    # Move model to GPU and set to evaluation mode
+    print("Moving model to CUDA...")
     model = model.to(device)
-
-    # Move ai3 Conv2D params to device
-    move_ai3_conv2d_params_to_device(model, torch.device(device))
-
-    # Print all parameter and buffer devices after swap and .to(device)
-    print("\nDevices of all parameters after AI3 and .to(device):")
-    for name, param in model.named_parameters():
-        print(f"PARAM {name}: {param.device}")
-    for name, buf in model.named_buffers():
-        print(f"BUFFER {name}: {buf.device}")
-
     model.eval()
     print("Model moved to CUDA and ready for benchmarking.")
-
-    # Device check before running the model
-    for name, param in model.named_parameters():
-        if param.device.type != device:
-            print(
-                f"WARNING: Parameter {name} is on {param.device}, expected {device}")
-    for name, buf in model.named_buffers():
-        if buf.device.type != device:
-            print(
-                f"WARNING: Buffer {name} is on {buf.device}, expected {device}")
 
     # Enable cuDNN benchmarking for optimal performance
     cudnn.benchmark = True
@@ -254,10 +165,8 @@ def main():
             # Get per-layer input size if available
             input_hw = None
             if layer_name in timer.layer_times and timer.layer_times[layer_name]:
-                # Use the first entry for this batch
                 entry = timer.layer_times[layer_name][0]
                 input_hw = entry.get('input_hw', 'N/A')
-            # Convert (x, x) to x for kernel_size, stride, and padding
 
             def tuple_to_single(val):
                 if isinstance(val, tuple) and len(val) == 2 and val[0] == val[1]:
@@ -266,12 +175,10 @@ def main():
             kernel_size = tuple_to_single(dimensions.get('kernel_size', 'N/A'))
             stride = tuple_to_single(dimensions.get('stride', 'N/A'))
             padding = tuple_to_single(dimensions.get('padding', 'N/A'))
-            # Write per-layer input size (height, width) as a string, or just height if square
             if isinstance(input_hw, tuple) and len(input_hw) == 2 and input_hw[0] == input_hw[1]:
                 input_size_str = str(input_hw[0])
             else:
                 input_size_str = str(input_hw)
-            # Save per-layer results to CSV
             with open(layers_csv_file, 'a', newline='') as f:
                 writer = csv.writer(f)
                 in_channels = dimensions.get('in_channels', 'N/A')
@@ -291,7 +198,7 @@ def main():
     # Clean up
     timer.remove_hooks()
     print(
-        f"\nDenseNet121 Implicit Precomp GEMM (ai3) testing completed successfully. Results saved to:\n- {overall_csv_file}\n- {layers_csv_file}")
+        f"\nDenseNet121 PyTorch default testing completed successfully. Results saved to:\n- {overall_csv_file}\n- {layers_csv_file}")
 
 
 if __name__ == "__main__":
