@@ -114,7 +114,7 @@ def main():
     device = "cpu"
     batch_size = 1
     iterations = 10
-    input_sizes = [random.randint(224, 512) for _ in range(2)]
+    input_sizes = [random.randint(224, 512) for _ in range(2)]  # Start with 2 for testing
 
     results_dir = os.getcwd()
 

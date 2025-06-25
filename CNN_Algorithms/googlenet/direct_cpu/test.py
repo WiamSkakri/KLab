@@ -145,6 +145,62 @@ def print_model_structure(model, prefix=''):
         print_model_structure(module, full_name)
 
 
+def verify_ai3_swap(model, expected_algorithm):
+    """Verify that ai3 swap was successful and count layer types"""
+    ai3_conv_count = 0
+    pytorch_conv_count = 0
+    ai3_layers = []
+    remaining_pytorch_layers = []
+
+    for name, module in model.named_modules():
+        if isinstance(module, torch.nn.Conv2d):
+            pytorch_conv_count += 1
+            remaining_pytorch_layers.append(name)
+        elif hasattr(module, 'algorithm') and module.algorithm == expected_algorithm:
+            ai3_conv_count += 1
+            ai3_layers.append(name)
+        elif module.__class__.__name__ == "Conv2D":  # ai3 Conv2D class
+            ai3_conv_count += 1
+            ai3_layers.append(name)
+
+    print(f"\nAfter ai3 swap:")
+    print(f"  ai3 {expected_algorithm} layers: {ai3_conv_count}")
+    print(f"  Remaining PyTorch Conv2d layers: {pytorch_conv_count}")
+
+    if ai3_conv_count == 0:
+        print("⚠️  WARNING: No ai3 layers detected! The swap may have failed.")
+        print("Available modules after swap:")
+        for name, module in model.named_modules():
+            if 'conv' in name.lower():
+                print(f"  {name}: {type(module).__name__}")
+        return False
+    else:
+        print(
+            f"✅ SUCCESS: {ai3_conv_count} layers successfully swapped to ai3 {expected_algorithm}")
+        print(f"First few ai3 layers: {ai3_layers[:5]}")
+
+    if pytorch_conv_count > 0:
+        print(f"⚠️  NOTE: {pytorch_conv_count} PyTorch Conv2d layers remain:")
+        print(f"  {remaining_pytorch_layers[:5]}...")
+
+    # Verify algorithm attribute on ai3 layers
+    verified_algorithm_count = 0
+    for name, module in model.named_modules():
+        if hasattr(module, 'algorithm'):
+            if module.algorithm == expected_algorithm:
+                verified_algorithm_count += 1
+            else:
+                print(
+                    f"⚠️  Layer {name} has algorithm '{module.algorithm}' instead of '{expected_algorithm}'")
+
+    if verified_algorithm_count > 0:
+        print(
+            f"✅ VERIFIED: {verified_algorithm_count} layers confirmed using {expected_algorithm} algorithm")
+        return True
+
+    return False
+
+
 def main():
     # Configuration
     model_name = "GoogLeNet"
@@ -154,7 +210,7 @@ def main():
     iterations = 10
     # Generate random input sizes between 224 and 512
     input_sizes = [random.randint(224, 512)
-                   for _ in range(100)]
+                   for _ in range(2)]  # Start with 2 for testing
 
     results_dir = os.getcwd()  # Save in current directory
 
@@ -179,8 +235,29 @@ def main():
     model = models.googlenet(weights=models.GoogLeNet_Weights.DEFAULT)
     model.eval()
 
-    # Apply ai3 algorithm
-    ai3.swap_conv2d(model, algorithm)
+    # Count original Conv2d layers before swapping
+    original_conv_count = 0
+    for name, module in model.named_modules():
+        if isinstance(module, torch.nn.Conv2d):
+            original_conv_count += 1
+    print(f"Original Conv2d layers found: {original_conv_count}")
+
+    # Apply ai3 algorithm with error handling
+    print(f"Swapping Conv2d layers with ai3 {algorithm} algorithm...")
+    try:
+        ai3.swap_conv2d(model, algorithm)
+        print("✅ ai3.swap_conv2d completed successfully")
+    except Exception as e:
+        print(f"⚠️  Warning: ai3.swap_conv2d failed: {e}")
+        print("Continuing with original PyTorch Conv2d layers...")
+
+    # Verify the swap worked
+    swap_successful = verify_ai3_swap(model, algorithm)
+
+    if not swap_successful:
+        print("❌ CRITICAL: ai3 swap verification failed! Results may not be meaningful.")
+        # You might want to exit here or continue with a warning
+        # return
 
     # Create timer and register hooks
     timer = LayerTimer()

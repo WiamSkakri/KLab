@@ -31,10 +31,17 @@ source $HOME/ai3_env/bin/activate || {
     exit 1
 }
 
+# Set library paths to help find Python shared libraries
+export LD_LIBRARY_PATH=$HOME/ai3_env/lib:$LD_LIBRARY_PATH
+echo "Set LD_LIBRARY_PATH to include virtual environment libraries"
+
 # Print environment information
 echo "Python interpreter: $(which python)"
-echo "Python version: $(python --version)"
+echo "LD_LIBRARY_PATH: $LD_LIBRARY_PATH"
 echo "Virtual environment location: $VIRTUAL_ENV"
+echo "Checking Python executable..."
+ldd $(which python) || echo "ldd failed for python executable"
+echo "Python version: $(python --version)"
 
 # Verify Python and required packages
 python << 'END_PYTHON'
