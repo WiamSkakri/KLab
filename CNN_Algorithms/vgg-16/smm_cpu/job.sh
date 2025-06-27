@@ -84,6 +84,12 @@ echo "Copied Python script to scratch directory"
 cd $SCRATCH_DIR
 echo "Changed to scratch directory"
 
+# Set CPU optimization environment variables
+export OMP_NUM_THREADS=4
+export MKL_NUM_THREADS=4
+export OPENBLAS_NUM_THREADS=4
+echo "Set CPU threads to 4 for optimization"
+
 # Run the test script and capture all output
 echo "Running Python script..."
 python python.py 2>&1 | tee python_output.log

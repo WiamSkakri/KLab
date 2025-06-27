@@ -56,14 +56,17 @@ class LayerTimer:
                 self.hooks.append(pre_hook)
                 self.hooks.append(post_hook)
         
-        if not self.hooks:
-            print("Warning: No convolution layers found to time!")
-        else:
-            print(f"Registered timing hooks on {len(self.hooks)//2} convolution layers")
+        pass
             
     def _create_pre_hook(self, name):
         def hook(module, input):
-            self.layer_times[name].append({'start': time.time()})
+            entry = {'start': time.time()}
+            if input and len(input) > 0 and hasattr(input[0], 'shape') and len(input[0].shape) >= 4:
+                entry['input_height'] = input[0].shape[2]
+                entry['input_width'] = input[0].shape[3]
+                entry['input_channels'] = input[0].shape[1]
+                entry['batch_size'] = input[0].shape[0]
+            self.layer_times[name].append(entry)
         return hook
     
     def _create_post_hook(self, name):
@@ -95,6 +98,29 @@ class LayerTimer:
     def get_layer_dimensions(self):
         return self.layer_info
 
+    def get_actual_layer_input_sizes(self):
+        """Get the actual input dimensions that each layer received during forward pass"""
+        results = {}
+        for name, times in self.layer_times.items():
+            if times:
+                last_run = times[-1]
+                if 'input_height' in last_run and 'input_width' in last_run:
+                    # Use actual input size if available
+                    if last_run['input_height'] == last_run['input_width']:
+                        # Single value for square
+                        results[name] = last_run['input_height']
+                    else:
+                        results[name] = f"{last_run['input_height']}x{last_run['input_width']}"
+                else:
+                    results[name] = 'N/A'
+        return results
+
+def format_tuple_value(value):
+    """Convert square tuples like (3, 3) to single values like 3"""
+    if isinstance(value, tuple) and len(value) == 2 and value[0] == value[1]:
+        return value[0]
+    return value
+
 def print_model_structure(model, prefix=''):
     """Utility function to debug model structure"""
     for name, module in model.named_children():
@@ -120,11 +146,10 @@ def main():
     device = "cpu"
     batch_size = 1
     iterations = 10
-    input_sizes = [random.randint(224, 512) for _ in range(5)]
+    # Generate random input sizes between 224 and 512
+    input_sizes = [random.randint(224, 512) for _ in range(100)]
     
     results_dir = os.getcwd()  # Save in current directory
-    
-    print(f"Starting {model_name} test with {algorithm} algorithm...")
     
     # Set up CSV files
     overall_csv_file = os.path.join(results_dir, f"{model_name}_{algorithm}_{device}_overall.csv")
@@ -151,10 +176,10 @@ def main():
     timer = LayerTimer()
     timer.register_hooks(model)
     
-    print("Processing input sizes...")
+    print("Job is starting")
+
     # Test with each input size
-    for i, input_size in enumerate(input_sizes, 1):
-        print(f"Progress: {i}/{len(input_sizes)} input sizes completed", end='\r')
+    for input_size in input_sizes:
         
         # Generate input data for this size
         input_data = torch.randn(batch_size, 3, input_size, input_size)
@@ -162,21 +187,23 @@ def main():
         # Warmup run
         with torch.inference_mode():
             _ = model(input_data)
-        timer.reset()
+        timer.reset()  # Reset timers after warmup
         
         # Measure execution time
         overall_start_time = time.time()
         with torch.inference_mode():
-            for _ in range(iterations):
+            for i in range(iterations):
                 _ = model(input_data)
         overall_end_time = time.time()
         
         # Calculate overall execution time
+        # Convert to milliseconds
         overall_execution_time = (overall_end_time - overall_start_time) / iterations * 1000
         
         # Get layer-wise timings and dimensions
         layer_times = timer.get_average_times()
         layer_dimensions = timer.get_layer_dimensions()
+        actual_input_sizes = timer.get_actual_layer_input_sizes()
         
         # Save overall results to CSV
         with open(overall_csv_file, 'a', newline='') as f:
@@ -190,21 +217,25 @@ def main():
                 percentage = (avg_time / overall_execution_time) * 100
                 dimensions = layer_dimensions.get(layer_name, {})
                 
+                # Extract dimension information
                 in_channels = dimensions.get('in_channels', 'N/A')
                 out_channels = dimensions.get('out_channels', 'N/A')
-                kernel_size = dimensions.get('kernel_size', 'N/A')
-                stride = dimensions.get('stride', 'N/A')
-                padding = dimensions.get('padding', 'N/A')
+                kernel_size = format_tuple_value(dimensions.get('kernel_size', 'N/A'))
+                stride = format_tuple_value(dimensions.get('stride', 'N/A'))
+                padding = format_tuple_value(dimensions.get('padding', 'N/A'))
+                
+                # Use actual input size for this layer instead of model input size
+                layer_input_size = actual_input_sizes.get(layer_name, input_size)
                 
                 writer.writerow([
-                    model_name, layer_name, algorithm, device, batch_size, input_size,
+                    model_name, layer_name, algorithm, device, batch_size, layer_input_size,
                     in_channels, out_channels, kernel_size, stride, padding,
                     avg_time, percentage
                 ])
     
-    print("\nProcessing complete. Results saved to CSV files.")
     # Clean up
     timer.remove_hooks()
+    print("Job has ended")
 
 if __name__ == "__main__":
     main() 

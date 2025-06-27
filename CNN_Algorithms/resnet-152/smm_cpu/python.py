@@ -12,6 +12,7 @@ class LayerTimer:
     def __init__(self):
         self.layer_times = defaultdict(list)
         self.layer_info = {}  # Store layer dimensions
+        self.layer_input_sizes = {}  # Store actual input sizes for each layer
         self.hooks = []
         
     def register_hooks(self, model):
@@ -49,6 +50,14 @@ class LayerTimer:
             
     def _create_pre_hook(self, name):
         def hook(module, input):
+            # Capture actual input tensor dimensions
+            if isinstance(input, tuple) and len(input) > 0:
+                input_tensor = input[0]
+                if hasattr(input_tensor, 'shape') and len(input_tensor.shape) >= 4:
+                    # For 4D tensors (batch, channels, height, width)
+                    batch_size, channels, height, width = input_tensor.shape
+                    self.layer_input_sizes[name] = height
+
             self.layer_times[name].append({'start': time.time()})
         return hook
     
@@ -64,6 +73,7 @@ class LayerTimer:
     def reset(self):
         for name in self.layer_times:
             self.layer_times[name] = []
+        self.layer_input_sizes = {}
             
     def remove_hooks(self):
         for hook in self.hooks:
@@ -81,14 +91,25 @@ class LayerTimer:
     def get_layer_dimensions(self):
         return self.layer_info
 
+    def get_layer_input_sizes(self):
+        return self.layer_input_sizes
+
+def format_square_tuple(value):
+    """Convert square tuples like (3,3) to single values like 3"""
+    if isinstance(value, tuple) and len(value) == 2 and value[0] == value[1]:
+        return value[0]
+    return value
+
 def main():
+    print("Job is starting")
+
     # Configuration
     model_name = "ResNet-152"
     algorithm = "smm"
     device = "cpu"
     batch_size = 1
     iterations = 10
-    input_sizes = [random.randint(224, 512) for _ in range(5)]
+    input_sizes = [random.randint(224, 512) for _ in range(2)]  # Start with 2 for testing
     
     results_dir = os.getcwd()
     
@@ -117,6 +138,8 @@ def main():
     timer = LayerTimer()
     timer.register_hooks(model)
     
+    print("Writing to the csv file")
+
     # Test with each input size
     for input_size in input_sizes:
         input_data = torch.randn(batch_size, 3, input_size, input_size)
@@ -139,6 +162,7 @@ def main():
         # Get layer-wise timings and dimensions
         layer_times = timer.get_average_times()
         layer_dimensions = timer.get_layer_dimensions()
+        layer_input_sizes = timer.get_layer_input_sizes()
         
         # Save overall results to CSV
         with open(overall_csv_file, 'a', newline='') as f:
@@ -151,22 +175,24 @@ def main():
             for layer_name, avg_time in layer_times.items():
                 percentage = (avg_time / overall_execution_time) * 100
                 dimensions = layer_dimensions.get(layer_name, {})
+                actual_input_size = layer_input_sizes.get(layer_name, 'N/A')
                 
                 in_channels = dimensions.get('in_channels', 'N/A')
                 out_channels = dimensions.get('out_channels', 'N/A')
-                kernel_size = dimensions.get('kernel_size', 'N/A')
-                stride = dimensions.get('stride', 'N/A')
-                padding = dimensions.get('padding', 'N/A')
+                kernel_size = format_square_tuple(
+                    dimensions.get('kernel_size', 'N/A'))
+                stride = format_square_tuple(dimensions.get('stride', 'N/A'))
+                padding = format_square_tuple(dimensions.get('padding', 'N/A'))
                 
                 writer.writerow([
-                    model_name, layer_name, algorithm, device, batch_size, input_size,
+                    model_name, layer_name, algorithm, device, batch_size, actual_input_size,
                     in_channels, out_channels, kernel_size, stride, padding,
                     avg_time, percentage
                 ])
 
     # Clean up
     timer.remove_hooks()
-    print(f"\nResNet-152 SMM testing completed successfully. Results saved to:\n- {overall_csv_file}\n- {layers_csv_file}")
+    print("Job has ended")
 
 if __name__ == "__main__":
     main()

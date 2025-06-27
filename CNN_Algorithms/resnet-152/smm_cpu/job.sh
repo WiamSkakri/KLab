@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH -J resnet152_smm_cpu      # Job name
 #SBATCH -o resnet152_smm_cpu.out  # Output file
-#SBATCH --time=10:00:00       # 10 hours of wall time
+#SBATCH --time=24:00:00       # 24 hours of wall time
 #SBATCH -N 1                  # 1 Node
 #SBATCH -c 4                  # 4 processors
 #SBATCH --mem=64gb            # 64GB memory
@@ -83,6 +83,12 @@ echo "Copied Python script to scratch directory"
 # Change to the scratch directory
 cd $SCRATCH_DIR
 echo "Changed to scratch directory"
+
+# Set CPU optimization environment variables
+export OMP_NUM_THREADS=4
+export MKL_NUM_THREADS=4
+export OPENBLAS_NUM_THREADS=4
+echo "Set CPU threads to 4 for optimization"
 
 # Run the test script and capture all output
 echo "Running Python script..."

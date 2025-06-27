@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH -J vgg16_direct_cpu    # Job name
 #SBATCH -o vgg16_direct_cpu.out # Output file
-#SBATCH --time=02:00:00        # 5 hours of wall time
+#SBATCH --time=24:00:00        # 24 hours of wall time
 #SBATCH -N 1                   # 1 Node
 #SBATCH -c 4                   # 4 processors
 #SBATCH --mem=16gb             # 32GB memory
@@ -80,9 +80,22 @@ fi
 cp python.py $SCRATCH_DIR/
 echo "Copied Python script to scratch directory"
 
+
+# Set CPU optimization environment variables
+export OMP_NUM_THREADS=4
+export MKL_NUM_THREADS=4
+export OPENBLAS_NUM_THREADS=4
+echo "Set CPU threads to 4 for optimization"
+
 # Change to the scratch directory
 cd $SCRATCH_DIR
 echo "Changed to scratch directory"
+
+# Set CPU optimization environment variables
+export OMP_NUM_THREADS=4
+export MKL_NUM_THREADS=4
+export OPENBLAS_NUM_THREADS=4
+echo "Set CPU threads to 4 for optimization"
 
 # Run the test script and capture all output
 echo "Running Python script..."
