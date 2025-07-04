@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH -J nn_prediction_training      # Job name
 #SBATCH -o nn_prediction_training.out  # Output file
-#SBATCH --time=12:00:00                # 12 hours of wall time
+#SBATCH --time=24:00:00                # 24 hours of wall time
 #SBATCH -p gpu                         # GPU partition
 #SBATCH -A sxk1942                     # Account/Project ID
 #SBATCH -c 4                           # 4 processors

@@ -80,13 +80,6 @@ fi
 cp python.py $SCRATCH_DIR/
 echo "Copied Python script to scratch directory"
 
-
-# Set CPU optimization environment variables
-export OMP_NUM_THREADS=4
-export MKL_NUM_THREADS=4
-export OPENBLAS_NUM_THREADS=4
-echo "Set CPU threads to 4 for optimization"
-
 # Change to the scratch directory
 cd $SCRATCH_DIR
 echo "Changed to scratch directory"

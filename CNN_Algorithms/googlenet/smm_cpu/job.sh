@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH -J googlenet_smm_cpu      # Job name
 #SBATCH -o googlenet_smm_cpu.out  # Output file
-#SBATCH --time=10:00:00       # 10 hours of wall time
+#SBATCH --time=24:00:00       # 24 hours of wall time
 #SBATCH -N 1                  # 1 Node
 #SBATCH -c 4                  # 4 processors
 #SBATCH --mem=64gb            # 64GB memory

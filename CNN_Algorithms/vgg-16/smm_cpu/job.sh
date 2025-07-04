@@ -1,10 +1,10 @@
 #!/bin/bash
 #SBATCH -J vgg16_smm_cpu      # Job name
 #SBATCH -o vgg16_smm_cpu.out  # Output file
-#SBATCH --time=02:00:00       # 2 hours of wall time
+#SBATCH --time=24:00:00       # 24 hours of wall time
 #SBATCH -N 1                  # 1 Node
 #SBATCH -c 4                  # 4 processors
-#SBATCH --mem=16gb            # 16GB memory
+#SBATCH --mem=32gb            # 32GB memory
 
 # Exit on any error
 set -e
