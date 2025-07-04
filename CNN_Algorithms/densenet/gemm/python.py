@@ -8,6 +8,33 @@ import random
 from collections import defaultdict
 import torch.nn as nn
 import torch.backends.cudnn as cudnn
+import inspect
+
+
+def format_tuple_value(value):
+    """Convert square tuples like (3, 3) to single values like 3"""
+    if isinstance(value, tuple) and len(value) == 2 and value[0] == value[1]:
+        return value[0]
+    return value
+
+
+def print_model_structure(model, prefix=''):
+    """Utility function to debug model structure"""
+    for name, module in model.named_children():
+        full_name = f"{prefix}.{name}" if prefix else name
+        print(f"{full_name}: {type(module).__name__}")
+
+        # Print whether it's a swapped Conv2D
+        if hasattr(module, 'algorithm'):
+            print(f"  - Swapped with algorithm: {module.algorithm}")
+
+        # Print module signature
+        if hasattr(module, 'forward'):
+            sig = inspect.signature(module.forward)
+            print(f"  - Signature: {sig}")
+
+        # Recursively print children
+        print_model_structure(module, full_name)
 
 
 class LayerTimer:
@@ -111,6 +138,23 @@ class LayerTimer:
                 }
         return results
 
+    def get_actual_layer_input_sizes(self):
+        """Get the actual input dimensions that each layer received during forward pass"""
+        results = {}
+        for name, times in self.layer_times.items():
+            if times:
+                last_run = times[-1]
+                if 'input_height' in last_run and 'input_width' in last_run:
+                    # Use actual input size if available
+                    if last_run['input_height'] == last_run['input_width']:
+                        # Single value for square
+                        results[name] = last_run['input_height']
+                    else:
+                        results[name] = f"{last_run['input_height']}x{last_run['input_width']}"
+                else:
+                    results[name] = 'N/A'
+        return results
+
 
 def main():
     print("Starting computation")
@@ -120,7 +164,7 @@ def main():
     device = "cuda"
     batch_size = 1
     iterations = 10
-    input_sizes = [random.randint(224, 512) for _ in range(2)]
+    input_sizes = [random.randint(224, 512) for _ in range(1)]
 
     results_dir = os.getcwd()
 
@@ -149,6 +193,9 @@ def main():
     model = models.densenet161(weights=models.DenseNet161_Weights.DEFAULT)
     model.eval()
 
+    # Move model to device before ai3 swap
+    model = model.to(device_obj)
+
     # Count original Conv2d layers before swapping
     original_conv_count = 0
     for name, module in model.named_modules():
@@ -159,6 +206,9 @@ def main():
     # Perform the ai3 swap
     print(f"Swapping Conv2d layers with ai3 {algorithm} algorithm...")
     ai3.swap_conv2d(model, algorithm)
+
+    # Ensure model is on correct device after swap
+    model = model.to(device_obj)
 
     # Verify the swap worked
     ai3_conv_count = 0
@@ -210,10 +260,10 @@ def main():
         print(
             f"✅ VERIFIED: {verified_algorithm_count} layers confirmed using {algorithm} algorithm")
 
-    model = model.to(device_obj)
-
     timer = LayerTimer()
     timer.register_hooks(model)
+
+    print("Job is starting")
 
     for input_size in input_sizes:
         input_data = torch.randn(
@@ -235,7 +285,7 @@ def main():
 
         layer_times = timer.get_average_times()
         layer_dimensions = timer.get_layer_dimensions()
-        actual_dimensions = timer.get_actual_layer_dimensions()
+        actual_input_sizes = timer.get_actual_layer_input_sizes()
 
         with open(overall_csv_file, 'a', newline='') as f:
             writer = csv.writer(f)
@@ -247,34 +297,18 @@ def main():
             for layer_name, avg_time in layer_times.items():
                 percentage = (avg_time / overall_execution_time) * 100
                 dimensions = layer_dimensions.get(layer_name, {})
-                actual_dims = actual_dimensions.get(layer_name, {})
 
+                # Extract dimension information using format_tuple_value
                 in_channels = dimensions.get('in_channels', 'N/A')
                 out_channels = dimensions.get('out_channels', 'N/A')
+                kernel_size = format_tuple_value(
+                    dimensions.get('kernel_size', 'N/A'))
+                stride = format_tuple_value(dimensions.get('stride', 'N/A'))
+                padding = format_tuple_value(dimensions.get('padding', 'N/A'))
 
-                kernel_size_raw = dimensions.get('kernel_size', 'N/A')
-                if kernel_size_raw != 'N/A' and isinstance(kernel_size_raw, (tuple, list)):
-                    kernel_size = kernel_size_raw[0]
-                else:
-                    kernel_size = kernel_size_raw
-
-                stride_raw = dimensions.get('stride', 'N/A')
-                if stride_raw != 'N/A' and isinstance(stride_raw, (tuple, list)):
-                    stride = stride_raw[0]
-                else:
-                    stride = stride_raw
-
-                padding_raw = dimensions.get('padding', 'N/A')
-                if padding_raw != 'N/A' and isinstance(padding_raw, (tuple, list)):
-                    padding = padding_raw[0]
-                else:
-                    padding = padding_raw
-
-                actual_input_h = actual_dims.get('actual_input_height', 'N/A')
-                if actual_input_h != 'N/A':
-                    layer_input_size = actual_input_h
-                else:
-                    layer_input_size = input_size
+                # Use actual input size for this layer instead of model input size
+                layer_input_size = actual_input_sizes.get(
+                    layer_name, input_size)
 
                 writer.writerow([
                     model_name, layer_name, algorithm, device, batch_size, layer_input_size,
@@ -283,7 +317,7 @@ def main():
                 ])
 
     timer.remove_hooks()
-    print("Job is done")
+    print("Job has ended")
 
 
 if __name__ == "__main__":
