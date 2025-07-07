@@ -94,8 +94,8 @@ fi
 echo "Created scratch directory: $SCRATCH_DIR"
 
 # Check if required files exist
-if [ ! -f python.py ]; then
-    echo "Error: python.py not found in current directory"
+if [ ! -f nn_hpc.py ]; then
+    echo "Error: nn_hpc.py not found in current directory"
     exit 1
 fi
 
@@ -106,7 +106,7 @@ if [ ! -f combined.csv ]; then
 fi
 
 # Copy the script and data to the scratch directory
-cp python.py $SCRATCH_DIR/
+cp nn_hpc.py $SCRATCH_DIR/
 cp combined.csv $SCRATCH_DIR/
 echo "Copied Python script and data to scratch directory"
 
@@ -122,7 +122,7 @@ echo "CSV file rows: $(wc -l < combined.csv)"
 # Run the training script and capture all output
 echo "Starting Neural Network Training..."
 echo "====================================="
-python python.py 2>&1 | tee training_output.log
+python nn_hpc.py 2>&1 | tee training_output.log
 
 # Check if the script executed successfully
 if [ $? -eq 0 ]; then
@@ -155,6 +155,9 @@ Files Generated:
 - training_output.log: Complete training log
 - training_results.csv: Cross-validation results
 - best_model.pth: Best trained model
+- nn_training_evaluation.png: Main evaluation dashboard (6 plots)
+- nn_detailed_metrics.png: Detailed metrics analysis (4 plots)
+- nn_cross_validation_comparison.png: Cross-validation comparison (6 plots)
 - job_summary.txt: This summary
 
 GPU Information:
@@ -182,4 +185,5 @@ echo ""
 echo "To view results:"
 echo "  Training log: cat $RESULTS_DIR/training_output.log"
 echo "  Results CSV:  cat $RESULTS_DIR/training_results.csv"
-echo "  Job summary:  cat $RESULTS_DIR/job_summary.txt" 
+echo "  Job summary:  cat $RESULTS_DIR/job_summary.txt"
+echo "  Visualizations: open $RESULTS_DIR/*.png" 

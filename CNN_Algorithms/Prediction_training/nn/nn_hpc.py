@@ -251,6 +251,9 @@ learning_rate = 0.001
 fold_metrics = []
 trained_models = []
 
+# Store detailed training history for plotting
+all_fold_histories = []
+
 print_with_timestamp(
     f"Starting {len(fold_results)}-Fold Cross Validation Training")
 print_with_timestamp(f"Epochs: {epochs}, Early Stopping Patience: {patience}")
@@ -284,6 +287,21 @@ for fold_data in fold_results:
     patience_counter = 0
     best_model_state = None
 
+    # Track training history for plotting
+    fold_history = {
+        'fold': fold,
+        'train_losses': [],
+        'val_losses': [],
+        'train_mapes': [],
+        'val_mapes': [],
+        'train_maes': [],
+        'val_maes': [],
+        'train_r2s': [],
+        'val_r2s': [],
+        'learning_rates': [],
+        'epochs': []
+    }
+
     # Training loop for this fold
     for epoch in range(epochs):
         epoch_start_time = time.time()
@@ -310,8 +328,21 @@ for fold_data in fold_results:
         avg_train_loss = train_loss / len(train_loader)
 
         # Validation phase
+        train_metrics = validate_model(model, train_loader, criterion, device)
         val_metrics = validate_model(model, val_loader, criterion, device)
         val_loss = val_metrics['loss']
+
+        # Store metrics for plotting
+        fold_history['epochs'].append(epoch + 1)
+        fold_history['train_losses'].append(avg_train_loss)
+        fold_history['val_losses'].append(val_loss)
+        fold_history['train_mapes'].append(train_metrics['mape'])
+        fold_history['val_mapes'].append(val_metrics['mape'])
+        fold_history['train_maes'].append(train_metrics['mae'])
+        fold_history['val_maes'].append(val_metrics['mae'])
+        fold_history['train_r2s'].append(train_metrics['r2'])
+        fold_history['val_r2s'].append(val_metrics['r2'])
+        fold_history['learning_rates'].append(optimizer.param_groups[0]['lr'])
 
         # Learning rate scheduling
         scheduler.step(val_loss)
@@ -365,6 +396,7 @@ for fold_data in fold_results:
 
     fold_metrics.append(fold_result)
     trained_models.append(model)
+    all_fold_histories.append(fold_history)
 
     # Print fold results
     print_with_timestamp(
@@ -436,6 +468,296 @@ print_with_timestamp(f"Results saved to training_results.csv")
 best_model = trained_models[best_fold['fold'] - 1]
 torch.save(best_model.state_dict(), 'best_model.pth')
 print_with_timestamp(f"Best model saved to best_model.pth")
+
+# ==========================================
+# COMPREHENSIVE PLOTTING AND VISUALIZATION
+# ==========================================
+
+print_with_timestamp("Creating evaluation plots...")
+
+# Get the best fold history for detailed plotting
+best_fold_history = all_fold_histories[best_fold['fold'] - 1]
+
+# Collect predictions vs actual values from the best model for scatter plot
+print_with_timestamp("Collecting predictions for visualization...")
+best_model.eval()
+all_predictions = []
+all_actuals = []
+
+# Use all data for the final evaluation plots
+full_dataset = CNNExecutionDataset(X, y)
+full_loader = DataLoader(full_dataset, batch_size=64,
+                         shuffle=False, pin_memory=True)
+
+with torch.no_grad():
+    for X_batch, y_batch in full_loader:
+        X_batch, y_batch = X_batch.to(
+            device, non_blocking=True), y_batch.to(device, non_blocking=True)
+        pred = best_model(X_batch).squeeze()
+        all_predictions.extend(pred.cpu().numpy())
+        all_actuals.extend(y_batch.cpu().numpy())
+
+all_predictions = np.array(all_predictions)
+all_actuals = np.array(all_actuals)
+residuals = all_actuals - all_predictions
+
+# 1. TRAINING & VALIDATION LOSS CURVES
+plt.figure(figsize=(15, 10))
+
+# Loss curves for best fold
+plt.subplot(2, 3, 1)
+plt.plot(best_fold_history['epochs'], best_fold_history['train_losses'],
+         label='Training Loss', color='blue', linewidth=2)
+plt.plot(best_fold_history['epochs'], best_fold_history['val_losses'],
+         label='Validation Loss', color='red', linewidth=2)
+plt.xlabel('Epoch')
+plt.ylabel('MSE Loss')
+plt.title(f'Training vs Validation Loss (Best Fold {best_fold["fold"]})')
+plt.legend()
+plt.grid(True, alpha=0.3)
+
+# 2. PREDICTION VS ACTUAL SCATTER PLOT
+plt.subplot(2, 3, 2)
+plt.scatter(all_actuals, all_predictions, alpha=0.6, s=10)
+min_val = min(all_actuals.min(), all_predictions.min())
+max_val = max(all_actuals.max(), all_predictions.max())
+plt.plot([min_val, max_val], [min_val, max_val],
+         'r--', lw=2, label='Perfect Prediction')
+plt.xlabel('Actual Execution Time (ms)')
+plt.ylabel('Predicted Execution Time (ms)')
+plt.title('Predictions vs Actual Values')
+plt.legend()
+plt.grid(True, alpha=0.3)
+
+# Calculate R² for the plot
+r2_score_val = r2_score(all_actuals, all_predictions)
+plt.text(0.05, 0.95, f'R² = {r2_score_val:.4f}', transform=plt.gca().transAxes,
+         bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.8))
+
+# 3. RESIDUAL PLOT
+plt.subplot(2, 3, 3)
+plt.scatter(all_predictions, residuals, alpha=0.6, s=10)
+plt.axhline(y=0, color='r', linestyle='--', linewidth=2)
+plt.xlabel('Predicted Values')
+plt.ylabel('Residuals (Actual - Predicted)')
+plt.title('Residual Plot')
+plt.grid(True, alpha=0.3)
+
+# 4. PERFORMANCE METRICS OVER EPOCHS (Best Fold)
+plt.subplot(2, 3, 4)
+plt.plot(best_fold_history['epochs'], best_fold_history['train_mapes'],
+         label='Train MAPE', color='blue', linewidth=2)
+plt.plot(best_fold_history['epochs'], best_fold_history['val_mapes'],
+         label='Val MAPE', color='red', linewidth=2)
+plt.xlabel('Epoch')
+plt.ylabel('MAPE (%)')
+plt.title(f'MAPE Over Epochs (Best Fold {best_fold["fold"]})')
+plt.legend()
+plt.grid(True, alpha=0.3)
+
+# 5. CROSS-VALIDATION RESULTS
+plt.subplot(2, 3, 5)
+folds = [f['fold'] for f in fold_metrics]
+val_mapes = [f['val_mape'] for f in fold_metrics]
+bars = plt.bar(folds, val_mapes, color=[
+               'lightcoral' if f != best_fold['fold'] else 'darkgreen' for f in folds])
+plt.xlabel('Fold')
+plt.ylabel('Validation MAPE (%)')
+plt.title('Cross-Validation Results')
+plt.grid(True, alpha=0.3, axis='y')
+
+# Highlight best fold
+for i, (fold, mape) in enumerate(zip(folds, val_mapes)):
+    if fold == best_fold['fold']:
+        plt.text(fold, mape + 0.1, f'Best\n{mape:.2f}%', ha='center', va='bottom',
+                 fontweight='bold', color='darkgreen')
+
+# 6. ERROR DISTRIBUTION
+plt.subplot(2, 3, 6)
+percentage_errors = np.abs(residuals / all_actuals) * 100
+plt.hist(percentage_errors, bins=30, alpha=0.7,
+         color='skyblue', edgecolor='black')
+plt.xlabel('Absolute Percentage Error (%)')
+plt.ylabel('Frequency')
+plt.title('Distribution of Absolute Percentage Errors')
+plt.grid(True, alpha=0.3)
+
+# Add statistics
+mean_ape = np.mean(percentage_errors)
+median_ape = np.median(percentage_errors)
+plt.axvline(mean_ape, color='red', linestyle='--',
+            linewidth=2, label=f'Mean: {mean_ape:.2f}%')
+plt.axvline(median_ape, color='orange', linestyle='--',
+            linewidth=2, label=f'Median: {median_ape:.2f}%')
+plt.legend()
+
+plt.tight_layout()
+plt.savefig('nn_training_evaluation.png', dpi=300, bbox_inches='tight')
+print_with_timestamp(
+    "Main evaluation plot saved to nn_training_evaluation.png")
+
+# ADDITIONAL DETAILED PLOTS
+
+# Plot 7: R² and MAE over epochs
+plt.figure(figsize=(12, 8))
+
+plt.subplot(2, 2, 1)
+plt.plot(best_fold_history['epochs'], best_fold_history['train_r2s'],
+         label='Train R²', color='blue', linewidth=2)
+plt.plot(best_fold_history['epochs'], best_fold_history['val_r2s'],
+         label='Val R²', color='red', linewidth=2)
+plt.xlabel('Epoch')
+plt.ylabel('R² Score')
+plt.title(f'R² Over Epochs (Best Fold {best_fold["fold"]})')
+plt.legend()
+plt.grid(True, alpha=0.3)
+
+plt.subplot(2, 2, 2)
+plt.plot(best_fold_history['epochs'], best_fold_history['train_maes'],
+         label='Train MAE', color='blue', linewidth=2)
+plt.plot(best_fold_history['epochs'], best_fold_history['val_maes'],
+         label='Val MAE', color='red', linewidth=2)
+plt.xlabel('Epoch')
+plt.ylabel('MAE')
+plt.title(f'MAE Over Epochs (Best Fold {best_fold["fold"]})')
+plt.legend()
+plt.grid(True, alpha=0.3)
+
+plt.subplot(2, 2, 3)
+plt.plot(best_fold_history['epochs'], best_fold_history['learning_rates'],
+         color='green', linewidth=2)
+plt.xlabel('Epoch')
+plt.ylabel('Learning Rate')
+plt.title(f'Learning Rate Schedule (Best Fold {best_fold["fold"]})')
+plt.grid(True, alpha=0.3)
+plt.yscale('log')
+
+plt.subplot(2, 2, 4)
+plt.hist(residuals, bins=30, alpha=0.7, color='lightgreen', edgecolor='black')
+plt.xlabel('Residuals')
+plt.ylabel('Frequency')
+plt.title('Distribution of Residuals')
+plt.grid(True, alpha=0.3)
+
+# Add statistics
+mean_residual = np.mean(residuals)
+std_residual = np.std(residuals)
+plt.axvline(mean_residual, color='red', linestyle='--', linewidth=2,
+            label=f'Mean: {mean_residual:.4f}')
+plt.axvline(mean_residual + std_residual, color='orange', linestyle=':', linewidth=2,
+            label=f'+1σ: {mean_residual + std_residual:.4f}')
+plt.axvline(mean_residual - std_residual, color='orange', linestyle=':', linewidth=2,
+            label=f'-1σ: {mean_residual - std_residual:.4f}')
+plt.legend()
+
+plt.tight_layout()
+plt.savefig('nn_detailed_metrics.png', dpi=300, bbox_inches='tight')
+print_with_timestamp("Detailed metrics plot saved to nn_detailed_metrics.png")
+
+# Plot 8: Cross-validation comparison across all metrics
+plt.figure(figsize=(15, 10))
+
+# MAPE comparison
+plt.subplot(2, 3, 1)
+val_mapes = [f['val_mape'] for f in fold_metrics]
+train_mapes = [f['train_mape'] for f in fold_metrics]
+x = np.arange(len(folds))
+width = 0.35
+plt.bar(x - width/2, train_mapes, width, label='Train MAPE', alpha=0.8)
+plt.bar(x + width/2, val_mapes, width, label='Val MAPE', alpha=0.8)
+plt.xlabel('Fold')
+plt.ylabel('MAPE (%)')
+plt.title('MAPE Comparison Across Folds')
+plt.xticks(x, folds)
+plt.legend()
+plt.grid(True, alpha=0.3, axis='y')
+
+# R² comparison
+plt.subplot(2, 3, 2)
+val_r2s = [f['val_r2'] for f in fold_metrics]
+train_r2s = [f['train_r2'] for f in fold_metrics]
+plt.bar(x - width/2, train_r2s, width, label='Train R²', alpha=0.8)
+plt.bar(x + width/2, val_r2s, width, label='Val R²', alpha=0.8)
+plt.xlabel('Fold')
+plt.ylabel('R² Score')
+plt.title('R² Comparison Across Folds')
+plt.xticks(x, folds)
+plt.legend()
+plt.grid(True, alpha=0.3, axis='y')
+
+# MAE comparison
+plt.subplot(2, 3, 3)
+val_maes = [f['val_mae'] for f in fold_metrics]
+train_maes = [f['train_mae'] for f in fold_metrics]
+plt.bar(x - width/2, train_maes, width, label='Train MAE', alpha=0.8)
+plt.bar(x + width/2, val_maes, width, label='Val MAE', alpha=0.8)
+plt.xlabel('Fold')
+plt.ylabel('MAE')
+plt.title('MAE Comparison Across Folds')
+plt.xticks(x, folds)
+plt.legend()
+plt.grid(True, alpha=0.3, axis='y')
+
+# Training times
+plt.subplot(2, 3, 4)
+training_times = [f['training_time'] for f in fold_metrics]
+plt.bar(folds, training_times, color='lightblue', alpha=0.8)
+plt.xlabel('Fold')
+plt.ylabel('Training Time (seconds)')
+plt.title('Training Time by Fold')
+plt.grid(True, alpha=0.3, axis='y')
+
+# Epochs trained
+plt.subplot(2, 3, 5)
+epochs_trained = [f['epochs_trained'] for f in fold_metrics]
+plt.bar(folds, epochs_trained, color='lightcoral', alpha=0.8)
+plt.xlabel('Fold')
+plt.ylabel('Epochs Trained')
+plt.title('Epochs Trained by Fold')
+plt.grid(True, alpha=0.3, axis='y')
+
+# Summary statistics
+plt.subplot(2, 3, 6)
+plt.text(0.1, 0.9, f"Cross-Validation Summary", fontsize=14, fontweight='bold')
+plt.text(
+    0.1, 0.8, f"Average Val MAPE: {avg_val_mape:.2f}% ± {std_val_mape:.2f}%")
+plt.text(0.1, 0.7, f"Average Val MAE: {avg_val_mae:.4f} ± {std_val_mae:.4f}")
+plt.text(0.1, 0.6, f"Average Val R²: {avg_val_r2:.4f} ± {std_val_r2:.4f}")
+plt.text(
+    0.1, 0.5, f"Best Fold: {best_fold['fold']} (MAPE: {best_fold['val_mape']:.2f}%)")
+plt.text(0.1, 0.4, f"Total Training Time: {total_time/60:.2f} minutes")
+plt.text(0.1, 0.3, f"Average Time per Fold: {avg_training_time:.2f} seconds")
+plt.axis('off')
+
+plt.tight_layout()
+plt.savefig('nn_cross_validation_comparison.png', dpi=300, bbox_inches='tight')
+print_with_timestamp(
+    "Cross-validation comparison plot saved to nn_cross_validation_comparison.png")
+
+# Print summary of generated plots
+print_with_timestamp("\n" + "=" * 80)
+print_with_timestamp("📊 VISUALIZATION SUMMARY")
+print_with_timestamp("=" * 80)
+print_with_timestamp("Generated evaluation plots:")
+print_with_timestamp(
+    "  1. nn_training_evaluation.png - Main evaluation dashboard (6 plots)")
+print_with_timestamp("     • Training/Validation loss curves")
+print_with_timestamp("     • Prediction vs Actual scatter plot")
+print_with_timestamp("     • Residual analysis")
+print_with_timestamp("     • MAPE over epochs")
+print_with_timestamp("     • Cross-validation results")
+print_with_timestamp("     • Error distribution")
+print_with_timestamp(
+    "  2. nn_detailed_metrics.png - Detailed metrics (4 plots)")
+print_with_timestamp("     • R² progression")
+print_with_timestamp("     • MAE progression")
+print_with_timestamp("     • Learning rate schedule")
+print_with_timestamp("     • Residual distribution")
+print_with_timestamp(
+    "  3. nn_cross_validation_comparison.png - CV analysis (6 plots)")
+print_with_timestamp("     • Metric comparisons across folds")
+print_with_timestamp("     • Training times and epochs")
+print_with_timestamp("     • Summary statistics")
 
 # GPU memory cleanup
 if torch.cuda.is_available():
