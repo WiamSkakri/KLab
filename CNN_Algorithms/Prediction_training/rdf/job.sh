@@ -1,11 +1,12 @@
 #!/bin/bash
-#SBATCH -J rdf_prediction_training      # Job name
+#SBATCH -J rdf_prediction_training_gpu  # Job name with GPU designation
 #SBATCH -o rdf_prediction_training.out  # Output file
-#SBATCH --time=24:00:00                 # 24 hours of wall time
-#SBATCH -p cpu                          # CPU partition (Random Forest doesn't need GPU)
+#SBATCH --time=5:00:00                 # 5 hours of wall time (reduced for GPU efficiency)
+#SBATCH -p gpu                          # GPU partition for cuML acceleration
 #SBATCH -A sxk1942                      # Account/Project ID
-#SBATCH -c 16                           # 16 processors for parallel Random Forest
-#SBATCH --mem=64GB                      # 64GB memory for large datasets and parallel training
+#SBATCH -c 4                            # 4 processors (GPU workloads need fewer CPUs)
+#SBATCH --mem=32GB                      # 32GB memory (GPU handles compute-heavy tasks)
+#SBATCH --gpus=1                        # Request 1 GPU for cuML acceleration
 
 # Exit on any error
 set -e
@@ -21,7 +22,20 @@ echo "PFSDIR: $PFSDIR"
 echo "SLURM_JOB_ID: $SLURM_JOB_ID"
 echo "Number of CPUs: $SLURM_CPUS_PER_TASK"
 echo "Memory: $SLURM_MEM_PER_NODE"
+echo "GPUs: $SLURM_GPUS"
+echo "GPU devices: $CUDA_VISIBLE_DEVICES"
 echo "Date/Time: $(date)"
+
+# Check GPU availability
+echo "Checking GPU configuration..."
+if command -v nvidia-smi &> /dev/null; then
+    echo "GPU Information:"
+    nvidia-smi
+    echo "CUDA Version:"
+    nvcc --version 2>/dev/null || echo "NVCC not available"
+else
+    echo "Warning: nvidia-smi not found. GPU may not be available."
+fi
 
 # Check if virtual environment exists
 if [ ! -d "$HOME/ai3_env" ]; then
@@ -41,14 +55,14 @@ echo "Python interpreter: $(which python)"
 echo "Python version: $(python --version)"
 echo "Virtual environment location: $VIRTUAL_ENV"
 
-# Print CPU information for Random Forest optimization
-echo "Checking CPU configuration for Random Forest..."
+# Print CPU information for hybrid CPU-GPU workload
+echo "Checking CPU configuration for hybrid workload..."
 echo "Number of CPU cores: $(nproc)"
 echo "CPU info:"
 lscpu | grep -E "(Model name|CPU\(s\)|Thread|Core)"
 echo "-----------------------------------"
 
-# Verify Python and required packages
+# Verify Python and required packages (including GPU libraries)
 python << 'END_PYTHON'
 import sys
 import pandas as pd
@@ -70,7 +84,31 @@ print(f"Joblib version: {joblib.__version__}")
 from sklearn.ensemble import RandomForestRegressor
 rf_test = RandomForestRegressor(n_estimators=10, n_jobs=-1)
 print(f"Random Forest Regressor: Available")
-print(f"Random Forest using all CPUs: {rf_test.n_jobs}")
+
+# Check GPU libraries
+try:
+    import cuml
+    from cuml.ensemble import RandomForestRegressor as cuRF
+    import cupy as cp
+    
+    print(f"cuML version: {cuml.__version__}")
+    print(f"CuPy version: {cp.__version__}")
+    
+    # Test GPU access
+    try:
+        cp.cuda.Device(0).use()
+        gpu_name = cp.cuda.runtime.getDeviceProperties(0)['name'].decode()
+        gpu_memory = cp.cuda.runtime.memGetInfo()[1] / 1024**3
+        print(f"GPU Device: {gpu_name}")
+        print(f"GPU Memory: {gpu_memory:.1f} GB")
+        print("GPU Libraries: ✅ Available")
+    except Exception as e:
+        print(f"GPU Access Error: {e}")
+        print("GPU Libraries: ⚠️ Installed but not accessible")
+    
+except ImportError as e:
+    print(f"GPU Libraries: ❌ Not available ({e})")
+    print("Will fall back to CPU-based sklearn")
 
 # Check multi-threading capability
 import multiprocessing
@@ -84,11 +122,11 @@ fi
 
 # Create timestamp for unique results directory
 TIMESTAMP=$(date +%Y%m%d_%H%M%S)
-RESULTS_DIR=$SLURM_SUBMIT_DIR/results_${TIMESTAMP}
+RESULTS_DIR=$SLURM_SUBMIT_DIR/results_gpu_${TIMESTAMP}
 mkdir -p $RESULTS_DIR
 
 # Create a directory in scratch for the job
-SCRATCH_DIR=$PFSDIR/rdf_prediction_training_${SLURM_JOB_ID}
+SCRATCH_DIR=$PFSDIR/rdf_prediction_training_gpu_${SLURM_JOB_ID}
 if ! mkdir -p $SCRATCH_DIR; then
     echo "Failed to create scratch directory: $SCRATCH_DIR"
     exit 1
@@ -96,8 +134,8 @@ fi
 echo "Created scratch directory: $SCRATCH_DIR"
 
 # Check if required files exist
-if [ ! -f rdf_hpc.py ]; then
-    echo "Error: rdf_hpc.py not found in current directory"
+if [ ! -f python.py ]; then
+    echo "Error: python.py not found in current directory"
     exit 1
 fi
 
@@ -108,7 +146,7 @@ if [ ! -f combined.csv ]; then
 fi
 
 # Copy the script and data to the scratch directory
-cp rdf_hpc.py $SCRATCH_DIR/
+cp python.py $SCRATCH_DIR/
 cp combined.csv $SCRATCH_DIR/
 echo "Copied Python script and data to scratch directory"
 
@@ -121,25 +159,30 @@ echo "Data file information:"
 echo "CSV file size: $(ls -lh combined.csv | awk '{print $5}')"
 echo "CSV file rows: $(wc -l < combined.csv)"
 
-# Set environment variables for optimal Random Forest performance
+# Set environment variables for optimal GPU + CPU performance
 export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
 export MKL_NUM_THREADS=$SLURM_CPUS_PER_TASK
 export OPENBLAS_NUM_THREADS=$SLURM_CPUS_PER_TASK
 export BLAS_NUM_THREADS=$SLURM_CPUS_PER_TASK
 export LAPACK_NUM_THREADS=$SLURM_CPUS_PER_TASK
 
+# Set CUDA environment variables
+export CUDA_DEVICE_ORDER=PCI_BUS_ID
+export CUDA_VISIBLE_DEVICES=${SLURM_GPUS:-0}
+
 echo "Set threading environment variables:"
 echo "OMP_NUM_THREADS: $OMP_NUM_THREADS"
 echo "MKL_NUM_THREADS: $MKL_NUM_THREADS"
+echo "CUDA_VISIBLE_DEVICES: $CUDA_VISIBLE_DEVICES"
 
 # Run the Random Forest training script and capture all output
-echo "Starting Random Forest Training..."
-echo "====================================="
-python rdf_hpc.py 2>&1 | tee training_output.log
+echo "Starting GPU-Accelerated Random Forest Training..."
+echo "=================================================="
+python python.py 2>&1 | tee training_output.log
 
 # Check if the script executed successfully
 if [ $? -eq 0 ]; then
-    echo "Random Forest training completed successfully"
+    echo "GPU-accelerated Random Forest training completed successfully"
 else
     echo "Random Forest training failed with exit code $?"
     # Copy logs even if script failed
@@ -154,13 +197,18 @@ cp -v rdf_training_results.csv $RESULTS_DIR/ 2>/dev/null || echo "rdf_training_r
 cp -v rdf_summary_metrics.csv $RESULTS_DIR/ 2>/dev/null || echo "rdf_summary_metrics.csv not found"
 cp -v best_rf_model.joblib $RESULTS_DIR/ 2>/dev/null || echo "best_rf_model.joblib not found"
 cp -v rf_model_fold_*.joblib $RESULTS_DIR/ 2>/dev/null || echo "Individual fold models not found"
-cp -v rdf_training_results.png $RESULTS_DIR/ 2>/dev/null || echo "Training results plot not found"
+
+# Copy visualization files
+cp -v rdf_evaluation_dashboard.png $RESULTS_DIR/ 2>/dev/null || echo "Evaluation dashboard plot not found"
+cp -v rdf_hyperparameter_analysis.png $RESULTS_DIR/ 2>/dev/null || echo "Hyperparameter analysis plot not found"
+cp -v rdf_detailed_metrics_analysis.png $RESULTS_DIR/ 2>/dev/null || echo "Detailed metrics analysis plot not found"
+cp -v rdf_training_results.png $RESULTS_DIR/ 2>/dev/null || echo "Basic training results plot not found"
 
 # Create a summary report
 echo "Creating summary report..."
 cat > $RESULTS_DIR/job_summary.txt << EOF
-Random Forest Training Job Summary
-==================================
+GPU-Accelerated Random Forest Training Job Summary
+==================================================
 Job ID: $SLURM_JOB_ID
 Start Time: $(date)
 Submit Directory: $SLURM_SUBMIT_DIR
@@ -169,8 +217,12 @@ Results Directory: $RESULTS_DIR
 Job Resources:
 - CPUs: $SLURM_CPUS_PER_TASK
 - Memory: $SLURM_MEM_PER_NODE
+- GPUs: $SLURM_GPUS
 - Time Limit: 12 hours
-- Partition: cpu
+- Partition: gpu
+
+GPU Information:
+$(nvidia-smi --query-gpu=name,memory.total --format=csv,noheader 2>/dev/null || echo "GPU info not available")
 
 Files Generated:
 - training_output.log: Complete training log
@@ -178,7 +230,10 @@ Files Generated:
 - rdf_summary_metrics.csv: Summary metrics
 - best_rf_model.joblib: Best performing model
 - rf_model_fold_*.joblib: Individual fold models
-- rdf_training_results.png: Training visualization
+- rdf_evaluation_dashboard.png: Comprehensive evaluation dashboard (9 plots)
+- rdf_hyperparameter_analysis.png: Hyperparameter effectiveness analysis (6 plots)
+- rdf_detailed_metrics_analysis.png: Detailed metrics comparison (6 plots)
+- rdf_training_results.png: Basic training visualization (4 plots)
 - job_summary.txt: This summary
 
 CPU Information:
@@ -194,6 +249,9 @@ if [ -f training_output.log ]; then
     echo "Key Performance Metrics:" >> $RESULTS_DIR/job_summary.txt
     echo "========================" >> $RESULTS_DIR/job_summary.txt
     
+    # Extract backend used (GPU vs CPU)
+    grep "Backend used:" training_output.log | tail -1 >> $RESULTS_DIR/job_summary.txt || echo "Backend info not found in log"
+    
     # Extract average validation MAPE
     grep "Average Val MAPE:" training_output.log | tail -1 >> $RESULTS_DIR/job_summary.txt || echo "Val MAPE not found in log"
     
@@ -207,10 +265,11 @@ if [ -f training_output.log ]; then
     grep "Best performing fold:" training_output.log | tail -1 >> $RESULTS_DIR/job_summary.txt || echo "Best fold not found in log"
 fi
 
-# Print CPU usage summary
-echo "CPU Usage Summary:"
-echo "Number of cores used: $SLURM_CPUS_PER_TASK"
+# Print resource usage summary
+echo "Resource Usage Summary:"
+echo "Number of CPU cores used: $SLURM_CPUS_PER_TASK"
 echo "Memory allocated: $SLURM_MEM_PER_NODE"
+echo "GPUs allocated: $SLURM_GPUS"
 
 # Cleanup scratch directory
 if [ -d "$SCRATCH_DIR" ]; then
@@ -221,7 +280,7 @@ fi
 # Deactivate virtual environment
 deactivate
 
-echo "Job completed successfully. Results are in: $RESULTS_DIR"
+echo "GPU job completed successfully. Results are in: $RESULTS_DIR"
 echo "Job finished at: $(date)"
 echo ""
 echo "To view results:"
@@ -229,7 +288,12 @@ echo "  Training log: cat $RESULTS_DIR/training_output.log"
 echo "  Results CSV:  cat $RESULTS_DIR/rdf_training_results.csv"
 echo "  Summary:      cat $RESULTS_DIR/rdf_summary_metrics.csv"
 echo "  Job summary:  cat $RESULTS_DIR/job_summary.txt"
-echo "  Visualization: $RESULTS_DIR/rdf_training_results.png"
+echo ""
+echo "Visualizations:"
+echo "  Main dashboard:     $RESULTS_DIR/rdf_evaluation_dashboard.png"
+echo "  Hyperparameters:    $RESULTS_DIR/rdf_hyperparameter_analysis.png"
+echo "  Detailed metrics:   $RESULTS_DIR/rdf_detailed_metrics_analysis.png"
+echo "  Basic overview:     $RESULTS_DIR/rdf_training_results.png"
 echo ""
 echo "To load the best model in Python:"
 echo "  import joblib"
