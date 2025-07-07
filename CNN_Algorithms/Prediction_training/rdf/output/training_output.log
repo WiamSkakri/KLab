@@ -1,0 +1,254 @@
+⚠️  GPU libraries not available: No module named 'cuml'
+📌 Falling back to CPU-based sklearn
+Starting Random Forest HPC Training
+============================================================
+Script started at: 2025-07-07 11:29:52.502657
+Python version: 3.12.3 (main, Oct 16 2024, 21:26:15) [GCC 13.3.0]
+Current working directory: /scratch/pbsjobs/job.2660514.hpc/rdf_prediction_training_gpu_2660514
+Available files: ['python.py', 'combined.csv', 'training_output.log']
+GPU Acceleration: Disabled
+
+📊 Loading data...
+Data loaded successfully: 77000 rows, 9 columns
+Columns: ['Algorithm', 'Batch_Size', 'Input_Size', 'In_Channels', 'Out_Channels', 'Kernel_Size', 'Stride', 'Padding', 'Execution_Time_ms']
+
+📈 Data preprocessing:
+Features: 9 columns
+Target: Execution_Time_ms
+Feature columns: ['Batch_Size', 'Input_Size', 'In_Channels', 'Out_Channels', 'Kernel_Size', 'Stride', 'Padding', 'Algorithm_direct', 'Algorithm_smm']
+X shape: (77000, 9)
+y shape: (77000,)
+y statistics: min=0.41, max=3194.39, mean=50.25
+
+🔀 K-Fold Cross Validation Setup:
+Number of folds: 5
+
+=== FOLD 1 ===
+Training samples: 61600
+Validation samples: 15400
+
+=== FOLD 2 ===
+Training samples: 61600
+Validation samples: 15400
+
+=== FOLD 3 ===
+Training samples: 61600
+Validation samples: 15400
+
+=== FOLD 4 ===
+Training samples: 61600
+Validation samples: 15400
+
+=== FOLD 5 ===
+Training samples: 61600
+Validation samples: 15400
+
+🌲 Random Forest Configuration:
+Backend: sklearn (CPU)
+Hyperparameter grid combinations: 72
+
+🚀 Starting Random Forest K-Fold Cross Validation Training
+============================================================
+
+🌲 FOLD 1
+--------------------
+Training samples: 61600
+Validation samples: 15400
+Running hyperparameter search...
+Fitting 3 folds for each of 72 candidates, totalling 216 fits
+/scratch/pbsjobs/job.2660514.hpc/rdf_prediction_training_gpu_2660514/python.py:984: MatplotlibDeprecationWarning: The 'labels' parameter of boxplot() has been renamed 'tick_labels' since Matplotlib 3.9; support for the old name will be dropped in 3.11.
+  bp = ax.boxplot(normalized_metrics,
+/scratch/pbsjobs/job.2660514.hpc/rdf_prediction_training_gpu_2660514/python.py:1060: UserWarning: Glyph 127942 (\N{TROPHY}) missing from font(s) DejaVu Sans Mono.
+  plt.tight_layout()
+/scratch/pbsjobs/job.2660514.hpc/rdf_prediction_training_gpu_2660514/python.py:1060: UserWarning: Glyph 128315 (\N{DOWN-POINTING RED TRIANGLE}) missing from font(s) DejaVu Sans Mono.
+  plt.tight_layout()
+/scratch/pbsjobs/job.2660514.hpc/rdf_prediction_training_gpu_2660514/python.py:1060: UserWarning: Glyph 128202 (\N{BAR CHART}) missing from font(s) DejaVu Sans Mono.
+  plt.tight_layout()
+/scratch/pbsjobs/job.2660514.hpc/rdf_prediction_training_gpu_2660514/python.py:1060: UserWarning: Glyph 127919 (\N{DIRECT HIT}) missing from font(s) DejaVu Sans Mono.
+  plt.tight_layout()
+/scratch/pbsjobs/job.2660514.hpc/rdf_prediction_training_gpu_2660514/python.py:1061: UserWarning: Glyph 127942 (\N{TROPHY}) missing from font(s) DejaVu Sans Mono.
+  plt.savefig('rdf_detailed_metrics_analysis.png',
+/scratch/pbsjobs/job.2660514.hpc/rdf_prediction_training_gpu_2660514/python.py:1061: UserWarning: Glyph 128315 (\N{DOWN-POINTING RED TRIANGLE}) missing from font(s) DejaVu Sans Mono.
+  plt.savefig('rdf_detailed_metrics_analysis.png',
+/scratch/pbsjobs/job.2660514.hpc/rdf_prediction_training_gpu_2660514/python.py:1061: UserWarning: Glyph 128202 (\N{BAR CHART}) missing from font(s) DejaVu Sans Mono.
+  plt.savefig('rdf_detailed_metrics_analysis.png',
+/scratch/pbsjobs/job.2660514.hpc/rdf_prediction_training_gpu_2660514/python.py:1061: UserWarning: Glyph 127919 (\N{DIRECT HIT}) missing from font(s) DejaVu Sans Mono.
+  plt.savefig('rdf_detailed_metrics_analysis.png',
+✅ Training complete in 201.7 seconds
+Best parameters: {'max_depth': 20, 'max_features': 'sqrt', 'min_samples_leaf': 1, 'min_samples_split': 5, 'n_estimators': 100}
+Best CV score (neg MSE): -19954.9447
+🌳 Fold 1 Results:
+
+  Training:
+  MAPE: 5.14%
+  MAE:  1.6726
+  RMSE: 5.4833
+  R²:   0.9986
+
+  Validation:
+  MAPE: 5.88%
+  MAE:  2.0562
+  RMSE: 7.1339
+  R²:   0.9977
+Model saved: rf_model_fold_1.joblib
+
+🌲 FOLD 2
+--------------------
+Training samples: 61600
+Validation samples: 15400
+Running hyperparameter search...
+Fitting 3 folds for each of 72 candidates, totalling 216 fits
+✅ Training complete in 197.1 seconds
+Best parameters: {'max_depth': None, 'max_features': 'sqrt', 'min_samples_leaf': 2, 'min_samples_split': 2, 'n_estimators': 200}
+Best CV score (neg MSE): -20313.0036
+🌳 Fold 2 Results:
+
+  Training:
+  MAPE: 5.27%
+  MAE:  1.7514
+  RMSE: 6.5512
+  R²:   0.9979
+
+  Validation:
+  MAPE: 6.14%
+  MAE:  2.1184
+  RMSE: 7.7525
+  R²:   0.9973
+Model saved: rf_model_fold_2.joblib
+
+🌲 FOLD 3
+--------------------
+Training samples: 61600
+Validation samples: 15400
+Running hyperparameter search...
+Fitting 3 folds for each of 72 candidates, totalling 216 fits
+✅ Training complete in 196.6 seconds
+Best parameters: {'max_depth': 20, 'max_features': 'sqrt', 'min_samples_leaf': 1, 'min_samples_split': 5, 'n_estimators': 100}
+Best CV score (neg MSE): -20837.3041
+🌳 Fold 3 Results:
+
+  Training:
+  MAPE: 5.17%
+  MAE:  1.6883
+  RMSE: 5.5733
+  R²:   0.9986
+
+  Validation:
+  MAPE: 6.00%
+  MAE:  2.0264
+  RMSE: 7.5670
+  R²:   0.9971
+Model saved: rf_model_fold_3.joblib
+
+🌲 FOLD 4
+--------------------
+Training samples: 61600
+Validation samples: 15400
+Running hyperparameter search...
+Fitting 3 folds for each of 72 candidates, totalling 216 fits
+✅ Training complete in 197.0 seconds
+Best parameters: {'max_depth': 20, 'max_features': 'sqrt', 'min_samples_leaf': 1, 'min_samples_split': 2, 'n_estimators': 100}
+Best CV score (neg MSE): -19709.2232
+🌳 Fold 4 Results:
+
+  Training:
+  MAPE: 5.04%
+  MAE:  1.5477
+  RMSE: 4.6822
+  R²:   0.9989
+
+  Validation:
+  MAPE: 5.88%
+  MAE:  2.1288
+  RMSE: 10.2549
+  R²:   0.9955
+Model saved: rf_model_fold_4.joblib
+
+🌲 FOLD 5
+--------------------
+Training samples: 61600
+Validation samples: 15400
+Running hyperparameter search...
+Fitting 3 folds for each of 72 candidates, totalling 216 fits
+✅ Training complete in 198.0 seconds
+Best parameters: {'max_depth': 20, 'max_features': 'sqrt', 'min_samples_leaf': 1, 'min_samples_split': 5, 'n_estimators': 300}
+Best CV score (neg MSE): -21256.1907
+🌳 Fold 5 Results:
+
+  Training:
+  MAPE: 5.16%
+  MAE:  1.6565
+  RMSE: 5.4655
+  R²:   0.9986
+
+  Validation:
+  MAPE: 5.98%
+  MAE:  2.2440
+  RMSE: 8.8580
+  R²:   0.9958
+Model saved: rf_model_fold_5.joblib
+
+============================================================
+🌲 RANDOM FOREST CROSS VALIDATION SUMMARY
+============================================================
+Backend Used: sklearn (CPU)
+Average Train MAPE: 5.16%
+Average Val MAPE:   5.98% ± 0.10%
+Average Train MAE:  1.6633
+Average Val MAE:    2.1148 ± 0.0750
+Average Train R²:   0.9985
+Average Val R²:     0.9967 ± 0.0009
+Average Training Time: 198.1 seconds per fold
+Total Training Time: 994.3 seconds
+
+Detailed Results by Fold:
+Fold Train MAPE  Val MAPE  Train R² Val R²  Time(s) 
+------------------------------------------------------------
+1    5.14        5.88      0.9986   0.9977  201.7   
+2    5.27        6.14      0.9979   0.9973  197.1   
+3    5.17        6.00      0.9986   0.9971  196.6   
+4    5.04        5.88      0.9989   0.9955  197.0   
+5    5.16        5.98      0.9986   0.9958  198.0   
+
+🏆 Best performing fold: Fold 1 (Val MAPE: 5.88%)
+Best model saved as: best_rf_model.joblib
+
+Most common best parameters:
+  n_estimators: 100 (appeared in 3/5 folds)
+  max_depth: 20 (appeared in 4/5 folds)
+  min_samples_split: 5 (appeared in 3/5 folds)
+  min_samples_leaf: 1 (appeared in 4/5 folds)
+  max_features: sqrt (appeared in 5/5 folds)
+
+Results saved to: rdf_training_results.csv
+Summary metrics saved to: rdf_summary_metrics.csv
+
+🎨 Generating comprehensive Random Forest visualizations...
+============================================================
+
+📊 Creating Random Forest evaluation dashboard...
+✅ Evaluation dashboard saved: rdf_evaluation_dashboard.png
+
+📊 Creating hyperparameter analysis...
+✅ Hyperparameter analysis saved: rdf_hyperparameter_analysis.png
+
+📊 Creating detailed metrics analysis...
+✅ Detailed metrics analysis saved: rdf_detailed_metrics_analysis.png
+
+✅ All visualizations created successfully!
+📊 Generated files:
+  • rdf_evaluation_dashboard.png - Main evaluation dashboard
+  • rdf_hyperparameter_analysis.png - Hyperparameter analysis
+  • rdf_detailed_metrics_analysis.png - Detailed metrics analysis
+Basic visualization saved to: rdf_training_results.png
+
+🎉 Random Forest Training Complete!
+⏱️  Total time: 994.3 seconds (16.6 minutes)
+📊 Best model performance: 5.88% MAPE
+🚀 Backend used: sklearn (CPU)
+Script completed at: 2025-07-07 11:46:38.463537
+
+💡 To enable GPU acceleration:
+   - Install cuML: conda install -c rapidsai -c nvidia cuml
+   - Install CuPy: pip install cupy-cuda11x (replace 11x with your CUDA version)
+   - Ensure NVIDIA GPU with CUDA support is available
