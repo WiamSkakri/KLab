@@ -1,0 +1,222 @@
+⚠️  cuML not available, using CPU-based sklearn libraries
+================================================================================
+SVR HYPERPARAMETER OPTIMIZATION AND CROSS-VALIDATION
+================================================================================
+Start Time: 2025-07-07 11:05:30
+Python Version: 3.12.3 (main, Oct 16 2024, 21:26:15) [GCC 13.3.0]
+Working Directory: /scratch/pbsjobs/job.2660483.hpc/svr_prediction_training_2660483
+Script: python.py
+PyTorch CUDA available: True
+GPU Device: Tesla V100-PCIE-32GB
+GPU Memory: 31.7 GB
+Using GPU-accelerated libraries: False
+
+📊 LOADING AND PREPROCESSING DATA
+--------------------------------------------------
+Loading data from: combined.csv
+✅ Data loaded successfully: 77000 rows, 9 columns
+Original columns: ['Algorithm', 'Batch_Size', 'Input_Size', 'In_Channels', 'Out_Channels', 'Kernel_Size', 'Stride', 'Padding', 'Execution_Time_ms']
+Memory usage: 8.63 MB
+Encoding categorical variables...
+After encoding: 77000 rows, 10 columns
+Scaling numerical columns: ['Batch_Size', 'Input_Size', 'In_Channels', 'Out_Channels', 'Kernel_Size', 'Stride', 'Padding']
+Feature columns (9): ['Batch_Size', 'Input_Size', 'In_Channels', 'Out_Channels', 'Kernel_Size', 'Stride', 'Padding', 'Algorithm_direct', 'Algorithm_smm']
+Target column: Execution_Time_ms
+✅ Feature matrix shape: (77000, 9)
+✅ Target vector shape: (77000,)
+Target statistics: min=0.4120, max=3194.3893, mean=50.2547, std=145.4131
+
+🔄 SETTING UP 5-FOLD CROSS VALIDATION
+--------------------------------------------------
+Fold 1: Training=61600, Validation=15400
+Fold 2: Training=61600, Validation=15400
+Fold 3: Training=61600, Validation=15400
+Fold 4: Training=61600, Validation=15400
+Fold 5: Training=61600, Validation=15400
+✅ 5-Fold splits prepared successfully
+
+⚙️ SETTING UP HYPERPARAMETER GRIDS
+--------------------------------------------------
+Full grid combinations: 120
+Small grid combinations: 9
+Using small grid for faster computation
+
+🚀 STARTING SVR CROSS VALIDATION TRAINING
+================================================================================
+🔧 Using CPU-based training with sklearn
+
+🔄 FOLD 1
+------------------------------
+Training samples: 61600
+Validation samples: 15400
+Running hyperparameter search...
+Fitting 3 folds for each of 9 candidates, totalling 27 fits
+✅ Training complete in 1190.4 seconds
+Best parameters: {'C': 100, 'epsilon': 0.1, 'gamma': 0.1, 'kernel': 'rbf'}
+Best CV score (neg MSE): -15927.8530
+📊 Fold 1 Results:
+  Training:
+  MAPE: 43.31%
+  MAE:  17.7470
+  RMSE: 89.0454
+  R²:   0.6205
+  Validation:
+  MAPE: 41.14%
+  MAE:  17.9860
+  RMSE: 94.8594
+  R²:   0.5938
+
+🔄 FOLD 2
+------------------------------
+Training samples: 61600
+Validation samples: 15400
+Running hyperparameter search...
+Fitting 3 folds for each of 9 candidates, totalling 27 fits
+✅ Training complete in 1246.2 seconds
+Best parameters: {'C': 100, 'epsilon': 0.1, 'gamma': 0.1, 'kernel': 'rbf'}
+Best CV score (neg MSE): -16044.1831
+📊 Fold 2 Results:
+  Training:
+  MAPE: 42.93%
+  MAE:  17.7094
+  RMSE: 90.1831
+  R²:   0.6108
+  Validation:
+  MAPE: 44.99%
+  MAE:  18.3023
+  RMSE: 89.1241
+  R²:   0.6412
+
+🔄 FOLD 3
+------------------------------
+Training samples: 61600
+Validation samples: 15400
+Running hyperparameter search...
+Fitting 3 folds for each of 9 candidates, totalling 27 fits
+✅ Training complete in 1161.7 seconds
+Best parameters: {'C': 100, 'epsilon': 0.1, 'gamma': 0.1, 'kernel': 'rbf'}
+Best CV score (neg MSE): -16431.3421
+📊 Fold 3 Results:
+  Training:
+  MAPE: 43.65%
+  MAE:  17.8509
+  RMSE: 87.7304
+  R²:   0.6420
+  Validation:
+  MAPE: 45.19%
+  MAE:  17.4148
+  RMSE: 82.9740
+  R²:   0.6508
+
+🔄 FOLD 4
+------------------------------
+Training samples: 61600
+Validation samples: 15400
+Running hyperparameter search...
+Fitting 3 folds for each of 9 candidates, totalling 27 fits
+✅ Training complete in 1213.8 seconds
+Best parameters: {'C': 100, 'epsilon': 0.1, 'gamma': 0.1, 'kernel': 'rbf'}
+Best CV score (neg MSE): -15640.6039
+📊 Fold 4 Results:
+  Training:
+  MAPE: 43.15%
+  MAE:  17.6247
+  RMSE: 88.1401
+  R²:   0.6236
+  Validation:
+  MAPE: 42.81%
+  MAE:  18.5350
+  RMSE: 99.3348
+  R²:   0.5739
+
+🔄 FOLD 5
+------------------------------
+Training samples: 61600
+Validation samples: 15400
+Running hyperparameter search...
+Fitting 3 folds for each of 9 candidates, totalling 27 fits
+✅ Training complete in 1202.3 seconds
+Best parameters: {'C': 100, 'epsilon': 0.1, 'gamma': 0.1, 'kernel': 'rbf'}
+Best CV score (neg MSE): -15921.7698
+📊 Fold 5 Results:
+  Training:
+  MAPE: 44.35%
+  MAE:  17.8952
+  RMSE: 85.5993
+  R²:   0.6638
+  Validation:
+  MAPE: 44.35%
+  MAE:  17.2472
+  RMSE: 76.9208
+  R²:   0.6812
+
+📊 ANALYZING AND SAVING RESULTS
+================================================================================
+CROSS VALIDATION SUMMARY:
+Average Train MAPE: 43.48%
+Average Val MAPE:   43.69% ± 1.53%
+Average Train MAE:  17.7655
+Average Val MAE:    17.8970 ± 0.4968
+Average Train R²:   0.6321
+Average Val R²:     0.6282 ± 0.0390
+Average Training Time: 1202.9 seconds per fold
+Total Training Time: 6875.3 seconds
+
+Detailed Results by Fold:
+Fold Train MAPE  Val MAPE  Train R² Val R²  Time(s) 
+------------------------------------------------------------
+1    43.31       41.14     0.6205   0.5938  1190.4  
+2    42.93       44.99     0.6108   0.6412  1246.2  
+3    43.65       45.19     0.6420   0.6508  1161.7  
+4    43.15       42.81     0.6236   0.5739  1213.8  
+5    44.35       44.35     0.6638   0.6812  1202.3  
+
+🏆 Best performing fold: Fold 1 (Val MAPE: 41.14%)
+
+Most common best parameters:
+  kernel: rbf (appeared in 5/5 folds)
+  C: 100 (appeared in 5/5 folds)
+  gamma: 0.1 (appeared in 5/5 folds)
+  epsilon: 0.1 (appeared in 5/5 folds)
+
+💾 Results saved to: svr_training_results.csv
+💾 Best model saved to: best_svr_model.pkl
+
+📊 CREATING COMPREHENSIVE EVALUATION PLOTS
+================================================================================
+✅ Main evaluation dashboard saved to: svr_gpu_main_evaluation.png
+✅ Hyperparameter analysis saved to: svr_gpu_hyperparameter_analysis.png
+✅ GPU performance analysis saved to: svr_gpu_performance_analysis.png
+
+📊 VISUALIZATION SUMMARY
+==================================================
+Generated GPU-accelerated SVR evaluation plots:
+  1. svr_gpu_main_evaluation.png - Main evaluation dashboard (8 plots)
+     • Training/Validation predictions vs actual
+     • Residual analysis
+     • Cross-validation results
+     • Error distribution
+     • Performance metrics comparison
+     • Training times and GPU/CPU summary statistics
+  2. svr_gpu_hyperparameter_analysis.png - Hyperparameter analysis (6 plots)
+     • Parameter distributions across folds
+     • Parameter vs performance correlations
+     • GPU/CPU acceleration details
+  3. svr_gpu_performance_analysis.png - Performance analysis (6 plots)
+     • Metric comparisons across all folds
+     • Training time analysis with acceleration info
+     • Residual distributions
+     • Best fold detailed analysis
+
+🎉 SVR TRAINING COMPLETED SUCCESSFULLY!
+🚀 Acceleration: CPU (sklearn)
+⏱️  Total time: 6875.3 seconds (114.6 minutes)
+📊 Final validation MAPE: 43.69% ± 1.53%
+🏆 Best fold achieved: 41.14% MAPE
+
+📁 Output files generated:
+  - svr_training_results.csv: Detailed results for each fold
+  - best_svr_model.pkl: Best trained model
+  - svr_gpu_main_evaluation.png: Main evaluation dashboard (8 plots)
+  - svr_gpu_hyperparameter_analysis.png: Hyperparameter analysis (6 plots)
+  - svr_gpu_performance_analysis.png: GPU performance analysis (6 plots)
