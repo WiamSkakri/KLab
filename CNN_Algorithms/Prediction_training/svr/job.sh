@@ -1,11 +1,12 @@
 #!/bin/bash
 #SBATCH -J svr_prediction_training      # Job name
 #SBATCH -o svr_prediction_training.out  # Output file
-#SBATCH --time=24:00:00                 # 24 hours of wall time
-#SBATCH -p cpu                          # CPU partition (SVR is CPU-intensive)
+#SBATCH --time=4:00:00                 # 4 hours of wall time
+#SBATCH -p gpu                          # GPU partition
 #SBATCH -A sxk1942                      # Account/Project ID
-#SBATCH -c 8                            # 8 processors (for parallel grid search)
+#SBATCH -c 4                            # 4 processors
 #SBATCH --mem=32GB                      # 32GB memory
+#SBATCH --gpus=1                        # 1 GPU
 #SBATCH -N 1                            # 1 Node
 
 # Exit on any error
@@ -40,13 +41,14 @@ echo "Python interpreter: $(which python)"
 echo "Python version: $(python --version)"
 echo "Virtual environment location: $VIRTUAL_ENV"
 
-# Set CPU optimization environment variables
-export OMP_NUM_THREADS=8
-export MKL_NUM_THREADS=8
-export OPENBLAS_NUM_THREADS=8
-export NUMEXPR_NUM_THREADS=8
+# Set CPU optimization environment variables for GPU node
+export OMP_NUM_THREADS=4
+export MKL_NUM_THREADS=4
+export OPENBLAS_NUM_THREADS=4
+export NUMEXPR_NUM_THREADS=4
 export SCIKIT_LEARN_ASSUME_FINITE=1  # Slight performance boost for scikit-learn
-echo "Set CPU threads to 8 for optimization"
+export CUDA_VISIBLE_DEVICES=0        # Use first GPU
+echo "Set CPU threads to 4 and GPU environment for optimization"
 
 # Verify Python and required packages
 python << 'END_PYTHON'
@@ -83,11 +85,18 @@ print(f"  StandardScaler: {StandardScaler}")
 print(f"  GridSearchCV: {GridSearchCV}")
 print(f"  KFold: {KFold}")
 
-# Check CPU configuration
+# Check CPU and GPU configuration
 print(f"\nCPU configuration:")
 print(f"  OMP_NUM_THREADS: {os.environ.get('OMP_NUM_THREADS', 'not set')}")
 print(f"  MKL_NUM_THREADS: {os.environ.get('MKL_NUM_THREADS', 'not set')}")
 print(f"  OPENBLAS_NUM_THREADS: {os.environ.get('OPENBLAS_NUM_THREADS', 'not set')}")
+
+print(f"\nGPU configuration:")
+print(f"  CUDA_VISIBLE_DEVICES: {os.environ.get('CUDA_VISIBLE_DEVICES', 'not set')}")
+print(f"  PyTorch CUDA available: {torch.cuda.is_available()}")
+if torch.cuda.is_available():
+    print(f"  GPU device: {torch.cuda.get_device_name(0)}")
+    print(f"  GPU memory: {torch.cuda.get_device_properties(0).total_memory / 1024**3:.1f} GB")
 END_PYTHON
 
 if [ $? -ne 0 ]; then
@@ -109,8 +118,8 @@ fi
 echo "Created scratch directory: $SCRATCH_DIR"
 
 # Check if required files exist
-if [ ! -f svr_hpc.py ]; then
-    echo "Error: svr_hpc.py not found in current directory"
+if [ ! -f python.py ]; then
+    echo "Error: python.py not found in current directory"
     exit 1
 fi
 
@@ -121,7 +130,7 @@ if [ ! -f combined.csv ]; then
 fi
 
 # Copy the script and data to the scratch directory
-cp svr_hpc.py $SCRATCH_DIR/
+cp python.py $SCRATCH_DIR/
 cp combined.csv $SCRATCH_DIR/
 echo "Copied Python script and data to scratch directory"
 
@@ -140,10 +149,18 @@ echo "Available memory: $(free -h | grep '^Mem:' | awk '{print $2}')"
 echo "Available processors: $(nproc)"
 echo "Load average: $(uptime | awk -F'load average:' '{print $2}')"
 
+# Print GPU information
+echo "GPU information:"
+if command -v nvidia-smi &> /dev/null; then
+    nvidia-smi --query-gpu=name,memory.total,memory.free --format=csv,noheader,nounits
+else
+    echo "nvidia-smi not available"
+fi
+
 # Run the training script and capture all output
 echo "Starting SVR Training..."
 echo "====================================="
-python svr_hpc.py 2>&1 | tee training_output.log
+python python.py 2>&1 | tee training_output.log
 
 # Check if the script executed successfully
 if [ $? -eq 0 ]; then

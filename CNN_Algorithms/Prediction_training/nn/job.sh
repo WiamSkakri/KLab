@@ -94,8 +94,8 @@ fi
 echo "Created scratch directory: $SCRATCH_DIR"
 
 # Check if required files exist
-if [ ! -f nn_hpc.py ]; then
-    echo "Error: nn_hpc.py not found in current directory"
+if [ ! -f python.py ]; then
+    echo "Error: python.py not found in current directory"
     exit 1
 fi
 
@@ -106,7 +106,7 @@ if [ ! -f combined.csv ]; then
 fi
 
 # Copy the script and data to the scratch directory
-cp nn_hpc.py $SCRATCH_DIR/
+cp python.py $SCRATCH_DIR/
 cp combined.csv $SCRATCH_DIR/
 echo "Copied Python script and data to scratch directory"
 
@@ -122,7 +122,7 @@ echo "CSV file rows: $(wc -l < combined.csv)"
 # Run the training script and capture all output
 echo "Starting Neural Network Training..."
 echo "====================================="
-python nn_hpc.py 2>&1 | tee training_output.log
+python python.py 2>&1 | tee training_output.log
 
 # Check if the script executed successfully
 if [ $? -eq 0 ]; then

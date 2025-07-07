@@ -1,13 +1,10 @@
+from sklearn.model_selection import RandomizedSearchCV
+from sklearn.ensemble import RandomForestRegressor
 import torch.optim as optim
 import torch.nn as nn
 from torch.utils.data import Dataset, DataLoader
 import torch
 import joblib
-from sklearn.ensemble import RandomForestRegressor
-from sklearn.svm import SVR
-from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
-from sklearn.model_selection import KFold, GridSearchCV, RandomizedSearchCV
-from sklearn.preprocessing import StandardScaler
 import pandas as pd
 import numpy as np
 import time
@@ -18,9 +15,24 @@ from datetime import datetime
 import warnings
 warnings.filterwarnings('ignore')
 
-# Sklearn imports
+# Try to import GPU-accelerated libraries first, fall back to CPU versions
+try:
+    from cuml.svm import SVR
+    from cuml.model_selection import GridSearchCV
+    from cuml.preprocessing import StandardScaler
+    from cuml.metrics import mean_squared_error, mean_absolute_error, r2_score
+    from sklearn.model_selection import KFold  # KFold not available in cuML
+    GPU_AVAILABLE = True
+    print("🚀 Using GPU-accelerated cuML libraries")
+except ImportError:
+    from sklearn.svm import SVR
+    from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
+    from sklearn.model_selection import KFold, GridSearchCV
+    from sklearn.preprocessing import StandardScaler
+    GPU_AVAILABLE = False
+    print("⚠️  cuML not available, using CPU-based sklearn libraries")
 
-# PyTorch imports (keeping minimal for compatibility)
+# Additional sklearn imports for fallback
 
 
 def setup_logging():
@@ -32,6 +44,14 @@ def setup_logging():
     print(f"Python Version: {sys.version}")
     print(f"Working Directory: {os.getcwd()}")
     print(f"Script: {os.path.basename(__file__)}")
+
+    # GPU information
+    print(f"PyTorch CUDA available: {torch.cuda.is_available()}")
+    if torch.cuda.is_available():
+        print(f"GPU Device: {torch.cuda.get_device_name(0)}")
+        print(
+            f"GPU Memory: {torch.cuda.get_device_properties(0).total_memory / 1024**3:.1f} GB")
+    print(f"Using GPU-accelerated libraries: {GPU_AVAILABLE}")
     print()
 
 
@@ -70,7 +90,21 @@ def load_and_preprocess_data(csv_file='combined.csv'):
         # Apply Standard Scaling to numerical columns only
         scaler = StandardScaler()
         df_scaled = df.copy()
-        df_scaled[numerical_cols] = scaler.fit_transform(df[numerical_cols])
+
+        if GPU_AVAILABLE and torch.cuda.is_available():
+            # Use GPU for scaling if available
+            print("Using GPU for data scaling...")
+            numerical_data = torch.tensor(
+                df[numerical_cols].values, dtype=torch.float32).cuda()
+            numerical_mean = numerical_data.mean(dim=0)
+            numerical_std = numerical_data.std(dim=0)
+            numerical_scaled = (
+                numerical_data - numerical_mean) / numerical_std
+            df_scaled[numerical_cols] = numerical_scaled.cpu().numpy()
+        else:
+            # Use standard CPU scaling
+            df_scaled[numerical_cols] = scaler.fit_transform(
+                df[numerical_cols])
 
         # Define feature columns
         feature_cols = [
@@ -177,17 +211,27 @@ def calculate_mape(y_true, y_pred):
 def create_svr_with_gridsearch(param_grid, cv_folds=3):
     """Create SVR with GridSearchCV"""
     # Create base SVR model
-    svr = SVR()
-
-    # Create GridSearchCV
-    grid_search = GridSearchCV(
-        estimator=svr,
-        param_grid=param_grid,
-        cv=cv_folds,           # Internal CV for hyperparameter tuning
-        scoring='neg_mean_squared_error',  # Use MSE for tuning
-        n_jobs=-1,             # Use all available cores
-        verbose=1              # Show progress
-    )
+    if GPU_AVAILABLE:
+        # cuML SVR doesn't need n_jobs parameter
+        svr = SVR()
+        grid_search = GridSearchCV(
+            estimator=svr,
+            param_grid=param_grid,
+            cv=cv_folds,           # Internal CV for hyperparameter tuning
+            scoring='neg_mean_squared_error',  # Use MSE for tuning
+            verbose=1              # Show progress
+        )
+    else:
+        # sklearn SVR with n_jobs for CPU parallelization
+        svr = SVR()
+        grid_search = GridSearchCV(
+            estimator=svr,
+            param_grid=param_grid,
+            cv=cv_folds,           # Internal CV for hyperparameter tuning
+            scoring='neg_mean_squared_error',  # Use MSE for tuning
+            n_jobs=-1,             # Use all available cores
+            verbose=1              # Show progress
+        )
 
     return grid_search
 
@@ -226,6 +270,13 @@ def train_svr_cross_validation(fold_data, param_grid):
     """Train SVR with K-Fold Cross Validation"""
     print(f"\n🚀 STARTING SVR CROSS VALIDATION TRAINING")
     print("=" * 80)
+
+    if GPU_AVAILABLE and torch.cuda.is_available():
+        print(f"🎯 Using GPU acceleration with cuML")
+        print(
+            f"GPU Memory: {torch.cuda.get_device_properties(0).total_memory / 1024**3:.1f} GB")
+    else:
+        print(f"🔧 Using CPU-based training with sklearn")
 
     # Store results from all folds
     fold_metrics = []
@@ -292,6 +343,10 @@ def train_svr_cross_validation(fold_data, param_grid):
         print(f"📊 Fold {fold} Results:")
         print_metrics(train_metrics, f"  Training")
         print_metrics(val_metrics, f"  Validation")
+
+        # Clear GPU cache if using CUDA
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
 
     # Calculate total training time
     total_time = time.time() - start_time
@@ -410,6 +465,8 @@ def main():
             fold_metrics, trained_models, total_time)
 
         print(f"\n🎉 SVR TRAINING COMPLETED SUCCESSFULLY!")
+        print(
+            f"🚀 Acceleration: {'GPU (cuML)' if GPU_AVAILABLE else 'CPU (sklearn)'}")
         print(
             f"⏱️  Total time: {total_time:.1f} seconds ({total_time/60:.1f} minutes)")
         print(
