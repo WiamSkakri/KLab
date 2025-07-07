@@ -195,6 +195,9 @@ Files Generated:
 - training_output.log: Complete training log
 - svr_training_results.csv: Cross-validation results
 - best_svr_model.pkl: Best trained SVR model
+- svr_main_evaluation.png: Main evaluation dashboard (8 plots)
+- svr_hyperparameter_analysis.png: Hyperparameter analysis (6 plots)
+- svr_detailed_metrics.png: Detailed metrics analysis (6 plots)
 - job_summary.txt: This summary
 
 System Information:
@@ -252,6 +255,7 @@ echo "  Training log: cat $RESULTS_DIR/training_output.log"
 echo "  Results CSV:  cat $RESULTS_DIR/svr_training_results.csv"
 echo "  Best model:   $RESULTS_DIR/best_svr_model.pkl"
 echo "  Job summary:  cat $RESULTS_DIR/job_summary.txt"
+echo "  Visualizations: open $RESULTS_DIR/*.png"
 echo ""
 echo "To submit this job, run:"
 echo "  sbatch job.sh" 

@@ -1,13 +1,10 @@
+from sklearn.model_selection import RandomizedSearchCV
+from sklearn.ensemble import RandomForestRegressor
 import torch.optim as optim
 import torch.nn as nn
 from torch.utils.data import Dataset, DataLoader
 import torch
 import joblib
-from sklearn.ensemble import RandomForestRegressor
-from sklearn.svm import SVR
-from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
-from sklearn.model_selection import KFold, GridSearchCV, RandomizedSearchCV
-from sklearn.preprocessing import StandardScaler
 import pandas as pd
 import numpy as np
 import time
@@ -18,9 +15,24 @@ from datetime import datetime
 import warnings
 warnings.filterwarnings('ignore')
 
-# Sklearn imports
+# Try to import GPU-accelerated libraries first, fall back to CPU versions
+try:
+    from cuml.svm import SVR
+    from cuml.model_selection import GridSearchCV
+    from cuml.preprocessing import StandardScaler
+    from cuml.metrics import mean_squared_error, mean_absolute_error, r2_score
+    from sklearn.model_selection import KFold  # KFold not available in cuML
+    GPU_AVAILABLE = True
+    print("🚀 Using GPU-accelerated cuML libraries")
+except ImportError:
+    from sklearn.svm import SVR
+    from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
+    from sklearn.model_selection import KFold, GridSearchCV
+    from sklearn.preprocessing import StandardScaler
+    GPU_AVAILABLE = False
+    print("⚠️  cuML not available, using CPU-based sklearn libraries")
 
-# PyTorch imports (keeping minimal for compatibility)
+# Additional sklearn imports for fallback
 
 
 def setup_logging():
@@ -32,6 +44,14 @@ def setup_logging():
     print(f"Python Version: {sys.version}")
     print(f"Working Directory: {os.getcwd()}")
     print(f"Script: {os.path.basename(__file__)}")
+
+    # GPU information
+    print(f"PyTorch CUDA available: {torch.cuda.is_available()}")
+    if torch.cuda.is_available():
+        print(f"GPU Device: {torch.cuda.get_device_name(0)}")
+        print(
+            f"GPU Memory: {torch.cuda.get_device_properties(0).total_memory / 1024**3:.1f} GB")
+    print(f"Using GPU-accelerated libraries: {GPU_AVAILABLE}")
     print()
 
 
@@ -70,7 +90,21 @@ def load_and_preprocess_data(csv_file='combined.csv'):
         # Apply Standard Scaling to numerical columns only
         scaler = StandardScaler()
         df_scaled = df.copy()
-        df_scaled[numerical_cols] = scaler.fit_transform(df[numerical_cols])
+
+        if GPU_AVAILABLE and torch.cuda.is_available():
+            # Use GPU for scaling if available
+            print("Using GPU for data scaling...")
+            numerical_data = torch.tensor(
+                df[numerical_cols].values, dtype=torch.float32).cuda()
+            numerical_mean = numerical_data.mean(dim=0)
+            numerical_std = numerical_data.std(dim=0)
+            numerical_scaled = (
+                numerical_data - numerical_mean) / numerical_std
+            df_scaled[numerical_cols] = numerical_scaled.cpu().numpy()
+        else:
+            # Use standard CPU scaling
+            df_scaled[numerical_cols] = scaler.fit_transform(
+                df[numerical_cols])
 
         # Define feature columns
         feature_cols = [
@@ -177,17 +211,27 @@ def calculate_mape(y_true, y_pred):
 def create_svr_with_gridsearch(param_grid, cv_folds=3):
     """Create SVR with GridSearchCV"""
     # Create base SVR model
-    svr = SVR()
-
-    # Create GridSearchCV
-    grid_search = GridSearchCV(
-        estimator=svr,
-        param_grid=param_grid,
-        cv=cv_folds,           # Internal CV for hyperparameter tuning
-        scoring='neg_mean_squared_error',  # Use MSE for tuning
-        n_jobs=-1,             # Use all available cores
-        verbose=1              # Show progress
-    )
+    if GPU_AVAILABLE:
+        # cuML SVR doesn't need n_jobs parameter
+        svr = SVR()
+        grid_search = GridSearchCV(
+            estimator=svr,
+            param_grid=param_grid,
+            cv=cv_folds,           # Internal CV for hyperparameter tuning
+            scoring='neg_mean_squared_error',  # Use MSE for tuning
+            verbose=1              # Show progress
+        )
+    else:
+        # sklearn SVR with n_jobs for CPU parallelization
+        svr = SVR()
+        grid_search = GridSearchCV(
+            estimator=svr,
+            param_grid=param_grid,
+            cv=cv_folds,           # Internal CV for hyperparameter tuning
+            scoring='neg_mean_squared_error',  # Use MSE for tuning
+            n_jobs=-1,             # Use all available cores
+            verbose=1              # Show progress
+        )
 
     return grid_search
 
@@ -227,6 +271,13 @@ def train_svr_cross_validation(fold_data, param_grid):
     """Train SVR with K-Fold Cross Validation"""
     print(f"\n🚀 STARTING SVR CROSS VALIDATION TRAINING")
     print("=" * 80)
+
+    if GPU_AVAILABLE and torch.cuda.is_available():
+        print(f"🎯 Using GPU acceleration with cuML")
+        print(
+            f"GPU Memory: {torch.cuda.get_device_properties(0).total_memory / 1024**3:.1f} GB")
+    else:
+        print(f"🔧 Using CPU-based training with sklearn")
 
     # Store results from all folds
     fold_metrics = []
@@ -282,7 +333,7 @@ def train_svr_cross_validation(fold_data, param_grid):
             'val_actuals': val_metrics['actuals'],
             'train_metrics': train_metrics,
             'val_metrics': val_metrics,
-            'grid_search_results': svr_grid.cv_results_,
+            'grid_search_results': svr_grid.cv_results_ if hasattr(svr_grid, 'cv_results_') else None,
             'training_time': fold_training_time
         }
         all_fold_results.append(fold_details)
@@ -310,6 +361,10 @@ def train_svr_cross_validation(fold_data, param_grid):
         print(f"📊 Fold {fold} Results:")
         print_metrics(train_metrics, f"  Training")
         print_metrics(val_metrics, f"  Validation")
+
+        # Clear GPU cache if using CUDA
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
 
     # Calculate total training time
     total_time = time.time() - start_time
@@ -405,7 +460,7 @@ def analyze_and_save_results(fold_metrics, trained_models, total_time, all_fold_
 
 
 def create_comprehensive_plots(fold_metrics, all_fold_results, summary):
-    """Create comprehensive evaluation plots for SVR model"""
+    """Create comprehensive evaluation plots for GPU-accelerated SVR model"""
     print(f"\n📊 CREATING COMPREHENSIVE EVALUATION PLOTS")
     print("=" * 80)
 
@@ -414,14 +469,24 @@ def create_comprehensive_plots(fold_metrics, all_fold_results, summary):
     best_fold_details = all_fold_results[best_fold_idx]
 
     # Collect all predictions and actuals for overall analysis
+    # Handle both numpy arrays and cuml device arrays
+    def to_numpy(arr):
+        """Convert cuML or numpy array to numpy array"""
+        if hasattr(arr, 'to_output'):  # cuML array
+            return arr.to_output('numpy')
+        elif hasattr(arr, 'cpu'):  # PyTorch tensor
+            return arr.cpu().numpy()
+        else:  # Already numpy
+            return np.array(arr)
+
     all_train_predictions = np.concatenate(
-        [fold['train_predictions'] for fold in all_fold_results])
+        [to_numpy(fold['train_predictions']) for fold in all_fold_results])
     all_train_actuals = np.concatenate(
-        [fold['train_actuals'] for fold in all_fold_results])
+        [to_numpy(fold['train_actuals']) for fold in all_fold_results])
     all_val_predictions = np.concatenate(
-        [fold['val_predictions'] for fold in all_fold_results])
+        [to_numpy(fold['val_predictions']) for fold in all_fold_results])
     all_val_actuals = np.concatenate(
-        [fold['val_actuals'] for fold in all_fold_results])
+        [to_numpy(fold['val_actuals']) for fold in all_fold_results])
 
     # Calculate residuals
     train_residuals = all_train_actuals - all_train_predictions
@@ -445,7 +510,8 @@ def create_comprehensive_plots(fold_metrics, all_fold_results, summary):
     plt.grid(True, alpha=0.3)
 
     # Add R² score
-    train_r2 = r2_score(all_train_actuals, all_train_predictions)
+    from sklearn.metrics import r2_score as sklearn_r2_score
+    train_r2 = sklearn_r2_score(all_train_actuals, all_train_predictions)
     plt.text(0.05, 0.95, f'R² = {train_r2:.4f}', transform=plt.gca().transAxes,
              bbox=dict(boxstyle='round', facecolor='lightblue', alpha=0.8))
 
@@ -462,7 +528,7 @@ def create_comprehensive_plots(fold_metrics, all_fold_results, summary):
     plt.grid(True, alpha=0.3)
 
     # Add R² score
-    val_r2 = r2_score(all_val_actuals, all_val_predictions)
+    val_r2 = sklearn_r2_score(all_val_actuals, all_val_predictions)
     plt.text(0.05, 0.95, f'R² = {val_r2:.4f}', transform=plt.gca().transAxes,
              bbox=dict(boxstyle='round', facecolor='lightcoral', alpha=0.8))
 
@@ -549,25 +615,31 @@ def create_comprehensive_plots(fold_metrics, all_fold_results, summary):
     plt.title('Training Time by Fold')
     plt.grid(True, alpha=0.3, axis='y')
 
-    # 1.8: Summary Statistics
+    # 1.8: Summary Statistics with GPU info
     plt.subplot(2, 4, 8)
+    acceleration_type = "GPU (cuML)" if GPU_AVAILABLE else "CPU (sklearn)"
     plt.text(0.1, 0.9, "Cross-Validation Summary",
              fontsize=12, fontweight='bold')
+    plt.text(0.1, 0.8, f"Acceleration: {acceleration_type}",
+             fontsize=10, fontweight='bold', color='blue')
     plt.text(
-        0.1, 0.8, f"Avg Val MAPE: {summary['avg_val_mape']:.2f}% ± {summary['std_val_mape']:.2f}%", fontsize=10)
+        0.1, 0.7, f"Avg Val MAPE: {summary['avg_val_mape']:.2f}% ± {summary['std_val_mape']:.2f}%", fontsize=10)
     plt.text(
-        0.1, 0.7, f"Avg Val R²: {summary['avg_val_r2']:.4f} ± {summary['std_val_r2']:.4f}", fontsize=10)
+        0.1, 0.6, f"Avg Val R²: {summary['avg_val_r2']:.4f} ± {summary['std_val_r2']:.4f}", fontsize=10)
     plt.text(
-        0.1, 0.6, f"Best Fold: {summary['best_fold']} ({summary['best_val_mape']:.2f}%)", fontsize=10)
+        0.1, 0.5, f"Best Fold: {summary['best_fold']} ({summary['best_val_mape']:.2f}%)", fontsize=10)
     plt.text(
-        0.1, 0.5, f"Total Time: {summary['total_time']/60:.1f} minutes", fontsize=10)
+        0.1, 0.4, f"Total Time: {summary['total_time']/60:.1f} minutes", fontsize=10)
     plt.text(
-        0.1, 0.4, f"Avg Time/Fold: {summary['avg_training_time']:.1f}s", fontsize=10)
+        0.1, 0.3, f"Avg Time/Fold: {summary['avg_training_time']:.1f}s", fontsize=10)
+    if torch.cuda.is_available():
+        plt.text(
+            0.1, 0.2, f"GPU: {torch.cuda.get_device_name(0)}", fontsize=9, color='green')
     plt.axis('off')
 
     plt.tight_layout()
-    plt.savefig('svr_main_evaluation.png', dpi=300, bbox_inches='tight')
-    print("✅ Main evaluation dashboard saved to: svr_main_evaluation.png")
+    plt.savefig('svr_gpu_main_evaluation.png', dpi=300, bbox_inches='tight')
+    print("✅ Main evaluation dashboard saved to: svr_gpu_main_evaluation.png")
 
     # ==========================================
     # PLOT 2: HYPERPARAMETER ANALYSIS
@@ -640,13 +712,15 @@ def create_comprehensive_plots(fold_metrics, all_fold_results, summary):
     plt.title('C Parameter vs MAPE')
     plt.grid(True, alpha=0.3)
 
-    # 2.6: Best parameters summary table
+    # 2.6: GPU vs CPU comparison info (if available)
     plt.subplot(2, 3, 6)
-    param_text = "Best Parameters by Fold:\n\n"
+    param_text = f"Acceleration: {acceleration_type}\n\n"
+    param_text += "Best Parameters by Fold:\n\n"
     for i, (fold_metric, param) in enumerate(zip(fold_metrics, all_params)):
         fold_num = fold_metric['fold']
         mape = fold_metric['val_mape']
-        param_text += f"Fold {fold_num} (MAPE: {mape:.2f}%):\n"
+        time = fold_metric['training_time']
+        param_text += f"Fold {fold_num} (MAPE: {mape:.2f}%, {time:.1f}s):\n"
         param_text += f"  Kernel: {param.get('kernel', 'N/A')}\n"
         param_text += f"  C: {param.get('C', 'N/A')}\n"
         param_text += f"  Gamma: {param.get('gamma', 'N/A')}\n"
@@ -657,12 +731,12 @@ def create_comprehensive_plots(fold_metrics, all_fold_results, summary):
     plt.axis('off')
 
     plt.tight_layout()
-    plt.savefig('svr_hyperparameter_analysis.png',
+    plt.savefig('svr_gpu_hyperparameter_analysis.png',
                 dpi=300, bbox_inches='tight')
-    print("✅ Hyperparameter analysis saved to: svr_hyperparameter_analysis.png")
+    print("✅ Hyperparameter analysis saved to: svr_gpu_hyperparameter_analysis.png")
 
     # ==========================================
-    # PLOT 3: DETAILED METRICS ANALYSIS
+    # PLOT 3: GPU PERFORMANCE ANALYSIS
     # ==========================================
     plt.figure(figsize=(15, 10))
 
@@ -678,7 +752,7 @@ def create_comprehensive_plots(fold_metrics, all_fold_results, summary):
             label='Val MAPE', alpha=0.8, color='red')
     plt.xlabel('Fold')
     plt.ylabel('MAPE (%)')
-    plt.title('MAPE Comparison Across Folds')
+    plt.title(f'MAPE Comparison - {acceleration_type}')
     plt.xticks(x, folds)
     plt.legend()
     plt.grid(True, alpha=0.3, axis='y')
@@ -693,25 +767,24 @@ def create_comprehensive_plots(fold_metrics, all_fold_results, summary):
             label='Val R²', alpha=0.8, color='red')
     plt.xlabel('Fold')
     plt.ylabel('R² Score')
-    plt.title('R² Comparison Across Folds')
+    plt.title(f'R² Comparison - {acceleration_type}')
     plt.xticks(x, folds)
     plt.legend()
     plt.grid(True, alpha=0.3, axis='y')
 
-    # 3.3: MAE comparison across folds
+    # 3.3: Training Time Analysis
     plt.subplot(2, 3, 3)
-    train_maes = [f['train_mae'] for f in fold_metrics]
-    val_maes = [f['val_mae'] for f in fold_metrics]
-    plt.bar(x - width/2, train_maes, width,
-            label='Train MAE', alpha=0.8, color='blue')
-    plt.bar(x + width/2, val_maes, width,
-            label='Val MAE', alpha=0.8, color='red')
+    plt.bar(folds, training_times, color='lightgreen', alpha=0.8)
     plt.xlabel('Fold')
-    plt.ylabel('MAE')
-    plt.title('MAE Comparison Across Folds')
-    plt.xticks(x, folds)
-    plt.legend()
+    plt.ylabel('Training Time (seconds)')
+    plt.title(f'Training Time per Fold - {acceleration_type}')
     plt.grid(True, alpha=0.3, axis='y')
+
+    # Add average line
+    avg_time = np.mean(training_times)
+    plt.axhline(y=avg_time, color='red', linestyle='--', linewidth=2,
+                label=f'Average: {avg_time:.1f}s')
+    plt.legend()
 
     # 3.4: Residuals distribution comparison
     plt.subplot(2, 3, 4)
@@ -727,7 +800,6 @@ def create_comprehensive_plots(fold_metrics, all_fold_results, summary):
 
     # 3.5: Performance vs Training Time
     plt.subplot(2, 3, 5)
-    training_times = [f['training_time'] for f in fold_metrics]
     plt.scatter(training_times, val_mapes, alpha=0.7, s=50, color='purple')
     plt.xlabel('Training Time (seconds)')
     plt.ylabel('Validation MAPE (%)')
@@ -742,10 +814,10 @@ def create_comprehensive_plots(fold_metrics, all_fold_results, summary):
     # 3.6: Best fold detailed analysis
     plt.subplot(2, 3, 6)
     best_fold_num = fold_metrics[best_fold_idx]['fold']
-    best_train_pred = best_fold_details['train_predictions']
-    best_train_actual = best_fold_details['train_actuals']
-    best_val_pred = best_fold_details['val_predictions']
-    best_val_actual = best_fold_details['val_actuals']
+    best_train_pred = to_numpy(best_fold_details['train_predictions'])
+    best_train_actual = to_numpy(best_fold_details['train_actuals'])
+    best_val_pred = to_numpy(best_fold_details['val_predictions'])
+    best_val_actual = to_numpy(best_fold_details['val_actuals'])
 
     plt.scatter(best_val_actual, best_val_pred, alpha=0.6,
                 s=15, color='darkgreen', label='Validation')
@@ -758,33 +830,34 @@ def create_comprehensive_plots(fold_metrics, all_fold_results, summary):
 
     plt.xlabel('Actual Values')
     plt.ylabel('Predicted Values')
-    plt.title(f'Best Fold {best_fold_num} - Detailed View')
+    plt.title(f'Best Fold {best_fold_num} - {acceleration_type}')
     plt.legend()
     plt.grid(True, alpha=0.3)
 
     plt.tight_layout()
-    plt.savefig('svr_detailed_metrics.png', dpi=300, bbox_inches='tight')
-    print("✅ Detailed metrics analysis saved to: svr_detailed_metrics.png")
+    plt.savefig('svr_gpu_performance_analysis.png',
+                dpi=300, bbox_inches='tight')
+    print("✅ GPU performance analysis saved to: svr_gpu_performance_analysis.png")
 
     # Print summary of generated plots
     print(f"\n📊 VISUALIZATION SUMMARY")
     print("=" * 50)
-    print("Generated SVR evaluation plots:")
-    print("  1. svr_main_evaluation.png - Main evaluation dashboard (8 plots)")
+    print("Generated GPU-accelerated SVR evaluation plots:")
+    print("  1. svr_gpu_main_evaluation.png - Main evaluation dashboard (8 plots)")
     print("     • Training/Validation predictions vs actual")
     print("     • Residual analysis")
     print("     • Cross-validation results")
     print("     • Error distribution")
     print("     • Performance metrics comparison")
-    print("     • Training times and summary statistics")
-    print("  2. svr_hyperparameter_analysis.png - Hyperparameter analysis (6 plots)")
+    print("     • Training times and GPU/CPU summary statistics")
+    print("  2. svr_gpu_hyperparameter_analysis.png - Hyperparameter analysis (6 plots)")
     print("     • Parameter distributions across folds")
     print("     • Parameter vs performance correlations")
-    print("     • Best parameters summary")
-    print("  3. svr_detailed_metrics.png - Detailed metrics analysis (6 plots)")
+    print("     • GPU/CPU acceleration details")
+    print("  3. svr_gpu_performance_analysis.png - Performance analysis (6 plots)")
     print("     • Metric comparisons across all folds")
+    print("     • Training time analysis with acceleration info")
     print("     • Residual distributions")
-    print("     • Performance vs training time")
     print("     • Best fold detailed analysis")
 
     return best_fold_idx, best_fold_details
@@ -814,10 +887,11 @@ def main():
             fold_metrics, trained_models, total_time, all_fold_results)
 
         # Create comprehensive plots
-        best_fold_idx, best_fold_details = create_comprehensive_plots(
-            fold_metrics, all_fold_results, summary)
+        create_comprehensive_plots(fold_metrics, all_fold_results, summary)
 
         print(f"\n🎉 SVR TRAINING COMPLETED SUCCESSFULLY!")
+        print(
+            f"🚀 Acceleration: {'GPU (cuML)' if GPU_AVAILABLE else 'CPU (sklearn)'}")
         print(
             f"⏱️  Total time: {total_time:.1f} seconds ({total_time/60:.1f} minutes)")
         print(
@@ -827,9 +901,9 @@ def main():
         print(f"\n📁 Output files generated:")
         print(f"  - svr_training_results.csv: Detailed results for each fold")
         print(f"  - best_svr_model.pkl: Best trained model")
-        print(f"  - svr_main_evaluation.png: Main evaluation dashboard (8 plots)")
-        print(f"  - svr_hyperparameter_analysis.png: Hyperparameter analysis (6 plots)")
-        print(f"  - svr_detailed_metrics.png: Detailed metrics analysis (6 plots)")
+        print(f"  - svr_gpu_main_evaluation.png: Main evaluation dashboard (8 plots)")
+        print(f"  - svr_gpu_hyperparameter_analysis.png: Hyperparameter analysis (6 plots)")
+        print(f"  - svr_gpu_performance_analysis.png: GPU performance analysis (6 plots)")
 
         return 0
 
