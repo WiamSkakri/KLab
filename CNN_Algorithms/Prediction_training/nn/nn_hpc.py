@@ -13,11 +13,10 @@ import time
 import sys
 from datetime import datetime
 
-# Set up logging and output
+# Function to print with timestamp
 
 
 def print_with_timestamp(message):
-    """Print message with timestamp for better logging"""
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     print(f"[{timestamp}] {message}")
     sys.stdout.flush()
@@ -37,7 +36,7 @@ if torch.cuda.is_available():
 else:
     print_with_timestamp("CUDA not available, using CPU")
 
-# Set random seeds for reproducibility
+# Set random seeds for reproducibility when we train agains, that way we know that the changes we make are not due to random variations but to the code
 torch.manual_seed(42)
 np.random.seed(42)
 if torch.cuda.is_available():
@@ -45,6 +44,7 @@ if torch.cuda.is_available():
 
 # File path handling for HPC
 csv_file = 'combined.csv'
+# in case the file is not found, we print the error and the current directory and the available files
 if not os.path.exists(csv_file):
     print_with_timestamp(f"Error: {csv_file} not found in current directory")
     print_with_timestamp(f"Current directory: {os.getcwd()}")
@@ -53,6 +53,7 @@ if not os.path.exists(csv_file):
         print(f"  - {file}")
     sys.exit(1)
 
+# If the file is found, we print the message and the shape of the data
 print_with_timestamp(f"Loading data from {csv_file}")
 df = pd.read_csv(csv_file)
 print_with_timestamp(f"Data loaded successfully. Shape: {df.shape}")
@@ -76,6 +77,7 @@ df_scaled[numerical_cols] = scaler.fit_transform(df[numerical_cols])
 feature_cols = [col for col in df_scaled.columns if col != 'Execution_Time_ms']
 target_col = 'Execution_Time_ms'
 
+# Printing the number of features and the feature columns
 print_with_timestamp(f"Features: {len(feature_cols)}")
 print_with_timestamp(f"Feature columns: {feature_cols}")
 
@@ -86,7 +88,12 @@ y = df_scaled[target_col]
 print_with_timestamp(
     f"Data preprocessing complete. Features shape: {X.shape}, Target shape: {y.shape}")
 
-# Dataset class optimized for HPC
+
+# Pytorch Dataset wrapper that prepare the data for the model
+"""
+Pandas DataFrame → CNNExecutionDataset → DataLoader → Neural Network
+     (CSV data)      (PyTorch tensors)    (batches)    (training)
+"""
 
 
 class CNNExecutionDataset(Dataset):
@@ -95,13 +102,18 @@ class CNNExecutionDataset(Dataset):
         X: DataFrame with features (one-hot encoded + scaled numerical)
         y: Series with target values (execution times)
         """
+        # FloatTensor is a Pytorch tensor that is a 2D tensor of floats
+        # easily transfered to the GPU
         self.X = torch.FloatTensor(X.values)
         self.y = torch.FloatTensor(y.values)
 
     def __len__(self):
+        # the length of the dataset is the number of rows in the dataframe
+        # required by the Pytorch Dataset class for data processing
         return len(self.X)
 
     def __getitem__(self, idx):
+        # returns the features and the target for the given index
         return self.X[idx], self.y[idx]
 
 
@@ -131,6 +143,10 @@ for fold, (train_idx, val_idx) in enumerate(kf.split(X), 1):
     val_dataset = CNNExecutionDataset(X_val_fold, y_val_fold)
 
     # Create data loaders with pin_memory for GPU optimization
+    # batch_size is the number of samples to be processed in each batch
+    # shuffle is a boolean that indicates if the data should be shuffled before each epoch
+    # pin_memory is a boolean that indicates if the data should be pinned to the CPU memory
+    # num_workers is the number of workers to be used to load the data, it is 0 here to not use multiple threads in the HPC
     train_loader = DataLoader(train_dataset, batch_size=64, shuffle=True,
                               pin_memory=True, num_workers=0)
     val_loader = DataLoader(val_dataset, batch_size=64, shuffle=False,
@@ -156,8 +172,17 @@ class CNNExecutionPredictor(nn.Module):
         super(CNNExecutionPredictor, self).__init__()
 
         # Enhanced architecture for better GPU utilization
+
+        # Transforms the input features into a 256-dimensional vector
+        # A wide first layer is used to capture complex patterns in the data
         self.layer1 = nn.Linear(input_size, 256)
+        # Batch normalization is used to stabilize the training process
+        # by normalizing the input to have zero mean and unit variance
+        # Avoids vanishing gradients problem and exploding gradients problem
         self.batch_norm1 = nn.BatchNorm1d(256)
+        # The second layer reduces the dimensionality to 128
+        # This is a common practice to reduce the computational complexity
+        # and improve the model's generalization
         self.layer2 = nn.Linear(256, 128)
         self.batch_norm2 = nn.BatchNorm1d(128)
         self.layer3 = nn.Linear(128, 64)
@@ -167,6 +192,9 @@ class CNNExecutionPredictor(nn.Module):
 
         # Activation and regularization
         self.relu = nn.ReLU()
+        # Randomly dropping out 30% of the neurons to prevent overfitting
+        # Active during training, inactive during inference
+        # Avoids vanishing gradients problem
         self.dropout = nn.Dropout(dropout_rate)
 
     def forward(self, x):
@@ -268,7 +296,7 @@ for fold_data in fold_results:
     train_loader = fold_data['train_loader']
     val_loader = fold_data['val_loader']
 
-    print_with_timestamp(f"🔄 Starting FOLD {fold}")
+    print_with_timestamp(f"Starting FOLD {fold}")
     print_with_timestamp("-" * 40)
 
     # Track fold training time
@@ -400,7 +428,7 @@ for fold_data in fold_results:
 
     # Print fold results
     print_with_timestamp(
-        f"  ✅ Fold {fold} Complete in {fold_time:.2f} seconds")
+        f"  Fold {fold} Complete in {fold_time:.2f} seconds")
     print_with_timestamp(
         f"     Train MAPE: {train_metrics['mape']:.2f}% | Val MAPE: {val_metrics['mape']:.2f}%")
     print_with_timestamp(
