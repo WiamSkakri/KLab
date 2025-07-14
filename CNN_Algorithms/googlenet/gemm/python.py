@@ -175,8 +175,9 @@ def main():
     # Test with each input size
     for input_size in input_sizes:
         print(f"\nTesting with input size {input_size}x{input_size}")
-        # Create input on CPU to avoid device mismatch with ai3
-        input_data = torch.randn(batch_size, 3, input_size, input_size)
+        # Create input data on the same device as the model
+        input_data = torch.randn(
+            batch_size, 3, input_size, input_size).to(device)
 
         # Warmup run
         print("Running warmup...")
