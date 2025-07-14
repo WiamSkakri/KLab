@@ -179,15 +179,15 @@ def main():
     ai3.swap_conv2d(model, algorithm)
     print("Algorithm applied successfully")
 
-    # Move model to GPU and set to evaluation mode (after ai3 swap)
-    print("Moving model to CUDA after ai3 swap...")
-    model = model.to(device)
+    # Don't force all parameters to device - let AI3 handle mixed device placement
+    print("Checking device placement after ai3 swap...")
 
-    # Move ai3 Conv2D params to device
-    move_ai3_conv2d_params_to_device(model, torch.device(device))
+    # Optional: Only move specific ai3 parameters if needed
+    # Commenting out to allow AI3 mixed device usage
+    # move_ai3_conv2d_params_to_device(model, torch.device(device))
 
-    # Print all parameter and buffer devices after swap and .to(device)
-    print("\nDevices of all parameters after AI3 and .to(device):")
+    # Print all parameter and buffer devices after AI3 swap
+    print("\nDevices of all parameters after AI3 conversion:")
     for name, param in model.named_parameters():
         print(f"PARAM {name}: {param.device}")
     for name, buf in model.named_buffers():

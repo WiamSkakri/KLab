@@ -193,9 +193,7 @@ def main():
     model = models.densenet161(weights=models.DenseNet161_Weights.DEFAULT)
     model.eval()
 
-    # Move model to device before ai3 swap
-    model = model.to(device_obj)
-
+    # Don't force device placement before ai3 swap - let AI3 handle it
     # Count original Conv2d layers before swapping
     original_conv_count = 0
     for name, module in model.named_modules():
@@ -207,8 +205,7 @@ def main():
     print(f"Swapping Conv2d layers with ai3 {algorithm} algorithm...")
     ai3.swap_conv2d(model, algorithm)
 
-    # Ensure model is on correct device after swap
-    model = model.to(device_obj)
+    # Don't force device placement after ai3 swap - AI3 handles mixed device usage
 
     # Verify the swap worked
     ai3_conv_count = 0
