@@ -1,134 +1,38 @@
 #!/bin/bash
-#SBATCH -J googlenet_implicit_precomp_gemm_gpu      # Job name
-#SBATCH -o googlenet_implicit_precomp_gemm_gpu.out  # Output file
-#SBATCH --time=20:00:00                             # 20 hours of wall time
-#SBATCH -p gpu                                      # GPU partition
-#SBATCH -A sxk1942                                 # Account/Project ID
-#SBATCH -c 4                                       # 4 processors
-#SBATCH --mem=32GB                                 # 32GB memory
-#SBATCH --gpus=1                                   # Request 1 GPU
+#SBATCH --account=sxk1942
+#SBATCH --job-name=googlenet_implicit_precomp_gemm
+#SBATCH --output=googlenet_implicit_precomp_gemm_%j.out
+#SBATCH --error=googlenet_implicit_precomp_gemm_%j.err
+#SBATCH --time=20:00:00
+#SBATCH --partition=gpu
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=1
+#SBATCH --cpus-per-task=4
+#SBATCH --mem=32G
+#SBATCH --gres=gpu:1
 
-# Exit on any error
-set -e
+echo "=========================================="
+echo "SLURM job ID: $SLURB_JOB_ID"
+echo "SLURM job name: $SLURM_JOB_NAME"
+echo "Start time: $(date)"
+echo "Working directory: $(pwd)"
+echo "=========================================="
 
-# Print debug information
-echo "Debug Information:"
-echo "Current directory: $(pwd)"
-echo "Contents of current directory:"
-ls -la
-echo "SLURM_SUBMIT_DIR: $SLURM_SUBMIT_DIR"
-echo "HOME directory: $HOME"
-echo "PFSDIR: $PFSDIR"
+# Environment setup
+source activate ai3_env
 
-# Check if virtual environment exists
-if [ ! -d "$HOME/ai3_env" ]; then
-    echo "Error: Virtual environment not found at $HOME/ai3_env"
-    exit 1
-fi
-
-# Activate the existing ai3_env virtual environment
-echo "Activating ai3_env virtual environment"
-source $HOME/ai3_env/bin/activate || {
-    echo "Error: Failed to activate ai3_env virtual environment"
-    exit 1
-}
-
-# Print environment information
-echo "Python interpreter: $(which python)"
+# Display environment information
 echo "Python version: $(python --version)"
-echo "Virtual environment location: $VIRTUAL_ENV"
+echo "CUDA version: $(nvcc --version)"
+echo "Hostname: $(hostname)"
 
-# Check CUDA availability and print GPU information
-echo "Checking CUDA and GPU configuration..."
-nvidia-smi
-echo "-----------------------------------"
+# Load environment modules if needed
+module load cuda
 
-# Verify Python and required packages, including CUDA support
-python << 'END_PYTHON'
-import sys
-import torch
-import torchvision
-import ai3
+# Run the GoogleNet Implicit Precomputed GEMM implementation
+echo "Running GoogleNet Implicit Precomputed GEMM implementation..."
+python python.py
 
-print(f"Python path: {sys.executable}")
-print(f"PyTorch version: {torch.__version__}")
-print(f"Torchvision version: {torchvision.__version__}")
-print(f"CUDA available: {torch.cuda.is_available()}")
-print(f"CUDA version: {torch.version.cuda}")
-if torch.cuda.is_available():
-    print(f"GPU device: {torch.cuda.get_device_name(0)}")
-    print(f"Number of GPUs: {torch.cuda.device_count()}")
-if hasattr(ai3, '__version__'):
-    print(f"AI3 version: {ai3.__version__}")
-else:
-    print("AI3 version: version not available")
-END_PYTHON
-
-if [ $? -ne 0 ]; then
-    echo "Error: Failed to import required packages or CUDA not available"
-    exit 1
-fi
-
-# Create timestamp for unique results directory
-TIMESTAMP=$(date +%Y%m%d_%H%M%S)
-RESULTS_DIR=$SLURM_SUBMIT_DIR/results_${TIMESTAMP}
-mkdir -p $RESULTS_DIR
-
-# Create a directory in scratch for the job
-SCRATCH_DIR=$PFSDIR/googlenet_implicit_precomp_gemm_gpu_${SLURM_JOB_ID}
-if ! mkdir -p $SCRATCH_DIR; then
-    echo "Failed to create scratch directory: $SCRATCH_DIR"
-    exit 1
-fi
-echo "Created scratch directory: $SCRATCH_DIR"
-
-# Check if Python script exists
-if [ ! -f python.py ]; then
-    echo "Error: python.py not found in current directory"
-    exit 1
-fi
-
-# Copy the test script to the scratch directory
-cp python.py $SCRATCH_DIR/
-echo "Copied Python script to scratch directory"
-
-# Change to the scratch directory
-cd $SCRATCH_DIR
-echo "Changed to scratch directory"
-
-# Run the test script and capture all output
-echo "Running GoogLeNet Implicit Precomputed GEMM performance test..."
-python python.py 2>&1 | tee python_output.log
-
-# Check if the script executed successfully
-if [ $? -eq 0 ]; then
-    echo "GoogLeNet Implicit Precomputed GEMM script executed successfully"
-else
-    echo "GoogLeNet Implicit Precomputed GEMM script failed with exit code $?"
-    # Copy logs even if script failed
-    cp python_output.log $RESULTS_DIR/
-    exit 1
-fi
-
-# Copy results to the timestamped results directory
-echo "Copying results to: $RESULTS_DIR"
-cp -ru *.csv python_output.log $RESULTS_DIR/
-
-# Print summary of generated files
-echo "Generated files:"
-ls -la $RESULTS_DIR/
-
-# Cleanup scratch directory
-if [ -d "$SCRATCH_DIR" ]; then
-    rm -rf $SCRATCH_DIR
-    echo "Cleaned up scratch directory"
-fi
-
-# Deactivate virtual environment
-deactivate
-
-echo "GoogLeNet Implicit Precomputed GEMM job completed successfully. Results are in: $RESULTS_DIR"
-echo "Expected output files:"
-echo "  - GoogLeNet_implicit_precomp_gemm_cuda_overall.csv"
-echo "  - GoogLeNet_implicit_precomp_gemm_cuda_layers.csv" 
-echo "  - python_output.log" 
+echo "=========================================="
+echo "Job completed at: $(date)"
+echo "==========================================" 

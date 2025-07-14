@@ -179,20 +179,20 @@ def print_model_structure(model, prefix=''):
 
 
 def main():
-    """Main function to run VGG16 GEMM performance testing"""
+    """Main function to run DenseNet121 Implicit GEMM performance testing"""
     print("="*80)
-    print("VGG16 GEMM IMPLEMENTATION WITH AI3 LIBRARY")
+    print("DENSENET121 IMPLICIT GEMM IMPLEMENTATION WITH AI3 LIBRARY")
     print("="*80)
 
     # Configuration
-    model_name = "VGG16"
-    algorithm = "gemm"  # Using GEMM algorithm with AI3
+    model_name = "DenseNet121"
+    algorithm = "implicit_gemm"  # Using Implicit GEMM algorithm with AI3
     device = "cuda"  # Using CUDA for GPU acceleration
     batch_size = 1
     iterations = 10
     # Generate random input sizes between 224 and 512 for comprehensive testing
     input_sizes = [random.randint(224, 512)
-                   for _ in range(100)]  # Reduced for faster testing
+                   for _ in range(100)]
 
     # CUDA initialization and verification
     if device == "cuda":
@@ -247,14 +247,14 @@ def main():
                          'In_Channels', 'Out_Channels', 'Kernel_Size', 'Stride', 'Padding',
                          'Execution_Time_ms', 'Percentage_of_Total'])
 
-    # Load VGG16 model
-    print("Loading VGG16 model...")
+    # Load DenseNet121 model
+    print("Loading DenseNet121 model...")
     try:
-        model = models.vgg16(weights=models.VGG16_Weights.DEFAULT)
+        model = models.densenet121(weights=models.DenseNet121_Weights.DEFAULT)
         model.eval()
-        print("✓ VGG16 model loaded successfully")
+        print("✓ DenseNet121 model loaded successfully")
     except Exception as e:
-        print(f"✗ Error loading VGG16 model: {e}")
+        print(f"✗ Error loading DenseNet121 model: {e}")
         return
 
     # Print original model structure
@@ -263,7 +263,7 @@ def main():
                               if isinstance(module, torch.nn.Conv2d))
     print(f"Found {original_conv_count} Conv2D layers in original model")
 
-    # Apply AI3 GEMM algorithm conversion
+    # Apply AI3 Implicit GEMM algorithm conversion
     print(f"\nApplying AI3 {algorithm} algorithm conversion...")
     try:
         ai3.swap_conv2d(model, algorithm)
@@ -321,7 +321,7 @@ def main():
     timer.register_hooks(model)
 
     print(f"\nStarting performance testing...")
-    print("This will test the model with various input sizes to measure GEMM performance.")
+    print("This will test the model with various input sizes to measure Implicit GEMM performance.")
 
     # Test with each input size
     for i, input_size in enumerate(input_sizes):
@@ -451,7 +451,7 @@ def main():
     timer.remove_hooks()
 
     print(f"\n{'='*80}")
-    print("VGG16 GEMM TESTING COMPLETED")
+    print("DENSENET121 IMPLICIT GEMM TESTING COMPLETED")
     print(f"{'='*80}")
     print(f"Results saved to:")
     print(f"  - Overall performance: {overall_csv_file}")
@@ -460,11 +460,11 @@ def main():
     print("Summary:")
     print(f"  ✓ Tested {len(input_sizes)} different input sizes")
     print(f"  ✓ {iterations} iterations per input size")
-    print(f"  ✓ GEMM algorithm optimization using AI3 library")
+    print(f"  ✓ Implicit GEMM algorithm optimization using AI3 library")
     print(f"  ✓ Comprehensive layer-wise performance analysis")
     print()
     print("Next steps:")
-    print("  1. Analyze the CSV files to compare GEMM performance vs standard convolution")
+    print("  1. Analyze the CSV files to compare Implicit GEMM performance vs standard convolution")
     print("  2. Run the same test with different algorithms (direct, smm, etc.) for comparison")
     print("  3. Test on GPU (set device='cuda') for hardware-accelerated GEMM operations")
     print(f"{'='*80}")

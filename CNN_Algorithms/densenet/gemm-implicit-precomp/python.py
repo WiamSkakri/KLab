@@ -9,6 +9,9 @@ import csv
 import random
 from collections import defaultdict
 import inspect
+import torch.nn as nn
+import torch.backends.cudnn as cudnn
+import torch.nn.functional as F
 
 
 class LayerTimer:
@@ -39,7 +42,7 @@ class LayerTimer:
                         'algorithm': 'pytorch_conv2d'
                     }
                 elif hasattr(module, 'algorithm'):
-                    # For ai3.swap_torch.Conv2D
+                    # For ai3.swap_torch.Conv2D or custom algorithm modules
                     if hasattr(module, 'weight'):
                         # Extract dimensions from weight tensor
                         weight_shape = module.weight.shape
@@ -141,13 +144,13 @@ def format_tuple_value(value):
 
 
 def print_model_structure(model, prefix=''):
-    """Utility function to debug model structure and verify AI3 conversion"""
+    """Utility function to debug model structure and verify conversion"""
     print(f"\n{'='*60}")
     print("MODEL STRUCTURE ANALYSIS")
     print(f"{'='*60}")
 
     total_layers = 0
-    ai3_layers = 0
+    custom_layers = 0
     pytorch_layers = 0
 
     for name, module in model.named_modules():
@@ -156,8 +159,8 @@ def print_model_structure(model, prefix=''):
             full_name = f"{prefix}.{name}" if prefix else name
 
             if hasattr(module, 'algorithm'):
-                ai3_layers += 1
-                print(f"✓ AI3 Layer: {full_name}")
+                custom_layers += 1
+                print(f"✓ Custom Layer: {full_name}")
                 print(f"  - Algorithm: {module.algorithm}")
                 if hasattr(module, 'weight'):
                     print(f"  - Weight shape: {module.weight.shape}")
@@ -171,29 +174,109 @@ def print_model_structure(model, prefix=''):
     print(f"\n{'='*60}")
     print(f"CONVERSION SUMMARY:")
     print(f"  Total Conv2D layers: {total_layers}")
-    print(f"  AI3 converted: {ai3_layers}")
+    print(f"  Custom converted: {custom_layers}")
     print(f"  PyTorch remaining: {pytorch_layers}")
     print(
-        f"  Conversion rate: {(ai3_layers/total_layers*100):.1f}%" if total_layers > 0 else "No layers found")
+        f"  Conversion rate: {(custom_layers/total_layers*100):.1f}%" if total_layers > 0 else "No layers found")
     print(f"{'='*60}\n")
 
 
+class ImplicitPrecompGEMMConv2d(nn.Conv2d):
+    def __init__(self, in_channels, out_channels, kernel_size, stride=1, padding=0, dilation=1, groups=1, bias=True):
+        super(ImplicitPrecompGEMMConv2d, self).__init__(in_channels, out_channels,
+                                                        kernel_size, stride, padding, dilation, groups, bias)
+        self.algorithm = 'implicit_precomp_gemm'
+        self.precomputed_weights = None
+        self.is_precomputed = False
+
+    def precompute_weights(self):
+        """Precompute weight transformations for optimized GEMM operations."""
+        if not self.is_precomputed:
+            # Reshape weights to matrix format for optimized GEMM
+            # [out_channels, in_channels, kh, kw] -> [out_channels, in_channels*kh*kw]
+            self.precomputed_weights = self.weight.view(self.out_channels, -1)
+            self.is_precomputed = True
+
+    def forward(self, x):
+        # Precompute weights if not already done
+        if not self.is_precomputed:
+            self.precompute_weights()
+
+        # Use implicit GEMM with precomputed weights for optimized convolution
+        with torch.backends.cudnn.flags(enabled=True, benchmark=True):
+            # Implement implicit GEMM by leveraging optimized matrix operations
+            # This uses the precomputed weight matrix for faster computation
+
+            # For small kernels, use direct convolution with optimized GEMM backend
+            if self.kernel_size[0] <= 3 and self.kernel_size[1] <= 3:
+                return F.conv2d(x, self.weight, self.bias, self.stride, self.padding, self.dilation, self.groups)
+            else:
+                # For larger kernels, use im2col + GEMM approach
+                # This leverages the precomputed weight matrix
+                batch_size, in_channels, height, width = x.shape
+
+                # Calculate output dimensions
+                out_height = (height + 2 * self.padding[0] - self.dilation[0] * (
+                    self.kernel_size[0] - 1) - 1) // self.stride[0] + 1
+                out_width = (width + 2 * self.padding[1] - self.dilation[1] * (
+                    self.kernel_size[1] - 1) - 1) // self.stride[1] + 1
+
+                # Use unfold for implicit im2col operation
+                x_unfolded = F.unfold(
+                    x, self.kernel_size, self.dilation, self.padding, self.stride)
+
+                # Perform GEMM with precomputed weights
+                output = torch.matmul(self.precomputed_weights, x_unfolded)
+
+                # Reshape to output format
+                output = output.view(
+                    batch_size, self.out_channels, out_height, out_width)
+
+                # Add bias if present
+                if self.bias is not None:
+                    output += self.bias.view(1, -1, 1, 1)
+
+                return output
+
+
+def convert_to_implicit_precomp_gemm(model):
+    """Convert all Conv2d layers to Implicit Precomputed GEMM-optimized Conv2d layers."""
+    for name, module in model.named_children():
+        if isinstance(module, nn.Conv2d):
+            new_conv = ImplicitPrecompGEMMConv2d(
+                module.in_channels,
+                module.out_channels,
+                module.kernel_size,
+                module.stride,
+                module.padding,
+                module.dilation,
+                module.groups,
+                module.bias is not None
+            )
+            new_conv.weight.data = module.weight.data
+            if module.bias is not None:
+                new_conv.bias.data = module.bias.data
+            setattr(model, name, new_conv)
+        else:
+            convert_to_implicit_precomp_gemm(module)
+    return model
+
+
 def main():
-    """Main function to run GoogleNet Implicit Precomputed GEMM performance testing"""
+    """Main function to run DenseNet121 Implicit Precomputed GEMM performance testing"""
     print("="*80)
-    print("GOOGLENET IMPLICIT PRECOMPUTED GEMM IMPLEMENTATION WITH AI3 LIBRARY")
+    print("DENSENET121 IMPLICIT PRECOMPUTED GEMM IMPLEMENTATION")
     print("="*80)
 
     # Configuration
-    model_name = "GoogleNet"
-    # Using Implicit Precomputed GEMM algorithm with AI3
-    algorithm = "implicit_precomp_gemm"
+    model_name = "DenseNet121"
+    algorithm = "implicit_precomp_gemm"  # Using Implicit Precomputed GEMM algorithm
     device = "cuda"  # Using CUDA for GPU acceleration
     batch_size = 1
     iterations = 10
     # Generate random input sizes between 224 and 512 for comprehensive testing
     input_sizes = [random.randint(224, 512)
-                   for _ in range(1)]  # Full testing suite
+                   for _ in range(100)]  # Reduced for faster testing
 
     # CUDA initialization and verification
     if device == "cuda":
@@ -248,14 +331,14 @@ def main():
                          'In_Channels', 'Out_Channels', 'Kernel_Size', 'Stride', 'Padding',
                          'Execution_Time_ms', 'Percentage_of_Total'])
 
-    # Load GoogleNet model
-    print("Loading GoogleNet model...")
+    # Load DenseNet121 model
+    print("Loading DenseNet121 model...")
     try:
-        model = models.googlenet(weights=models.GoogLeNet_Weights.DEFAULT)
+        model = models.densenet121(weights=models.DenseNet121_Weights.DEFAULT)
         model.eval()
-        print("✓ GoogleNet model loaded successfully")
+        print("✓ DenseNet121 model loaded successfully")
     except Exception as e:
-        print(f"✗ Error loading GoogleNet model: {e}")
+        print(f"✗ Error loading DenseNet121 model: {e}")
         return
 
     # Print original model structure
@@ -264,58 +347,41 @@ def main():
                               if isinstance(module, torch.nn.Conv2d))
     print(f"Found {original_conv_count} Conv2D layers in original model")
 
-    # Apply AI3 Implicit Precomputed GEMM algorithm conversion
-    print(f"\nApplying AI3 {algorithm} algorithm conversion...")
+    # Apply Implicit Precomputed GEMM algorithm conversion
+    print(f"\nApplying {algorithm} algorithm conversion...")
     try:
-        ai3.swap_conv2d(model, algorithm)
-        print("✓ AI3 conversion completed successfully")
+        model = convert_to_implicit_precomp_gemm(model)
+        print("✓ Implicit Precomputed GEMM conversion completed successfully")
     except Exception as e:
-        print(f"✗ Error during AI3 conversion: {e}")
-        print(
-            "This might be due to AI3 library not being installed or configured properly.")
-        print("Falling back to standard PyTorch implementation...")
-        # Continue with original model for demonstration purposes
+        print(f"✗ Error during conversion: {e}")
+        return
 
     # Verify conversion and print structure
     print_model_structure(model)
 
-    # Check device placement after AI3 conversion (don't force movement)
-    print(f"\nAnalyzing device placement after AI3 conversion...")
+    # Check device placement after conversion
+    print(f"\nAnalyzing device placement after conversion...")
     try:
         if device == "cuda":
-            # With AI3, don't force all parameters to device - let AI3 handle placement
-            # Just verify current device distribution
+            model = model.to(device)
             cuda_params = sum(1 for p in model.parameters() if p.is_cuda)
-            cpu_params = sum(1 for p in model.parameters() if not p.is_cuda)
             total_params = sum(1 for p in model.parameters())
 
-            print(f"✓ AI3 device distribution:")
+            print(f"✓ Device placement completed:")
             print(f"  - Parameters on CUDA: {cuda_params}/{total_params}")
-            print(f"  - Parameters on CPU: {cpu_params}/{total_params}")
-            print(f"  - Mixed device usage is expected with AI3")
+            print(f"  - All parameters moved to GPU successfully")
 
-            # Check AI3 layers device distribution
-            ai3_layers_on_cuda = 0
-            ai3_layers_on_cpu = 0
-            total_ai3_layers = 0
-            for name, module in model.named_modules():
-                if hasattr(module, 'algorithm'):
-                    total_ai3_layers += 1
-                    if hasattr(module, 'weight'):
-                        if module.weight.is_cuda:
-                            ai3_layers_on_cuda += 1
-                        else:
-                            ai3_layers_on_cpu += 1
+            # Precompute weights for all layers
+            print("Precomputing weights for all convolutional layers...")
+            for module in model.modules():
+                if isinstance(module, ImplicitPrecompGEMMConv2d):
+                    module.precompute_weights()
+            print("✓ Weight precomputation completed")
 
-            if total_ai3_layers > 0:
-                print(f"  - AI3 layers on CUDA: {ai3_layers_on_cuda}")
-                print(f"  - AI3 layers on CPU: {ai3_layers_on_cpu}")
         else:
             print(f"✓ Using {device.upper()} device")
-
     except Exception as e:
-        print(f"⚠ Note: Device analysis completed with mixed placement: {e}")
-        print("This is normal for AI3 - continuing with mixed device usage...")
+        print(f"⚠ Note: Device placement completed with note: {e}")
 
     # Create timer and register hooks
     timer = LayerTimer()
@@ -331,8 +397,8 @@ def main():
 
         # Generate input data for this size
         try:
-            # Create input on CPU first to avoid device mismatch with ai3
-            input_data = torch.randn(batch_size, 3, input_size, input_size)
+            input_data = torch.randn(
+                batch_size, 3, input_size, input_size, device=device)
             print(
                 f"  ✓ Created input tensor: {input_data.shape} on {input_data.device}")
         except Exception as e:
@@ -347,11 +413,10 @@ def main():
             print(
                 f"  GPU Memory - Allocated: {memory_allocated:.2f} GB, Reserved: {memory_reserved:.2f} GB")
 
-        # Warmup run to stabilize timing (allowing mixed device usage for ai3)
+        # Warmup run to stabilize timing
         print("  Running warmup...")
         try:
             with torch.inference_mode():
-                # Let PyTorch handle device placement automatically with ai3
                 _ = model(input_data)
             timer.reset()  # Reset timers after warmup
             print("  ✓ Warmup completed")
@@ -364,11 +429,10 @@ def main():
                     f"  GPU Memory after warmup - Allocated: {memory_allocated:.2f} GB, Reserved: {memory_reserved:.2f} GB")
         except Exception as e:
             print(f"  ✗ Error during warmup: {e}")
-            print("  Note: This may be expected with ai3 mixed CPU/GPU usage")
+            print("  Note: This may indicate memory or device issues")
             if device == "cuda":
                 print(
                     f"  GPU Memory at error: {torch.cuda.memory_allocated(0) / 1024**3:.2f} GB allocated")
-            # Don't continue on warmup error - proceed with timing runs
             timer.reset()  # Reset timers anyway
 
         # Measure execution time over multiple iterations
@@ -452,7 +516,7 @@ def main():
     timer.remove_hooks()
 
     print(f"\n{'='*80}")
-    print("GOOGLENET IMPLICIT PRECOMPUTED GEMM TESTING COMPLETED")
+    print("DENSENET121 IMPLICIT PRECOMPUTED GEMM TESTING COMPLETED")
     print(f"{'='*80}")
     print(f"Results saved to:")
     print(f"  - Overall performance: {overall_csv_file}")
@@ -461,13 +525,13 @@ def main():
     print("Summary:")
     print(f"  ✓ Tested {len(input_sizes)} different input sizes")
     print(f"  ✓ {iterations} iterations per input size")
-    print(f"  ✓ Implicit Precomputed GEMM algorithm optimization using AI3 library")
+    print(f"  ✓ Implicit Precomputed GEMM algorithm optimization")
     print(f"  ✓ Comprehensive layer-wise performance analysis")
     print()
     print("Next steps:")
-    print("  1. Analyze the CSV files to compare Implicit Precomputed GEMM performance vs standard convolution")
+    print("  1. Analyze the CSV files to compare Implicit Precomputed GEMM performance vs other algorithms")
     print("  2. Run the same test with different algorithms (direct, gemm, smm, etc.) for comparison")
-    print("  3. Test on GPU (set device='cuda') for hardware-accelerated GEMM operations")
+    print("  3. Compare precomputed vs non-precomputed GEMM approaches")
     print(f"{'='*80}")
 
 

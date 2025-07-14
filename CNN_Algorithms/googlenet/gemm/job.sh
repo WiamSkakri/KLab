@@ -1,12 +1,12 @@
 #!/bin/bash
 #SBATCH -J googlenet_gemm_gpu      # Job name
 #SBATCH -o googlenet_gemm_gpu.out  # Output file
-#SBATCH --time=20:00:00          # 20 hours of wall time
-#SBATCH -p gpu                   # GPU partition
-#SBATCH -A sxk1942              # Account/Project ID
-#SBATCH -c 4                    # 4 processors
-#SBATCH --mem=32GB             # 32GB memory
-#SBATCH --gpus=1               # Request 1 GPU
+#SBATCH --time=20:00:00            # 20 hours of wall time
+#SBATCH -p gpu                     # GPU partition
+#SBATCH -A sxk1942                # Account/Project ID
+#SBATCH -c 4                      # 4 processors
+#SBATCH --mem=32GB               # 32GB memory
+#SBATCH --gpus=1                 # Request 1 GPU
 
 # Exit on any error
 set -e
@@ -97,14 +97,14 @@ cd $SCRATCH_DIR
 echo "Changed to scratch directory"
 
 # Run the test script and capture all output
-echo "Running Python script..."
+echo "Running GoogleNet GEMM performance test..."
 python python.py 2>&1 | tee python_output.log
 
 # Check if the script executed successfully
 if [ $? -eq 0 ]; then
-    echo "Python script executed successfully"
+    echo "GoogleNet GEMM script executed successfully"
 else
-    echo "Python script failed with exit code $?"
+    echo "GoogleNet GEMM script failed with exit code $?"
     # Copy logs even if script failed
     cp python_output.log $RESULTS_DIR/
     exit 1
@@ -113,6 +113,10 @@ fi
 # Copy results to the timestamped results directory
 echo "Copying results to: $RESULTS_DIR"
 cp -ru *.csv python_output.log $RESULTS_DIR/
+
+# Print summary of generated files
+echo "Generated files:"
+ls -la $RESULTS_DIR/
 
 # Cleanup scratch directory
 if [ -d "$SCRATCH_DIR" ]; then
@@ -123,4 +127,8 @@ fi
 # Deactivate virtual environment
 deactivate
 
-echo "Job completed successfully. Results are in: $RESULTS_DIR"
+echo "GoogleNet GEMM job completed successfully. Results are in: $RESULTS_DIR"
+echo "Expected output files:"
+echo "  - GoogleNet_gemm_cuda_overall.csv"
+echo "  - GoogleNet_gemm_cuda_layers.csv"
+echo "  - python_output.log" 

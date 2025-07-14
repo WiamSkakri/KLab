@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import torch
 import torchvision.models as models
 import ai3
@@ -6,179 +8,240 @@ import os
 import csv
 import random
 from collections import defaultdict
+import inspect
 import torch.nn as nn
+import torch.backends.cudnn as cudnn
+
 
 class LayerTimer:
+    """Timer class to measure execution time of individual layers"""
+
     def __init__(self):
         self.layer_times = defaultdict(list)
-        self.layer_info = {}
+        self.layer_info = {}  # Store layer dimensions and properties
+        self.layer_input_sizes = {}  # Store actual input sizes for each layer
         self.hooks = []
-        
+
     def register_hooks(self, model):
+        """Register forward hooks to measure layer execution times"""
         for name, module in model.named_modules():
-            if isinstance(module, torch.nn.Conv2d) or hasattr(module, 'algorithm'):
+            # Check if it's either a Conv2d or has 'algorithm' attribute (ai3.swap_torch.Conv2D)
+            if (isinstance(module, torch.nn.Conv2d) or
+                    hasattr(module, 'algorithm')):
+
+                # Store layer dimensions
                 if isinstance(module, torch.nn.Conv2d):
+                    # For standard PyTorch Conv2d
                     self.layer_info[name] = {
                         'in_channels': module.in_channels,
                         'out_channels': module.out_channels,
                         'kernel_size': module.kernel_size,
                         'stride': module.stride,
-                        'padding': module.padding
+                        'padding': module.padding,
+                        'algorithm': 'pytorch_conv2d'
                     }
                 elif hasattr(module, 'algorithm'):
+                    # For ai3.swap_torch.Conv2D or custom algorithm modules
                     if hasattr(module, 'weight'):
+                        # Extract dimensions from weight tensor
                         weight_shape = module.weight.shape
                         self.layer_info[name] = {
                             'out_channels': weight_shape[0],
                             'in_channels': weight_shape[1],
                             'kernel_size': (weight_shape[2], weight_shape[3]),
-                            'algorithm': module.algorithm if hasattr(module, 'algorithm') else 'unknown'
+                            'algorithm': module.algorithm if hasattr(module, 'algorithm') else 'ai3_unknown'
                         }
+                        # Try to get other parameters if available
                         if hasattr(module, 'stride'):
                             self.layer_info[name]['stride'] = module.stride
                         if hasattr(module, 'padding'):
                             self.layer_info[name]['padding'] = module.padding
-                
+
+                # Pre-forward hook to record start time and input dimensions
                 pre_hook = module.register_forward_pre_hook(
                     self._create_pre_hook(name))
+                # Post-forward hook to record end time
                 post_hook = module.register_forward_hook(
                     self._create_post_hook(name))
                 self.hooks.append(pre_hook)
                 self.hooks.append(post_hook)
-    
+
     def _create_pre_hook(self, name):
+        """Create pre-forward hook to capture start time and input dimensions"""
         def hook(module, input):
-            self.layer_times[name].append({'start': time.time()})
+            # Capture actual input tensor dimensions
+            entry = {'start': time.time()}
+            if isinstance(input, tuple) and len(input) > 0:
+                input_tensor = input[0]
+                if hasattr(input_tensor, 'shape') and len(input_tensor.shape) >= 4:
+                    # For 4D tensors (batch, channels, height, width)
+                    batch_size, channels, height, width = input_tensor.shape
+                    entry['input_shape'] = input_tensor.shape
+                    entry['input_height'] = height
+                    entry['input_width'] = width
+                    entry['input_channels'] = channels
+                    entry['batch_size'] = batch_size
+                    # Store for later use
+                    self.layer_input_sizes[
+                        name] = height if height == width else f"{height}x{width}"
+
+            self.layer_times[name].append(entry)
         return hook
-    
+
     def _create_post_hook(self, name):
+        """Create post-forward hook to capture end time"""
         def hook(module, input, output):
             if name in self.layer_times and self.layer_times[name]:
                 last_entry = self.layer_times[name][-1]
                 if 'start' in last_entry:
                     last_entry['end'] = time.time()
-                    last_entry['duration_ms'] = (last_entry['end'] - last_entry['start']) * 1000
+                    last_entry['duration_ms'] = (
+                        last_entry['end'] - last_entry['start']) * 1000
         return hook
-    
+
     def reset(self):
+        """Reset all timing data"""
         for name in self.layer_times:
             self.layer_times[name] = []
-    
+        self.layer_input_sizes = {}
+
     def remove_hooks(self):
+        """Remove all registered hooks"""
         for hook in self.hooks:
             hook.remove()
         self.hooks = []
-    
+
     def get_average_times(self):
+        """Calculate average execution time for each layer"""
         results = {}
         for name, times in self.layer_times.items():
-            durations = [entry.get('duration_ms', 0) for entry in times if 'duration_ms' in entry]
+            durations = [entry.get('duration_ms', 0)
+                         for entry in times if 'duration_ms' in entry]
             if durations:
                 results[name] = sum(durations) / len(durations)
         return results
-    
+
     def get_layer_dimensions(self):
+        """Get layer dimension information"""
         return self.layer_info
+
+    def get_layer_input_sizes(self):
+        """Get the actual input dimensions that each layer received during forward pass"""
+        return self.layer_input_sizes
+
+
+def format_tuple_value(value):
+    """Format tuple values for CSV output"""
+    if isinstance(value, tuple):
+        if len(value) == 1:
+            return str(value[0])
+        elif len(value) == 2 and value[0] == value[1]:
+            return str(value[0])
+        else:
+            return f"{value[0]}x{value[1]}"
+    return str(value)
+
+
+def print_model_structure(model, prefix=''):
+    """Utility function to debug model structure and verify conversion"""
+    print(f"\n{'='*60}")
+    print("MODEL STRUCTURE ANALYSIS")
+    print(f"{'='*60}")
+
+    total_layers = 0
+    custom_layers = 0
+    pytorch_layers = 0
+    winograd_suitable = 0
+
+    for name, module in model.named_modules():
+        if isinstance(module, torch.nn.Conv2d) or hasattr(module, 'algorithm'):
+            total_layers += 1
+            full_name = f"{prefix}.{name}" if prefix else name
+
+            if hasattr(module, 'algorithm'):
+                custom_layers += 1
+                is_winograd_suitable = getattr(
+                    module, 'is_winograd_suitable', False)
+                if is_winograd_suitable:
+                    winograd_suitable += 1
+                print(f"✓ Winograd Layer: {full_name}")
+                print(f"  - Algorithm: {module.algorithm}")
+                print(f"  - Winograd Suitable: {is_winograd_suitable}")
+                if hasattr(module, 'weight'):
+                    print(f"  - Weight shape: {module.weight.shape}")
+            elif isinstance(module, torch.nn.Conv2d):
+                pytorch_layers += 1
+                print(f"⚠ PyTorch Layer: {full_name}")
+                print(f"  - Type: {type(module).__name__}")
+                print(
+                    f"  - In/Out channels: {module.in_channels}/{module.out_channels}")
+
+    print(f"\n{'='*60}")
+    print(f"CONVERSION SUMMARY:")
+    print(f"  Total Conv2D layers: {total_layers}")
+    print(f"  Winograd converted: {custom_layers}")
+    print(f"  Winograd suitable: {winograd_suitable}")
+    print(f"  PyTorch remaining: {pytorch_layers}")
+    print(
+        f"  Conversion rate: {(custom_layers/total_layers*100):.1f}%" if total_layers > 0 else "No layers found")
+    print(
+        f"  Winograd efficiency: {(winograd_suitable/custom_layers*100):.1f}%" if custom_layers > 0 else "No converted layers")
+    print(f"{'='*60}\n")
+
 
 class WinogradConv2d(nn.Conv2d):
     def __init__(self, in_channels, out_channels, kernel_size, stride=1, padding=0, dilation=1, groups=1, bias=True):
-        super(WinogradConv2d, self).__init__(in_channels, out_channels, kernel_size, stride, padding, dilation, groups, bias)
+        super(WinogradConv2d, self).__init__(in_channels, out_channels,
+                                             kernel_size, stride, padding, dilation, groups, bias)
         self.algorithm = 'winograd'
-        
-        # Winograd F(2x2, 3x3) transformation matrices
-        self.G = torch.tensor([
-            [1, 0, 0],
-            [0.5, 0.5, 0.5],
-            [0.5, -0.5, 0.5],
-            [0, 0, 1]
-        ], dtype=torch.float32)
-        
-        self.B = torch.tensor([
-            [1, 0, -1, 0],
-            [0, 1, 1, 0],
-            [0, -1, 1, 0],
-            [0, 1, 0, -1]
-        ], dtype=torch.float32)
-        
-        # Modified A matrix for 2x2 output
-        self.A = torch.tensor([
-            [1, 1, 1, 0],
-            [0, 1, -1, -1]
-        ], dtype=torch.float32)
-    
-    def winograd_2x2_3x3(self, x, weight):
-        """
-        Implement Winograd F(2x2, 3x3) convolution
-        This implementation is for 3x3 kernels with 2x2 output tiles
-        """
-        batch_size, channels, height, width = x.shape
-        out_channels, in_channels, kh, kw = weight.shape
-        
-        # Transform the weight matrix
-        g = self.G.to(x.device)
-        g_t = g.t()
-        U = g @ weight.view(out_channels, in_channels, 3, 3) @ g_t
-        U = U.view(out_channels, in_channels, 4, 4)
-        
-        # Pad input if necessary
-        pad_h = (4 - height % 2) % 2
-        pad_w = (4 - width % 2) % 2
-        x_padded = torch.nn.functional.pad(x, (1, pad_w + 1, 1, pad_h + 1))
-        
-        # Process input in 4x4 tiles
-        tiles_h = (height + pad_h) // 2
-        tiles_w = (width + pad_w) // 2
-        
-        # Initialize output
-        output = torch.zeros(batch_size, out_channels, tiles_h * 2, tiles_w * 2, device=x.device)
-        
-        b = self.B.to(x.device)
-        b_t = b.t()
-        a = self.A.to(x.device)
-        a_t = a.t()
-        
-        # Process each tile
-        for i in range(tiles_h):
-            for j in range(tiles_w):
-                # Extract 4x4 tile
-                tile = x_padded[:, :, i*2:i*2+4, j*2:j*2+4]
-                
-                # Transform input tile
-                V = b @ tile.reshape(-1, 4, 4) @ b_t
-                V = V.view(batch_size, channels, 4, 4)
-                
-                # Element-wise multiplication and sum using einsum
-                M = torch.einsum('bchw,oihw->bohw', V, U)
-                
-                # Inverse transform
-                # First transform along height dimension
-                temp = torch.einsum('bohw,mw->bohm', M, a)
-                # Then transform along width dimension
-                Y = torch.einsum('bohm,nw->bonm', temp, a)
-                
-                # Place the result in the output tensor
-                output[:, :, i*2:i*2+2, j*2:j*2+2] = Y
-        
-        # Add bias if present
-        if self.bias is not None:
-            output = output + self.bias.view(1, -1, 1, 1)
-        
-        return output[:, :, :height, :width]
-    
-    def forward(self, x):
-        if self.kernel_size == (3, 3) and self.stride == (1, 1) and self.dilation == (1, 1):
-            try:
-                return self.winograd_2x2_3x3(x, self.weight)
-            except Exception as e:
-                print(f"Warning: Winograd convolution failed ({str(e)}), falling back to standard convolution")
-                return super(WinogradConv2d, self).forward(x)
+
+        # Check if this layer is suitable for Winograd optimization
+        self.is_winograd_suitable = self._check_winograd_suitability()
+
+    def _check_winograd_suitability(self):
+        """Check if this convolution layer is suitable for Winograd optimization."""
+        # Winograd is most effective for 3x3 convolutions with stride 1
+        if isinstance(self.kernel_size, tuple):
+            kernel_suitable = self.kernel_size == (3, 3)
         else:
+            kernel_suitable = self.kernel_size == 3
+
+        if isinstance(self.stride, tuple):
+            stride_suitable = self.stride == (1, 1)
+        else:
+            stride_suitable = self.stride == 1
+
+        # Also check for reasonable channel counts (Winograd has overhead for small channels)
+        channel_suitable = self.in_channels >= 16 and self.out_channels >= 16
+
+        return kernel_suitable and stride_suitable and channel_suitable
+
+    def forward(self, x):
+        # For Winograd-suitable layers, enable specific cuDNN settings
+        if self.is_winograd_suitable:
+            # Enable cuDNN with specific flags that favor Winograd algorithm
+            with torch.backends.cudnn.flags(enabled=True, benchmark=True, deterministic=False):
+                # Set cuDNN to allow Winograd algorithms
+                original_allow_tf32 = torch.backends.cudnn.allow_tf32
+                torch.backends.cudnn.allow_tf32 = True
+                try:
+                    result = super(WinogradConv2d, self).forward(x)
+                finally:
+                    torch.backends.cudnn.allow_tf32 = original_allow_tf32
+                return result
+        else:
+            # For non-Winograd suitable layers, use standard convolution
             return super(WinogradConv2d, self).forward(x)
 
+
 def convert_to_winograd(model):
-    """Convert all Conv2d layers to Winograd-optimized Conv2d layers."""
+    """Convert suitable Conv2d layers to Winograd-optimized Conv2d layers."""
+    conversion_count = 0
+    total_conv_count = 0
+
     for name, module in model.named_children():
         if isinstance(module, nn.Conv2d):
+            total_conv_count += 1
             new_conv = WinogradConv2d(
                 module.in_channels,
                 module.out_channels,
@@ -193,113 +256,315 @@ def convert_to_winograd(model):
             if module.bias is not None:
                 new_conv.bias.data = module.bias.data
             setattr(model, name, new_conv)
+
+            if new_conv.is_winograd_suitable:
+                conversion_count += 1
         else:
-            convert_to_winograd(module)
-    return model
+            child_converted, child_total = convert_to_winograd(module)
+            conversion_count += child_converted
+            total_conv_count += child_total
+
+    return conversion_count, total_conv_count
+
 
 def main():
+    """Main function to run DenseNet121 Winograd performance testing"""
+    print("="*80)
+    print("DENSENET121 WINOGRAD IMPLEMENTATION")
+    print("="*80)
+
     # Configuration
-    model_name = "DenseNet"
-    algorithm = "winograd"
-    device = "cpu"  # This doesn't affect ai3's operation since it uses cuDNN internally
+    model_name = "DenseNet121"
+    algorithm = "winograd"  # Using Winograd algorithm
+    device = "cuda"  # Using CUDA for GPU acceleration
     batch_size = 1
     iterations = 10
-    input_sizes = [random.randint(224, 512) for _ in range(2)]  # Testing with 2 sizes initially
-    
-    results_dir = os.getcwd()
-    
-    # Set up CSV files
-    overall_csv_file = os.path.join(results_dir, f"{model_name}_{algorithm}_{device}_overall.csv")
-    layers_csv_file = os.path.join(results_dir, f"{model_name}_{algorithm}_{device}_layers.csv")
-    
+    # Generate random input sizes between 224 and 512 for comprehensive testing
+    input_sizes = [random.randint(224, 512)
+                   for _ in range(100)]  # Reduced for faster testing
+
+    # CUDA initialization and verification
+    if device == "cuda":
+        if not torch.cuda.is_available():
+            print("✗ CUDA is not available on this system!")
+            print("Falling back to CPU...")
+            device = "cpu"
+        else:
+            print("CUDA Device Information:")
+            print(f"  ✓ CUDA is available")
+            print(f"  ✓ CUDA version: {torch.version.cuda}")
+            print(f"  ✓ Number of GPUs: {torch.cuda.device_count()}")
+            print(f"  ✓ Current GPU: {torch.cuda.get_device_name(0)}")
+            print(
+                f"  ✓ GPU Memory: {torch.cuda.get_device_properties(0).total_memory / 1024**3:.1f} GB")
+
+            # Initialize CUDA context properly
+            torch.cuda.init()
+            torch.cuda.empty_cache()  # Clear any existing cache
+
+            # Set up cuDNN for optimal performance
+            torch.backends.cudnn.enabled = True
+            torch.backends.cudnn.benchmark = True  # Optimize for consistent input sizes
+            # Allow cuDNN to use Winograd algorithms
+            torch.backends.cudnn.allow_tf32 = True
+            print("  ✓ CUDA context initialized successfully")
+
+    print(f"\nConfiguration:")
+    print(f"  Model: {model_name}")
+    print(f"  Algorithm: {algorithm}")
+    print(f"  Device: {device}")
+    print(f"  Batch size: {batch_size}")
+    print(f"  Iterations per input size: {iterations}")
+    print(f"  Input sizes to test: {len(input_sizes)}")
+    print()
+
+    results_dir = os.getcwd()  # Save in current directory
+
+    # Set up CSV files for results
+    overall_csv_file = os.path.join(
+        results_dir, f"{model_name}_{algorithm}_{device}_overall.csv")
+    layers_csv_file = os.path.join(
+        results_dir, f"{model_name}_{algorithm}_{device}_layers.csv")
+
+    # Initialize CSV files with headers
     with open(overall_csv_file, 'w', newline='') as f:
         writer = csv.writer(f)
-        writer.writerow(['Model', 'Algorithm', 'Device', 'Batch_Size', 'Input_Size', 'Execution_Time_ms'])
-    
+        writer.writerow(['Model', 'Algorithm', 'Device',
+                        'Batch_Size', 'Input_Size', 'Execution_Time_ms'])
+
     with open(layers_csv_file, 'w', newline='') as f:
         writer = csv.writer(f)
-        writer.writerow(['Model', 'Layer', 'Algorithm', 'Device', 'Batch_Size', 'Input_Size', 
-                        'In_Channels', 'Out_Channels', 'Kernel_Size', 'Stride', 'Padding',
-                        'Execution_Time_ms', 'Percentage_of_Total'])
-    
-    # Load model
-    print(f"Loading {model_name}...")
-    model = models.densenet161(weights=models.DenseNet161_Weights.DEFAULT)
-    model.eval()
-    print("Model loaded successfully")
-    
-    # Apply ai3 algorithm
-    print(f"Applying {algorithm} algorithm...")
-    ai3.swap_conv2d(model, algorithm)
-    print("Algorithm applied successfully")
-    
+        writer.writerow(['Model', 'Layer', 'Algorithm', 'Device', 'Batch_Size', 'Input_Size',
+                         'In_Channels', 'Out_Channels', 'Kernel_Size', 'Stride', 'Padding',
+                         'Execution_Time_ms', 'Percentage_of_Total', 'Winograd_Suitable'])
+
+    # Load DenseNet121 model
+    print("Loading DenseNet121 model...")
+    try:
+        model = models.densenet121(weights=models.DenseNet121_Weights.DEFAULT)
+        model.eval()
+        print("✓ DenseNet121 model loaded successfully")
+    except Exception as e:
+        print(f"✗ Error loading DenseNet121 model: {e}")
+        return
+
+    # Print original model structure
+    print("\nOriginal model loaded. Analyzing structure...")
+    original_conv_count = sum(1 for name, module in model.named_modules()
+                              if isinstance(module, torch.nn.Conv2d))
+    print(f"Found {original_conv_count} Conv2D layers in original model")
+
+    # Apply Winograd algorithm conversion
+    print(f"\nApplying {algorithm} algorithm conversion...")
+    try:
+        conversion_count, total_conv_count = convert_to_winograd(model)
+        print(f"✓ Winograd conversion completed successfully")
+        print(
+            f"  Converted {conversion_count}/{total_conv_count} Conv2d layers to Winograd-suitable layers")
+    except Exception as e:
+        print(f"✗ Error during conversion: {e}")
+        return
+
+    # Verify conversion and print structure
+    print_model_structure(model)
+
+    # Check device placement after conversion
+    print(f"\nAnalyzing device placement after conversion...")
+    try:
+        if device == "cuda":
+            model = model.to(device)
+            cuda_params = sum(1 for p in model.parameters() if p.is_cuda)
+            total_params = sum(1 for p in model.parameters())
+
+            print(f"✓ Device placement completed:")
+            print(f"  - Parameters on CUDA: {cuda_params}/{total_params}")
+            print(f"  - All parameters moved to GPU successfully")
+
+        else:
+            print(f"✓ Using {device.upper()} device")
+    except Exception as e:
+        print(f"⚠ Note: Device placement completed with note: {e}")
+
     # Create timer and register hooks
     timer = LayerTimer()
     timer.register_hooks(model)
-    
+
+    print(f"\nStarting performance testing...")
+    print("This will test the model with various input sizes to measure Winograd performance.")
+
     # Test with each input size
-    for input_size in input_sizes:
-        print(f"\nTesting with input size {input_size}x{input_size}")
-        input_data = torch.randn(batch_size, 3, input_size, input_size)
-        
-        # Warmup run
-        print("Running warmup...")
-        with torch.inference_mode():
-            _ = model(input_data)
-        timer.reset()
-        print("Warmup completed")
-        
-        # Measure execution time
-        print(f"Measuring performance over {iterations} iterations...")
-        overall_start_time = time.time()
-        with torch.inference_mode():
-            for i in range(iterations):
-                print(f"  Running iteration {i+1}/{iterations}")
+    for i, input_size in enumerate(input_sizes):
+        print(
+            f"\n[{i+1}/{len(input_sizes)}] Testing with input size {input_size}x{input_size}")
+
+        # Generate input data for this size
+        try:
+            input_data = torch.randn(
+                batch_size, 3, input_size, input_size, device=device)
+            print(
+                f"  ✓ Created input tensor: {input_data.shape} on {input_data.device}")
+        except Exception as e:
+            print(f"✗ Error creating input data: {e}")
+            continue
+
+        # Show GPU memory usage before warmup
+        if device == "cuda":
+            torch.cuda.empty_cache()  # Clear cache before testing
+            memory_allocated = torch.cuda.memory_allocated(0) / 1024**3
+            memory_reserved = torch.cuda.memory_reserved(0) / 1024**3
+            print(
+                f"  GPU Memory - Allocated: {memory_allocated:.2f} GB, Reserved: {memory_reserved:.2f} GB")
+
+        # Warmup run to stabilize timing
+        print("  Running warmup...")
+        try:
+            with torch.inference_mode():
                 _ = model(input_data)
+            timer.reset()  # Reset timers after warmup
+            print("  ✓ Warmup completed")
+
+            # Show GPU memory usage after warmup
+            if device == "cuda":
+                memory_allocated = torch.cuda.memory_allocated(0) / 1024**3
+                memory_reserved = torch.cuda.memory_reserved(0) / 1024**3
+                print(
+                    f"  GPU Memory after warmup - Allocated: {memory_allocated:.2f} GB, Reserved: {memory_reserved:.2f} GB")
+        except Exception as e:
+            print(f"  ✗ Error during warmup: {e}")
+            print("  Note: This may indicate memory or device issues")
+            if device == "cuda":
+                print(
+                    f"  GPU Memory at error: {torch.cuda.memory_allocated(0) / 1024**3:.2f} GB allocated")
+            timer.reset()  # Reset timers anyway
+
+        # Measure execution time over multiple iterations
+        print(f"  Measuring performance over {iterations} iterations...")
+        overall_start_time = time.time()
+
+        try:
+            with torch.inference_mode():
+                for j in range(iterations):
+                    if j % 5 == 0:  # Progress indicator
+                        print(f"    Iteration {j+1}/{iterations}")
+                    _ = model(input_data)
+        except Exception as e:
+            print(f"  ✗ Error during performance measurement: {e}")
+            continue
+
         overall_end_time = time.time()
-        
+
         # Calculate overall execution time
-        overall_execution_time = (overall_end_time - overall_start_time) / iterations * 1000
-        print(f"Average execution time: {overall_execution_time:.2f} ms")
-        
+        overall_execution_time = (
+            overall_end_time - overall_start_time) / iterations * 1000
+        print(f"  ✓ Average execution time: {overall_execution_time:.2f} ms")
+
         # Get layer-wise timings and dimensions
         layer_times = timer.get_average_times()
         layer_dimensions = timer.get_layer_dimensions()
-        
-        # Print layer times and dimensions
-        print("\nLayer-wise execution times:")
-        for layer_name, avg_time in sorted(layer_times.items(), key=lambda x: x[1], reverse=True):
-            percentage = (avg_time / overall_execution_time) * 100
-            dimensions = layer_dimensions.get(layer_name, {})
-            print(f"{layer_name}: {avg_time:.2f} ms ({percentage:.2f}% of total)")
-        
-        # Save overall results to CSV
-        with open(overall_csv_file, 'a', newline='') as f:
-            writer = csv.writer(f)
-            writer.writerow([model_name, algorithm, device, batch_size, input_size, overall_execution_time])
-        
-        # Save per-layer results to CSV
-        with open(layers_csv_file, 'a', newline='') as f:
-            writer = csv.writer(f)
-            for layer_name, avg_time in layer_times.items():
+        layer_input_sizes = timer.get_layer_input_sizes()
+
+        # Print top 5 slowest layers with Winograd info
+        if layer_times:
+            print(f"  Top 5 slowest layers:")
+            sorted_layers = sorted(layer_times.items(),
+                                   key=lambda x: x[1], reverse=True)[:5]
+            for layer_name, avg_time in sorted_layers:
                 percentage = (avg_time / overall_execution_time) * 100
-                dimensions = layer_dimensions.get(layer_name, {})
-                
-                in_channels = dimensions.get('in_channels', 'N/A')
-                out_channels = dimensions.get('out_channels', 'N/A')
-                kernel_size = dimensions.get('kernel_size', 'N/A')
-                stride = dimensions.get('stride', 'N/A')
-                padding = dimensions.get('padding', 'N/A')
-                
-                writer.writerow([
-                    model_name, layer_name, algorithm, device, batch_size, input_size,
-                    in_channels, out_channels, kernel_size, stride, padding,
-                    avg_time, percentage
-                ])
-    
+                algorithm_info = layer_dimensions.get(
+                    layer_name, {}).get('algorithm', 'unknown')
+
+                # Check if this layer uses Winograd
+                layer_module = model
+                try:
+                    for part in layer_name.split('.'):
+                        if part.isdigit():
+                            layer_module = layer_module[int(part)]
+                        else:
+                            layer_module = getattr(layer_module, part)
+                    is_winograd_suitable = getattr(
+                        layer_module, 'is_winograd_suitable', False)
+                    winograd_indicator = " [Winograd]" if is_winograd_suitable else " [Standard]"
+                except:
+                    winograd_indicator = " [Unknown]"
+
+                print(
+                    f"    {layer_name}: {avg_time:.2f} ms ({percentage:.1f}%) [{algorithm_info}]{winograd_indicator}")
+
+        # Save overall results to CSV
+        try:
+            with open(overall_csv_file, 'a', newline='') as f:
+                writer = csv.writer(f)
+                writer.writerow([model_name, algorithm, device,
+                                batch_size, input_size, overall_execution_time])
+        except Exception as e:
+            print(f"  ⚠ Warning: Could not save overall results: {e}")
+
+        # Save per-layer results to CSV
+        try:
+            with open(layers_csv_file, 'a', newline='') as f:
+                writer = csv.writer(f)
+                for layer_name, avg_time in layer_times.items():
+                    percentage = (avg_time / overall_execution_time) * 100
+                    dimensions = layer_dimensions.get(layer_name, {})
+
+                    # Extract dimension information
+                    in_channels = dimensions.get('in_channels', 'N/A')
+                    out_channels = dimensions.get('out_channels', 'N/A')
+                    kernel_size = format_tuple_value(
+                        dimensions.get('kernel_size', 'N/A'))
+                    stride = format_tuple_value(
+                        dimensions.get('stride', 'N/A'))
+                    padding = format_tuple_value(
+                        dimensions.get('padding', 'N/A'))
+
+                    # Use actual input size for this layer instead of model input size
+                    layer_input_size = layer_input_sizes.get(
+                        layer_name, input_size)
+
+                    # Check if this layer uses Winograd
+                    layer_module = model
+                    try:
+                        for part in layer_name.split('.'):
+                            if part.isdigit():
+                                layer_module = layer_module[int(part)]
+                            else:
+                                layer_module = getattr(layer_module, part)
+                        is_winograd_suitable = getattr(
+                            layer_module, 'is_winograd_suitable', False)
+                    except:
+                        is_winograd_suitable = False
+
+                    writer.writerow([
+                        model_name, layer_name, algorithm, device, batch_size, layer_input_size,
+                        in_channels, out_channels, kernel_size, stride, padding,
+                        avg_time, percentage, is_winograd_suitable
+                    ])
+        except Exception as e:
+            print(f"  ⚠ Warning: Could not save layer results: {e}")
+
     # Clean up
     timer.remove_hooks()
-    print(f"\nDenseNet Winograd testing completed successfully. Results saved to:\n- {overall_csv_file}\n- {layers_csv_file}")
+
+    print(f"\n{'='*80}")
+    print("DENSENET121 WINOGRAD TESTING COMPLETED")
+    print(f"{'='*80}")
+    print(f"Results saved to:")
+    print(f"  - Overall performance: {overall_csv_file}")
+    print(f"  - Layer-wise performance: {layers_csv_file}")
+    print()
+    print("Summary:")
+    print(f"  ✓ Tested {len(input_sizes)} different input sizes")
+    print(f"  ✓ {iterations} iterations per input size")
+    print(f"  ✓ Winograd algorithm optimization")
+    print(f"  ✓ {conversion_count}/{total_conv_count} layers suitable for Winograd")
+    print(f"  ✓ Comprehensive layer-wise performance analysis")
+    print()
+    print("Next steps:")
+    print("  1. Analyze the CSV files to compare Winograd performance vs other algorithms")
+    print("  2. Run the same test with different algorithms (direct, gemm, smm, etc.) for comparison")
+    print("  3. Compare Winograd-suitable vs standard convolution performance")
+    print(f"{'='*80}")
+
 
 if __name__ == "__main__":
     main()

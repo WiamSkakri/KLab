@@ -97,14 +97,14 @@ cd $SCRATCH_DIR
 echo "Changed to scratch directory"
 
 # Run the test script and capture all output
-echo "Running GoogLeNet Implicit GEMM performance test..."
+echo "Running GoogleNet Implicit GEMM performance test..."
 python python.py 2>&1 | tee python_output.log
 
 # Check if the script executed successfully
 if [ $? -eq 0 ]; then
-    echo "GoogLeNet Implicit GEMM script executed successfully"
+    echo "GoogleNet Implicit GEMM script executed successfully"
 else
-    echo "GoogLeNet Implicit GEMM script failed with exit code $?"
+    echo "GoogleNet Implicit GEMM script failed with exit code $?"
     # Copy logs even if script failed
     cp python_output.log $RESULTS_DIR/
     exit 1
@@ -127,8 +127,8 @@ fi
 # Deactivate virtual environment
 deactivate
 
-echo "GoogLeNet Implicit GEMM job completed successfully. Results are in: $RESULTS_DIR"
+echo "GoogleNet Implicit GEMM job completed successfully. Results are in: $RESULTS_DIR"
 echo "Expected output files:"
-echo "  - GoogLeNet_implicit_gemm_cuda_overall.csv"
-echo "  - GoogLeNet_implicit_gemm_cuda_layers.csv"
+echo "  - GoogleNet_implicit_gemm_cuda_overall.csv"
+echo "  - GoogleNet_implicit_gemm_cuda_layers.csv"
 echo "  - python_output.log" 

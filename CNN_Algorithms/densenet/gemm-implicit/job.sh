@@ -1,12 +1,12 @@
 #!/bin/bash
-#SBATCH -J googlenet_winograd_gpu      # Job name
-#SBATCH -o googlenet_winograd_gpu.out  # Output file
-#SBATCH --time=20:00:00                # 20 hours of wall time
-#SBATCH -p gpu                         # GPU partition
-#SBATCH -A sxk1942                    # Account/Project ID
-#SBATCH -c 4                          # 4 processors
-#SBATCH --mem=32GB                   # 32GB memory
-#SBATCH --gpus=1                     # Request 1 GPU
+#SBATCH -J densenet_implicit_gemm_gpu    # Job name
+#SBATCH -o densenet_implicit_gemm_gpu.out  # Output file
+#SBATCH --time=20:00:00          # 20 hours of wall time
+#SBATCH -p gpu                   # GPU partition
+#SBATCH -A sxk1942              # Account/Project ID
+#SBATCH -c 4                    # 4 processors
+#SBATCH --mem=32GB             # 32GB memory
+#SBATCH --gpus=1               # Request 1 GPU
 
 # Exit on any error
 set -e
@@ -75,7 +75,7 @@ RESULTS_DIR=$SLURM_SUBMIT_DIR/results_${TIMESTAMP}
 mkdir -p $RESULTS_DIR
 
 # Create a directory in scratch for the job
-SCRATCH_DIR=$PFSDIR/googlenet_winograd_gpu_${SLURM_JOB_ID}
+SCRATCH_DIR=$PFSDIR/densenet_implicit_gemm_gpu_${SLURM_JOB_ID}
 if ! mkdir -p $SCRATCH_DIR; then
     echo "Failed to create scratch directory: $SCRATCH_DIR"
     exit 1
@@ -97,14 +97,14 @@ cd $SCRATCH_DIR
 echo "Changed to scratch directory"
 
 # Run the test script and capture all output
-echo "Running GoogleNet Winograd performance test..."
+echo "Running Python script..."
 python python.py 2>&1 | tee python_output.log
 
 # Check if the script executed successfully
 if [ $? -eq 0 ]; then
-    echo "GoogleNet Winograd script executed successfully"
+    echo "Python script executed successfully"
 else
-    echo "GoogleNet Winograd script failed with exit code $?"
+    echo "Python script failed with exit code $?"
     # Copy logs even if script failed
     cp python_output.log $RESULTS_DIR/
     exit 1
@@ -113,10 +113,6 @@ fi
 # Copy results to the timestamped results directory
 echo "Copying results to: $RESULTS_DIR"
 cp -ru *.csv python_output.log $RESULTS_DIR/
-
-# Print summary of generated files
-echo "Generated files:"
-ls -la $RESULTS_DIR/
 
 # Cleanup scratch directory
 if [ -d "$SCRATCH_DIR" ]; then
@@ -127,8 +123,4 @@ fi
 # Deactivate virtual environment
 deactivate
 
-echo "GoogleNet Winograd job completed successfully. Results are in: $RESULTS_DIR"
-echo "Expected output files:"
-echo "  - GoogleNet_winograd_cuda_overall.csv"
-echo "  - GoogleNet_winograd_cuda_layers.csv"
-echo "  - python_output.log" 
+echo "Job completed successfully. Results are in: $RESULTS_DIR" 
