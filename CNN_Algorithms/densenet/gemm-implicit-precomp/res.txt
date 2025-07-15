@@ -1,0 +1,443 @@
+Not supported
+
+DENSENET121 AI3 IMPLICIT PRECOMPUTED GEMM IMPLEMENTATION
+================================================================================
+CUDA Device Information:
+  ✓ CUDA is available
+  ✓ CUDA version: 12.4
+  ✓ Number of GPUs: 1
+  ✓ Current GPU: NVIDIA L40S
+  ✓ GPU Memory: 44.4 GB
+  ✓ CUDA context initialized successfully
+
+Configuration:
+  Model: DenseNet121
+  Algorithm: implicit_precomp_gemm
+  Device: cuda
+  Batch size: 1
+  Iterations per input size: 10
+  Input sizes to test: 1
+
+Loading DenseNet121 model...
+✓ DenseNet121 model loaded successfully
+
+Original model loaded. Analyzing structure...
+Found 120 Conv2D layers in original model
+
+Applying AI3 implicit_precomp_gemm algorithm conversion...
+✗ Error during AI3 conversion: algorithm, implicit_precomp_gemm, is unsupported for conv2d
+This might be due to AI3 library not being installed or configured properly.
+Falling back to standard PyTorch implementation...
+
+============================================================
+MODEL STRUCTURE ANALYSIS
+============================================================
+⚠ PyTorch Layer: features.conv0
+  - Type: Conv2d
+  - In/Out channels: 3/64
+⚠ PyTorch Layer: features.denseblock1.denselayer1.conv1
+  - Type: Conv2d
+  - In/Out channels: 64/128
+⚠ PyTorch Layer: features.denseblock1.denselayer1.conv2
+  - Type: Conv2d
+  - In/Out channels: 128/32
+⚠ PyTorch Layer: features.denseblock1.denselayer2.conv1
+  - Type: Conv2d
+  - In/Out channels: 96/128
+⚠ PyTorch Layer: features.denseblock1.denselayer2.conv2
+  - Type: Conv2d
+  - In/Out channels: 128/32
+⚠ PyTorch Layer: features.denseblock1.denselayer3.conv1
+  - Type: Conv2d
+  - In/Out channels: 128/128
+⚠ PyTorch Layer: features.denseblock1.denselayer3.conv2
+  - Type: Conv2d
+  - In/Out channels: 128/32
+⚠ PyTorch Layer: features.denseblock1.denselayer4.conv1
+  - Type: Conv2d
+  - In/Out channels: 160/128
+⚠ PyTorch Layer: features.denseblock1.denselayer4.conv2
+  - Type: Conv2d
+  - In/Out channels: 128/32
+⚠ PyTorch Layer: features.denseblock1.denselayer5.conv1
+  - Type: Conv2d
+  - In/Out channels: 192/128
+⚠ PyTorch Layer: features.denseblock1.denselayer5.conv2
+  - Type: Conv2d
+  - In/Out channels: 128/32
+⚠ PyTorch Layer: features.denseblock1.denselayer6.conv1
+  - Type: Conv2d
+  - In/Out channels: 224/128
+⚠ PyTorch Layer: features.denseblock1.denselayer6.conv2
+  - Type: Conv2d
+  - In/Out channels: 128/32
+⚠ PyTorch Layer: features.transition1.conv
+  - Type: Conv2d
+  - In/Out channels: 256/128
+⚠ PyTorch Layer: features.denseblock2.denselayer1.conv1
+  - Type: Conv2d
+  - In/Out channels: 128/128
+⚠ PyTorch Layer: features.denseblock2.denselayer1.conv2
+  - Type: Conv2d
+  - In/Out channels: 128/32
+⚠ PyTorch Layer: features.denseblock2.denselayer2.conv1
+  - Type: Conv2d
+  - In/Out channels: 160/128
+⚠ PyTorch Layer: features.denseblock2.denselayer2.conv2
+  - Type: Conv2d
+  - In/Out channels: 128/32
+⚠ PyTorch Layer: features.denseblock2.denselayer3.conv1
+  - Type: Conv2d
+  - In/Out channels: 192/128
+⚠ PyTorch Layer: features.denseblock2.denselayer3.conv2
+  - Type: Conv2d
+  - In/Out channels: 128/32
+⚠ PyTorch Layer: features.denseblock2.denselayer4.conv1
+  - Type: Conv2d
+  - In/Out channels: 224/128
+⚠ PyTorch Layer: features.denseblock2.denselayer4.conv2
+  - Type: Conv2d
+  - In/Out channels: 128/32
+⚠ PyTorch Layer: features.denseblock2.denselayer5.conv1
+  - Type: Conv2d
+  - In/Out channels: 256/128
+⚠ PyTorch Layer: features.denseblock2.denselayer5.conv2
+  - Type: Conv2d
+  - In/Out channels: 128/32
+⚠ PyTorch Layer: features.denseblock2.denselayer6.conv1
+  - Type: Conv2d
+  - In/Out channels: 288/128
+⚠ PyTorch Layer: features.denseblock2.denselayer6.conv2
+  - Type: Conv2d
+  - In/Out channels: 128/32
+⚠ PyTorch Layer: features.denseblock2.denselayer7.conv1
+  - Type: Conv2d
+  - In/Out channels: 320/128
+⚠ PyTorch Layer: features.denseblock2.denselayer7.conv2
+  - Type: Conv2d
+  - In/Out channels: 128/32
+⚠ PyTorch Layer: features.denseblock2.denselayer8.conv1
+  - Type: Conv2d
+  - In/Out channels: 352/128
+⚠ PyTorch Layer: features.denseblock2.denselayer8.conv2
+  - Type: Conv2d
+  - In/Out channels: 128/32
+⚠ PyTorch Layer: features.denseblock2.denselayer9.conv1
+  - Type: Conv2d
+  - In/Out channels: 384/128
+⚠ PyTorch Layer: features.denseblock2.denselayer9.conv2
+  - Type: Conv2d
+  - In/Out channels: 128/32
+⚠ PyTorch Layer: features.denseblock2.denselayer10.conv1
+  - Type: Conv2d
+  - In/Out channels: 416/128
+⚠ PyTorch Layer: features.denseblock2.denselayer10.conv2
+  - Type: Conv2d
+  - In/Out channels: 128/32
+⚠ PyTorch Layer: features.denseblock2.denselayer11.conv1
+  - Type: Conv2d
+  - In/Out channels: 448/128
+⚠ PyTorch Layer: features.denseblock2.denselayer11.conv2
+  - Type: Conv2d
+  - In/Out channels: 128/32
+⚠ PyTorch Layer: features.denseblock2.denselayer12.conv1
+  - Type: Conv2d
+  - In/Out channels: 480/128
+⚠ PyTorch Layer: features.denseblock2.denselayer12.conv2
+  - Type: Conv2d
+  - In/Out channels: 128/32
+⚠ PyTorch Layer: features.transition2.conv
+  - Type: Conv2d
+  - In/Out channels: 512/256
+⚠ PyTorch Layer: features.denseblock3.denselayer1.conv1
+  - Type: Conv2d
+  - In/Out channels: 256/128
+⚠ PyTorch Layer: features.denseblock3.denselayer1.conv2
+  - Type: Conv2d
+  - In/Out channels: 128/32
+⚠ PyTorch Layer: features.denseblock3.denselayer2.conv1
+  - Type: Conv2d
+  - In/Out channels: 288/128
+⚠ PyTorch Layer: features.denseblock3.denselayer2.conv2
+  - Type: Conv2d
+  - In/Out channels: 128/32
+⚠ PyTorch Layer: features.denseblock3.denselayer3.conv1
+  - Type: Conv2d
+  - In/Out channels: 320/128
+⚠ PyTorch Layer: features.denseblock3.denselayer3.conv2
+  - Type: Conv2d
+  - In/Out channels: 128/32
+⚠ PyTorch Layer: features.denseblock3.denselayer4.conv1
+  - Type: Conv2d
+  - In/Out channels: 352/128
+⚠ PyTorch Layer: features.denseblock3.denselayer4.conv2
+  - Type: Conv2d
+  - In/Out channels: 128/32
+⚠ PyTorch Layer: features.denseblock3.denselayer5.conv1
+  - Type: Conv2d
+  - In/Out channels: 384/128
+⚠ PyTorch Layer: features.denseblock3.denselayer5.conv2
+  - Type: Conv2d
+  - In/Out channels: 128/32
+⚠ PyTorch Layer: features.denseblock3.denselayer6.conv1
+  - Type: Conv2d
+  - In/Out channels: 416/128
+⚠ PyTorch Layer: features.denseblock3.denselayer6.conv2
+  - Type: Conv2d
+  - In/Out channels: 128/32
+⚠ PyTorch Layer: features.denseblock3.denselayer7.conv1
+  - Type: Conv2d
+  - In/Out channels: 448/128
+⚠ PyTorch Layer: features.denseblock3.denselayer7.conv2
+  - Type: Conv2d
+  - In/Out channels: 128/32
+⚠ PyTorch Layer: features.denseblock3.denselayer8.conv1
+  - Type: Conv2d
+  - In/Out channels: 480/128
+⚠ PyTorch Layer: features.denseblock3.denselayer8.conv2
+  - Type: Conv2d
+  - In/Out channels: 128/32
+⚠ PyTorch Layer: features.denseblock3.denselayer9.conv1
+  - Type: Conv2d
+  - In/Out channels: 512/128
+⚠ PyTorch Layer: features.denseblock3.denselayer9.conv2
+  - Type: Conv2d
+  - In/Out channels: 128/32
+⚠ PyTorch Layer: features.denseblock3.denselayer10.conv1
+  - Type: Conv2d
+  - In/Out channels: 544/128
+⚠ PyTorch Layer: features.denseblock3.denselayer10.conv2
+  - Type: Conv2d
+  - In/Out channels: 128/32
+⚠ PyTorch Layer: features.denseblock3.denselayer11.conv1
+  - Type: Conv2d
+  - In/Out channels: 576/128
+⚠ PyTorch Layer: features.denseblock3.denselayer11.conv2
+  - Type: Conv2d
+  - In/Out channels: 128/32
+⚠ PyTorch Layer: features.denseblock3.denselayer12.conv1
+  - Type: Conv2d
+  - In/Out channels: 608/128
+⚠ PyTorch Layer: features.denseblock3.denselayer12.conv2
+  - Type: Conv2d
+  - In/Out channels: 128/32
+⚠ PyTorch Layer: features.denseblock3.denselayer13.conv1
+  - Type: Conv2d
+  - In/Out channels: 640/128
+⚠ PyTorch Layer: features.denseblock3.denselayer13.conv2
+  - Type: Conv2d
+  - In/Out channels: 128/32
+⚠ PyTorch Layer: features.denseblock3.denselayer14.conv1
+  - Type: Conv2d
+  - In/Out channels: 672/128
+⚠ PyTorch Layer: features.denseblock3.denselayer14.conv2
+  - Type: Conv2d
+  - In/Out channels: 128/32
+⚠ PyTorch Layer: features.denseblock3.denselayer15.conv1
+  - Type: Conv2d
+  - In/Out channels: 704/128
+⚠ PyTorch Layer: features.denseblock3.denselayer15.conv2
+  - Type: Conv2d
+  - In/Out channels: 128/32
+⚠ PyTorch Layer: features.denseblock3.denselayer16.conv1
+  - Type: Conv2d
+  - In/Out channels: 736/128
+⚠ PyTorch Layer: features.denseblock3.denselayer16.conv2
+  - Type: Conv2d
+  - In/Out channels: 128/32
+⚠ PyTorch Layer: features.denseblock3.denselayer17.conv1
+  - Type: Conv2d
+  - In/Out channels: 768/128
+⚠ PyTorch Layer: features.denseblock3.denselayer17.conv2
+  - Type: Conv2d
+  - In/Out channels: 128/32
+⚠ PyTorch Layer: features.denseblock3.denselayer18.conv1
+  - Type: Conv2d
+  - In/Out channels: 800/128
+⚠ PyTorch Layer: features.denseblock3.denselayer18.conv2
+  - Type: Conv2d
+  - In/Out channels: 128/32
+⚠ PyTorch Layer: features.denseblock3.denselayer19.conv1
+  - Type: Conv2d
+  - In/Out channels: 832/128
+⚠ PyTorch Layer: features.denseblock3.denselayer19.conv2
+  - Type: Conv2d
+  - In/Out channels: 128/32
+⚠ PyTorch Layer: features.denseblock3.denselayer20.conv1
+  - Type: Conv2d
+  - In/Out channels: 864/128
+⚠ PyTorch Layer: features.denseblock3.denselayer20.conv2
+  - Type: Conv2d
+  - In/Out channels: 128/32
+⚠ PyTorch Layer: features.denseblock3.denselayer21.conv1
+  - Type: Conv2d
+  - In/Out channels: 896/128
+⚠ PyTorch Layer: features.denseblock3.denselayer21.conv2
+  - Type: Conv2d
+  - In/Out channels: 128/32
+⚠ PyTorch Layer: features.denseblock3.denselayer22.conv1
+  - Type: Conv2d
+  - In/Out channels: 928/128
+⚠ PyTorch Layer: features.denseblock3.denselayer22.conv2
+  - Type: Conv2d
+  - In/Out channels: 128/32
+⚠ PyTorch Layer: features.denseblock3.denselayer23.conv1
+  - Type: Conv2d
+  - In/Out channels: 960/128
+⚠ PyTorch Layer: features.denseblock3.denselayer23.conv2
+  - Type: Conv2d
+  - In/Out channels: 128/32
+⚠ PyTorch Layer: features.denseblock3.denselayer24.conv1
+  - Type: Conv2d
+  - In/Out channels: 992/128
+⚠ PyTorch Layer: features.denseblock3.denselayer24.conv2
+  - Type: Conv2d
+  - In/Out channels: 128/32
+⚠ PyTorch Layer: features.transition3.conv
+  - Type: Conv2d
+  - In/Out channels: 1024/512
+⚠ PyTorch Layer: features.denseblock4.denselayer1.conv1
+  - Type: Conv2d
+  - In/Out channels: 512/128
+⚠ PyTorch Layer: features.denseblock4.denselayer1.conv2
+  - Type: Conv2d
+  - In/Out channels: 128/32
+⚠ PyTorch Layer: features.denseblock4.denselayer2.conv1
+  - Type: Conv2d
+  - In/Out channels: 544/128
+⚠ PyTorch Layer: features.denseblock4.denselayer2.conv2
+  - Type: Conv2d
+  - In/Out channels: 128/32
+⚠ PyTorch Layer: features.denseblock4.denselayer3.conv1
+  - Type: Conv2d
+  - In/Out channels: 576/128
+⚠ PyTorch Layer: features.denseblock4.denselayer3.conv2
+  - Type: Conv2d
+  - In/Out channels: 128/32
+⚠ PyTorch Layer: features.denseblock4.denselayer4.conv1
+  - Type: Conv2d
+  - In/Out channels: 608/128
+⚠ PyTorch Layer: features.denseblock4.denselayer4.conv2
+  - Type: Conv2d
+  - In/Out channels: 128/32
+⚠ PyTorch Layer: features.denseblock4.denselayer5.conv1
+  - Type: Conv2d
+  - In/Out channels: 640/128
+⚠ PyTorch Layer: features.denseblock4.denselayer5.conv2
+  - Type: Conv2d
+  - In/Out channels: 128/32
+⚠ PyTorch Layer: features.denseblock4.denselayer6.conv1
+  - Type: Conv2d
+  - In/Out channels: 672/128
+⚠ PyTorch Layer: features.denseblock4.denselayer6.conv2
+  - Type: Conv2d
+  - In/Out channels: 128/32
+⚠ PyTorch Layer: features.denseblock4.denselayer7.conv1
+  - Type: Conv2d
+  - In/Out channels: 704/128
+⚠ PyTorch Layer: features.denseblock4.denselayer7.conv2
+  - Type: Conv2d
+  - In/Out channels: 128/32
+⚠ PyTorch Layer: features.denseblock4.denselayer8.conv1
+  - Type: Conv2d
+  - In/Out channels: 736/128
+⚠ PyTorch Layer: features.denseblock4.denselayer8.conv2
+  - Type: Conv2d
+  - In/Out channels: 128/32
+⚠ PyTorch Layer: features.denseblock4.denselayer9.conv1
+  - Type: Conv2d
+  - In/Out channels: 768/128
+⚠ PyTorch Layer: features.denseblock4.denselayer9.conv2
+  - Type: Conv2d
+  - In/Out channels: 128/32
+⚠ PyTorch Layer: features.denseblock4.denselayer10.conv1
+  - Type: Conv2d
+  - In/Out channels: 800/128
+⚠ PyTorch Layer: features.denseblock4.denselayer10.conv2
+  - Type: Conv2d
+  - In/Out channels: 128/32
+⚠ PyTorch Layer: features.denseblock4.denselayer11.conv1
+  - Type: Conv2d
+  - In/Out channels: 832/128
+⚠ PyTorch Layer: features.denseblock4.denselayer11.conv2
+  - Type: Conv2d
+  - In/Out channels: 128/32
+⚠ PyTorch Layer: features.denseblock4.denselayer12.conv1
+  - Type: Conv2d
+  - In/Out channels: 864/128
+⚠ PyTorch Layer: features.denseblock4.denselayer12.conv2
+  - Type: Conv2d
+  - In/Out channels: 128/32
+⚠ PyTorch Layer: features.denseblock4.denselayer13.conv1
+  - Type: Conv2d
+  - In/Out channels: 896/128
+⚠ PyTorch Layer: features.denseblock4.denselayer13.conv2
+  - Type: Conv2d
+  - In/Out channels: 128/32
+⚠ PyTorch Layer: features.denseblock4.denselayer14.conv1
+  - Type: Conv2d
+  - In/Out channels: 928/128
+⚠ PyTorch Layer: features.denseblock4.denselayer14.conv2
+  - Type: Conv2d
+  - In/Out channels: 128/32
+⚠ PyTorch Layer: features.denseblock4.denselayer15.conv1
+  - Type: Conv2d
+  - In/Out channels: 960/128
+⚠ PyTorch Layer: features.denseblock4.denselayer15.conv2
+  - Type: Conv2d
+  - In/Out channels: 128/32
+⚠ PyTorch Layer: features.denseblock4.denselayer16.conv1
+  - Type: Conv2d
+  - In/Out channels: 992/128
+⚠ PyTorch Layer: features.denseblock4.denselayer16.conv2
+  - Type: Conv2d
+  - In/Out channels: 128/32
+
+============================================================
+CONVERSION SUMMARY:
+  Total Conv2D layers: 120
+  AI3 converted: 0
+  PyTorch remaining: 120
+  Conversion rate: 0.0%
+============================================================
+
+
+Analyzing device placement after AI3 conversion...
+✓ AI3 device distribution:
+  - Parameters on CUDA: 0/364
+  - Parameters on CPU: 364/364
+  - Mixed device usage is expected with AI3
+
+Starting performance testing...
+This will test the model with various input sizes to measure AI3 Implicit Precomputed GEMM performance.
+
+[1/1] Testing with input size 263x263
+  ✓ Created input tensor: torch.Size([1, 3, 263, 263]) on cuda:0
+  GPU Memory - Allocated: 0.00 GB, Reserved: 0.00 GB
+  Running warmup...
+  ✗ Error during warmup: Input type (torch.cuda.FloatTensor) and weight type (torch.FloatTensor) should be the same
+  Note: This may indicate memory or device issues
+  GPU Memory at error: 0.00 GB allocated
+  Measuring performance over 10 iterations...
+    Iteration 1/10
+  ✗ Error during performance measurement: Input type (torch.cuda.FloatTensor) and weight type (torch.FloatTensor) should be the same
+
+================================================================================
+DENSENET121 AI3 IMPLICIT PRECOMPUTED GEMM TESTING COMPLETED
+================================================================================
+Results saved to:
+  - Overall performance: /home/wxs428/densenet/precomp-gemm/DenseNet121_implicit_precomp_gemm_cuda_overall.csv
+  - Layer-wise performance: /home/wxs428/densenet/precomp-gemm/DenseNet121_implicit_precomp_gemm_cuda_layers.csv
+
+Summary:
+  ✓ Tested 1 different input sizes
+  ✓ 10 iterations per input size
+  ✓ AI3 Implicit Precomputed GEMM algorithm optimization
+  ✓ Comprehensive layer-wise performance analysis
+
+Next steps:
+  1. Analyze the CSV files to compare AI3 Implicit Precomputed GEMM performance vs other algorithms
+  2. Run the same test with different AI3 algorithms (gemm, implicit_gemm, winograd, etc.) for comparison
+  3. Compare AI3 implementation vs custom implementations
+================================================================================
+(ai3_env) [wxs428@gput068 precomp-gemm]$ 

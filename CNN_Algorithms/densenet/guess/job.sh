@@ -1,12 +1,12 @@
 #!/bin/bash
-#SBATCH -J resnet152_gemm_gpu      # Job name
-#SBATCH -o resnet152_gemm_gpu.out  # Output file
-#SBATCH --time=20:00:00            # 20 hours of wall time
-#SBATCH -p gpu                     # GPU partition
-#SBATCH -A sxk1942                # Account/Project ID
-#SBATCH -c 4                      # 4 processors
-#SBATCH --mem=32GB               # 32GB memory
-#SBATCH --gpus=1                 # Request 1 GPU
+#SBATCH -J densenet_guess_gpu    # Job name
+#SBATCH -o densenet_guess_gpu.out  # Output file
+#SBATCH --time=20:00:00          # 20 hours of wall time
+#SBATCH -p gpu                   # GPU partition
+#SBATCH -A sxk1942              # Account/Project ID
+#SBATCH -c 4                    # 4 processors
+#SBATCH --mem=32GB             # 32GB memory
+#SBATCH --gpus=1               # Request 1 GPU
 
 # Exit on any error
 set -e
@@ -65,7 +65,7 @@ else:
 END_PYTHON
 
 if [ $? -ne 0 ]; then
-    echo "Error: Failed to import required packages or CUDA not available"
+    echo "Error: Failed to import required packages"
     exit 1
 fi
 
@@ -75,7 +75,7 @@ RESULTS_DIR=$SLURM_SUBMIT_DIR/results_${TIMESTAMP}
 mkdir -p $RESULTS_DIR
 
 # Create a directory in scratch for the job
-SCRATCH_DIR=$PFSDIR/resnet152_gemm_gpu_${SLURM_JOB_ID}
+SCRATCH_DIR=$PFSDIR/densenet_guess_gpu_${SLURM_JOB_ID}
 if ! mkdir -p $SCRATCH_DIR; then
     echo "Failed to create scratch directory: $SCRATCH_DIR"
     exit 1
@@ -96,8 +96,14 @@ echo "Copied Python script to scratch directory"
 cd $SCRATCH_DIR
 echo "Changed to scratch directory"
 
+# Set GPU optimization environment variables
+export CUDA_LAUNCH_BLOCKING=0
+export CUDA_CACHE_DISABLE=0
+export CUDA_VISIBLE_DEVICES=0
+echo "Set CUDA environment variables for optimal GPU performance"
+
 # Run the test script and capture all output
-echo "Running Python script..."
+echo "Running DenseNet Guess Algorithm Python script..."
 python python.py 2>&1 | tee python_output.log
 
 # Check if the script executed successfully
@@ -114,6 +120,22 @@ fi
 echo "Copying results to: $RESULTS_DIR"
 cp -ru *.csv python_output.log $RESULTS_DIR/
 
+# Print summary of results
+echo "Results Summary:"
+echo "==============="
+if [ -f "DenseNet121_guess_cuda_overall.csv" ]; then
+    echo "Overall results file: DenseNet121_guess_cuda_overall.csv"
+    echo "Number of test cases: $(tail -n +2 DenseNet121_guess_cuda_overall.csv | wc -l)"
+fi
+
+if [ -f "DenseNet121_guess_cuda_layers.csv" ]; then
+    echo "Layer-wise results file: DenseNet121_guess_cuda_layers.csv"
+    echo "Number of layer measurements: $(tail -n +2 DenseNet121_guess_cuda_layers.csv | wc -l)"
+fi
+
+echo "Files copied to: $RESULTS_DIR"
+ls -la $RESULTS_DIR
+
 # Cleanup scratch directory
 if [ -d "$SCRATCH_DIR" ]; then
     rm -rf $SCRATCH_DIR
@@ -123,4 +145,7 @@ fi
 # Deactivate virtual environment
 deactivate
 
-echo "Job completed successfully. Results are in: $RESULTS_DIR"
+echo "==========================================="
+echo "DenseNet Guess Algorithm Job completed successfully!"
+echo "Results directory: $RESULTS_DIR"
+echo "===========================================" 
