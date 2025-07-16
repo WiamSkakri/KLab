@@ -89,6 +89,19 @@ print_with_timestamp(
     f"Data preprocessing complete. Features shape: {X.shape}, Target shape: {y.shape}")
 
 
+# # ===========================
+# Custom MAPE Loss Function
+# ===========================
+class MAPELoss(nn.Module):
+    def __init__(self, eps=1e-8):
+        super(MAPELoss, self).__init__()
+        self.eps = eps
+
+    def forward(self, y_pred, y_true):
+        mask = y_true != 0
+        return torch.mean(torch.abs((y_true[mask] - y_pred[mask]) / (y_true[mask] + self.eps))) * 100
+
+
 # Pytorch Dataset wrapper that prepare the data for the model
 """
 Pandas DataFrame → CNNExecutionDataset → DataLoader → Neural Network
@@ -322,7 +335,7 @@ for fold_data in fold_results:
 
     # Create fresh model for this fold
     model = CNNExecutionPredictor(input_size).to(device)
-    criterion = nn.MSELoss()
+    criterion = MAPELoss()
     optimizer = optim.Adam(
         model.parameters(), lr=learning_rate, weight_decay=1e-5)
     scheduler = optim.lr_scheduler.ReduceLROnPlateau(
