@@ -171,24 +171,30 @@ class CNNExecutionPredictor(nn.Module):
     def __init__(self, input_size, dropout_rate=0.3):
         super(CNNExecutionPredictor, self).__init__()
 
-        # Enhanced architecture for better GPU utilization
+        # Enhanced architecture with much larger hidden dimensions for better capacity
 
-        # Transforms the input features into a 256-dimensional vector
-        # A wide first layer is used to capture complex patterns in the data
-        self.layer1 = nn.Linear(input_size, 256)
+        # Transforms the input features into a 2048-dimensional vector
+        # Much wider first layer to capture more complex patterns in the data
+        self.layer1 = nn.Linear(input_size, 2048)
         # Batch normalization is used to stabilize the training process
         # by normalizing the input to have zero mean and unit variance
         # Avoids vanishing gradients problem and exploding gradients problem
-        self.batch_norm1 = nn.BatchNorm1d(256)
-        # The second layer reduces the dimensionality to 128
-        # This is a common practice to reduce the computational complexity
-        # and improve the model's generalization
-        self.layer2 = nn.Linear(256, 128)
-        self.batch_norm2 = nn.BatchNorm1d(128)
-        self.layer3 = nn.Linear(128, 64)
-        self.batch_norm3 = nn.BatchNorm1d(64)
-        self.layer4 = nn.Linear(64, 32)
-        self.output = nn.Linear(32, 1)
+        self.batch_norm1 = nn.BatchNorm1d(2048)
+        # The second layer reduces the dimensionality to 1024
+        self.layer2 = nn.Linear(2048, 1024)
+        self.batch_norm2 = nn.BatchNorm1d(1024)
+        # Third layer reduces to 512
+        self.layer3 = nn.Linear(1024, 512)
+        self.batch_norm3 = nn.BatchNorm1d(512)
+        # Fourth layer reduces to 256
+        self.layer4 = nn.Linear(512, 256)
+        self.batch_norm4 = nn.BatchNorm1d(256)
+        # Fifth layer reduces to 128
+        self.layer5 = nn.Linear(256, 128)
+        self.batch_norm5 = nn.BatchNorm1d(128)
+        # Sixth layer reduces to 64
+        self.layer6 = nn.Linear(128, 64)
+        self.output = nn.Linear(64, 1)
 
         # Activation and regularization
         self.relu = nn.ReLU()
@@ -198,26 +204,38 @@ class CNNExecutionPredictor(nn.Module):
         self.dropout = nn.Dropout(dropout_rate)
 
     def forward(self, x):
-        # Layer 1
+        # Layer 1 (2048 units)
         x = self.layer1(x)
         x = self.batch_norm1(x)
         x = self.relu(x)
         x = self.dropout(x)
 
-        # Layer 2
+        # Layer 2 (1024 units)
         x = self.layer2(x)
         x = self.batch_norm2(x)
         x = self.relu(x)
         x = self.dropout(x)
 
-        # Layer 3
+        # Layer 3 (512 units)
         x = self.layer3(x)
         x = self.batch_norm3(x)
         x = self.relu(x)
         x = self.dropout(x)
 
-        # Layer 4
+        # Layer 4 (256 units)
         x = self.layer4(x)
+        x = self.batch_norm4(x)
+        x = self.relu(x)
+        x = self.dropout(x)
+
+        # Layer 5 (128 units)
+        x = self.layer5(x)
+        x = self.batch_norm5(x)
+        x = self.relu(x)
+        x = self.dropout(x)
+
+        # Layer 6 (64 units)
+        x = self.layer6(x)
         x = self.relu(x)
         x = self.dropout(x)
 
