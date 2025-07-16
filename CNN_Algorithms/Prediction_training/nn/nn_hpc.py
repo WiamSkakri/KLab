@@ -101,6 +101,21 @@ class MAPELoss(nn.Module):
         mask = y_true != 0
         return torch.mean(torch.abs((y_true[mask] - y_pred[mask]) / (y_true[mask] + self.eps))) * 100
 
+# ===========================
+# Custom hybrid loss function
+# ===========================
+
+
+class HybridLoss(nn.Module):
+    def __init__(self, alpha=0.8, eps=1e-8):
+        super(HybridLoss, self).__init__()
+        self.alpha = alpha
+        self.mape = MAPELoss(eps)
+        self.mae = nn.L1Loss()
+
+    def forward(self, y_pred, y_true):
+        return self.alpha * self.mape(y_pred, y_true) + (1 - self.alpha) * self.mae(y_pred, y_true)
+
 
 # Pytorch Dataset wrapper that prepare the data for the model
 """
@@ -301,8 +316,9 @@ def validate_model(model, val_loader, criterion, device):
 
 
 # Training parameters
+min_epochs = 110
 epochs = 250  # Increased from 150 for better convergence
-patience = 30  # Increased proportionally for more training time
+patience = 50
 input_size = X.shape[1]
 learning_rate = 0.001
 
@@ -335,14 +351,14 @@ for fold_data in fold_results:
 
     # Create fresh model for this fold
     model = CNNExecutionPredictor(input_size).to(device)
-    criterion = MAPELoss()
+    criterion = HybridLoss()
     optimizer = optim.Adam(
         model.parameters(), lr=learning_rate, weight_decay=1e-5)
     scheduler = optim.lr_scheduler.ReduceLROnPlateau(
         optimizer, patience=10, factor=0.5, verbose=True)
 
     # Early stopping variables
-    best_val_loss = float('inf')
+    best_val_mape = float('inf')
     patience_counter = 0
     best_model_state = None
 
@@ -350,7 +366,7 @@ for fold_data in fold_results:
     fold_history = {
         'fold': fold,
         'train_losses': [],
-        'val_losses': [],
+        'val_mapees': [],
         'train_mapes': [],
         'val_mapes': [],
         'train_maes': [],
@@ -389,12 +405,13 @@ for fold_data in fold_results:
         # Validation phase
         train_metrics = validate_model(model, train_loader, criterion, device)
         val_metrics = validate_model(model, val_loader, criterion, device)
-        val_loss = val_metrics['loss']
+        # val_mape = val_metrics['loss']
+        val_mape = val_metrics['mape']
 
         # Store metrics for plotting
         fold_history['epochs'].append(epoch + 1)
         fold_history['train_losses'].append(avg_train_loss)
-        fold_history['val_losses'].append(val_loss)
+        fold_history['val_mapees'].append(val_mape)
         fold_history['train_mapes'].append(train_metrics['mape'])
         fold_history['val_mapes'].append(val_metrics['mape'])
         fold_history['train_maes'].append(train_metrics['mae'])
@@ -404,11 +421,12 @@ for fold_data in fold_results:
         fold_history['learning_rates'].append(optimizer.param_groups[0]['lr'])
 
         # Learning rate scheduling
-        scheduler.step(val_loss)
+        # scheduler.step(val_mape)
+        scheduler.step(val_mape)
 
         # Early stopping check
-        if val_loss < best_val_loss:
-            best_val_loss = val_loss
+        if val_mape < best_val_mape:
+            best_val_mape = val_mape
             patience_counter = 0
             best_model_state = model.state_dict().copy()
         else:
@@ -420,12 +438,12 @@ for fold_data in fold_results:
         if (epoch + 1) % 10 == 0:
             print_with_timestamp(f"  Epoch {epoch+1:3d}/{epochs} | "
                                  f"Train Loss: {avg_train_loss:.4f} | "
-                                 f"Val Loss: {val_loss:.4f} | "
+                                 f"Val Loss: {val_mape:.4f} | "
                                  f"Val MAPE: {val_metrics['mape']:.2f}% | "
                                  f"Time: {epoch_time:.2f}s")
 
-        # Early stopping
-        if patience_counter >= patience:
+        # Early stopping with min_epochs condition
+        if (epoch + 1) > min_epochs and patience_counter >= patience:
             print_with_timestamp(f"  Early stopping at epoch {epoch+1}")
             break
 
@@ -449,7 +467,7 @@ for fold_data in fold_results:
         'train_r2': train_metrics['r2'],
         'val_r2': val_metrics['r2'],
         'epochs_trained': epoch + 1,
-        'best_val_loss': best_val_loss,
+        'best_val_mape': best_val_mape,
         'training_time': fold_time
     }
 
@@ -567,7 +585,7 @@ plt.figure(figsize=(15, 10))
 plt.subplot(2, 3, 1)
 plt.plot(best_fold_history['epochs'], best_fold_history['train_losses'],
          label='Training Loss', color='blue', linewidth=2)
-plt.plot(best_fold_history['epochs'], best_fold_history['val_losses'],
+plt.plot(best_fold_history['epochs'], best_fold_history['val_mapees'],
          label='Validation Loss', color='red', linewidth=2)
 plt.xlabel('Epoch')
 plt.ylabel('MSE Loss')
