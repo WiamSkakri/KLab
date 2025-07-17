@@ -317,8 +317,8 @@ def validate_model(model, val_loader, criterion, device):
 
 # Training parameters
 min_epochs = 110
-epochs = 250  # Increased from 150 for better convergence
-patience = 50
+epochs = 350  # Increased from 150 for better convergence
+patience = 100
 input_size = X.shape[1]
 learning_rate = 0.001
 
