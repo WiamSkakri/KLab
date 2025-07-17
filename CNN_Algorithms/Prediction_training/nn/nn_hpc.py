@@ -91,30 +91,30 @@ print_with_timestamp(
 
 # # ===========================
 # Custom MAPE Loss Function
-# ===========================
-class MAPELoss(nn.Module):
-    def __init__(self, eps=1e-8):
-        super(MAPELoss, self).__init__()
-        self.eps = eps
+# # ===========================
+# class MAPELoss(nn.Module):
+#     def __init__(self, eps=1e-8):
+#         super(MAPELoss, self).__init__()
+#         self.eps = eps
 
-    def forward(self, y_pred, y_true):
-        mask = y_true != 0
-        return torch.mean(torch.abs((y_true[mask] - y_pred[mask]) / (y_true[mask] + self.eps))) * 100
+#     def forward(self, y_pred, y_true):
+#         mask = y_true != 0
+#         return torch.mean(torch.abs((y_true[mask] - y_pred[mask]) / (y_true[mask] + self.eps))) * 100
 
 # ===========================
 # Custom hybrid loss function
 # ===========================
 
 
-class HybridLoss(nn.Module):
-    def __init__(self, alpha=0.8, eps=1e-8):
-        super(HybridLoss, self).__init__()
-        self.alpha = alpha
-        self.mape = MAPELoss(eps)
-        self.mae = nn.L1Loss()
+# class HybridLoss(nn.Module):
+#     def __init__(self, alpha=0.8, eps=1e-8):
+#         super(HybridLoss, self).__init__()
+#         self.alpha = alpha
+#         self.mape = MAPELoss(eps)
+#         self.mae = nn.L1Loss()
 
-    def forward(self, y_pred, y_true):
-        return self.alpha * self.mape(y_pred, y_true) + (1 - self.alpha) * self.mae(y_pred, y_true)
+#     def forward(self, y_pred, y_true):
+#         return self.alpha * self.mape(y_pred, y_true) + (1 - self.alpha) * self.mae(y_pred, y_true)
 
 
 # Pytorch Dataset wrapper that prepare the data for the model
@@ -317,10 +317,10 @@ def validate_model(model, val_loader, criterion, device):
 
 # Training parameters
 min_epochs = 200
-epochs = 350  # Increased from 150 for better convergence
+epochs = 400  # Increased from 150 for better convergence
 patience = 150
 input_size = X.shape[1]
-learning_rate = 0.0005
+learning_rate = 0.00001
 
 # Store results from all folds
 fold_metrics = []
@@ -351,7 +351,7 @@ for fold_data in fold_results:
 
     # Create fresh model for this fold
     model = CNNExecutionPredictor(input_size).to(device)
-    criterion = HybridLoss()
+    criterion = nn.L1Loss()
     optimizer = optim.Adam(
         model.parameters(), lr=learning_rate, weight_decay=1e-5)
     scheduler = optim.lr_scheduler.ReduceLROnPlateau(
