@@ -320,7 +320,7 @@ min_epochs = 200
 epochs = 400  # Increased from 150 for better convergence
 patience = 150
 input_size = X.shape[1]
-learning_rate = 0.00001
+learning_rate = 0.0001
 
 # Store results from all folds
 fold_metrics = []
