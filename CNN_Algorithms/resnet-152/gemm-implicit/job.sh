@@ -1,12 +1,13 @@
 #!/bin/bash
-#SBATCH -J resnet152_implicit_gemm_gpu    # Job name
-#SBATCH -o resnet152_implicit_gemm_gpu.out  # Output file
+#SBATCH -J resnet152_implicit_gemm_gpu2v100  # Job name
+#SBATCH -o resnet152_implicit_gemm_gpu2v100.out  # Output file
 #SBATCH --time=20:00:00                   # 20 hours of wall time
 #SBATCH -p gpu                            # GPU partition
 #SBATCH -A sxk1942                       # Account/Project ID
 #SBATCH -c 4                             # 4 processors
 #SBATCH --mem=32GB                       # 32GB memory
-#SBATCH --gpus=1                         # Request 1 GPU
+#SBATCH -C gpu2v100                      # Constraint for 2x V100 GPU
+#SBATCH --gres=gpu:1                     # Request 1 GPU
 
 # Exit on any error
 set -e
@@ -75,7 +76,7 @@ RESULTS_DIR=$SLURM_SUBMIT_DIR/results_${TIMESTAMP}
 mkdir -p $RESULTS_DIR
 
 # Create a directory in scratch for the job
-SCRATCH_DIR=$PFSDIR/resnet152_implicit_gemm_gpu_${SLURM_JOB_ID}
+SCRATCH_DIR=$PFSDIR/resnet152_implicit_gemm_gpu2v100_${SLURM_JOB_ID}
 if ! mkdir -p $SCRATCH_DIR; then
     echo "Failed to create scratch directory: $SCRATCH_DIR"
     exit 1
@@ -97,7 +98,7 @@ cd $SCRATCH_DIR
 echo "Changed to scratch directory"
 
 # Run the test script and capture all output
-echo "Running ResNet-152 Implicit GEMM performance test..."
+echo "Running ResNet-152 Implicit GEMM performance test on gpu2v100..."
 python python.py 2>&1 | tee python_output.log
 
 # Check if the script executed successfully
@@ -127,7 +128,7 @@ fi
 # Deactivate virtual environment
 deactivate
 
-echo "ResNet-152 Implicit GEMM job completed successfully. Results are in: $RESULTS_DIR"
+echo "ResNet-152 Implicit GEMM gpu2v100 job completed successfully. Results are in: $RESULTS_DIR"
 echo "Expected output files:"
 echo "  - ResNet152_implicit_gemm_cuda_overall.csv"
 echo "  - ResNet152_implicit_gemm_cuda_layers.csv"

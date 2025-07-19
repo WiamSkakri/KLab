@@ -1,6 +1,6 @@
 #!/bin/bash
-#SBATCH -J vgg16_gemm_gpu      # Job name
-#SBATCH -o vgg16_gemm_gpu.out  # Output file
+#SBATCH -J vgg16_gemm_gpu2v100      # Job name
+#SBATCH -o vgg16_gemm_gpu2v100.out  # Output file
 #SBATCH --time=20:00:00          # 20 hours of wall time
 #SBATCH -p gpu                   # GPU partition
 #SBATCH -A sxk1942              # Account/Project ID

@@ -6,11 +6,9 @@
 #SBATCH -A sxk1942              # Account/Project ID
 #SBATCH -c 8                    # 8 processors (matching your srun command)
 #SBATCH --mem=64GB             # 64GB memory (AI3 GEMM is CPU-intensive)
-#SBATCH -C gpuL40s            # Constraint for L40s GPU
+#SBATCH -C gpul40s            # Constraint for L40s GPU
 #SBATCH --gres=gpu:1           # Request 1 GPU
 
-# Note: AI3 GEMM algorithm runs on CPU even with CUDA available
-# The GPU will be used for initialization but computation is CPU-bound
 
 # Exit on any error
 set -e

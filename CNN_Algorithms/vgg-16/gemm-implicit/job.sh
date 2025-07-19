@@ -6,7 +6,7 @@
 #SBATCH -A sxk1942                     # Account/Project ID
 #SBATCH -c 4                           # 4 processors
 #SBATCH --mem=32GB                     # 32GB memory
-#SBATCH -C gpuv100                     # Constraint for V100 GPU
+#SBATCH -C gpu2v100                     # Constraint for V100 GPU
 #SBATCH --gres=gpu:1                   # Request 1 GPU
 
 # Exit on any error

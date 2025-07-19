@@ -1,12 +1,13 @@
 #!/bin/bash
-#SBATCH -J densenet_implicit_gemm_gpu    # Job name
-#SBATCH -o densenet_implicit_gemm_gpu.out  # Output file
+#SBATCH -J densenet_implicit_gemm_gpu2v100    # Job name
+#SBATCH -o densenet_implicit_gemm_gpu2v100.out  # Output file
 #SBATCH --time=20:00:00          # 20 hours of wall time
 #SBATCH -p gpu                   # GPU partition
 #SBATCH -A sxk1942              # Account/Project ID
 #SBATCH -c 4                    # 4 processors
 #SBATCH --mem=32GB             # 32GB memory
-#SBATCH --gpus=1               # Request 1 GPU
+#SBATCH -C gpu2v100            # Constraint for V100 GPU
+#SBATCH --gres=gpu:1           # Request 1 GPU
 
 # Exit on any error
 set -e
@@ -75,7 +76,7 @@ RESULTS_DIR=$SLURM_SUBMIT_DIR/results_${TIMESTAMP}
 mkdir -p $RESULTS_DIR
 
 # Create a directory in scratch for the job
-SCRATCH_DIR=$PFSDIR/densenet_implicit_gemm_gpu_${SLURM_JOB_ID}
+SCRATCH_DIR=$PFSDIR/densenet_implicit_gemm_gpu2v100_${SLURM_JOB_ID}
 if ! mkdir -p $SCRATCH_DIR; then
     echo "Failed to create scratch directory: $SCRATCH_DIR"
     exit 1

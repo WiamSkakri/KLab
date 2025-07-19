@@ -1,13 +1,13 @@
 #!/bin/bash
-#SBATCH -J googlenet_gemm_gpu2v100      # Job name
-#SBATCH -o googlenet_gemm_gpu2v100.out  # Output file
-#SBATCH --time=20:00:00                 # 20 hours of wall time
-#SBATCH -p gpu                   # GPU partition
-#SBATCH -A sxk1942              # Account/Project ID
-#SBATCH -c 8                    # 8 processors (matching your srun command)
-#SBATCH --mem=64GB             # 64GB memory (matching your srun command)
-#SBATCH -C gpu2v100            # Constraint for V100 GPU
-#SBATCH --gres=gpu:1           # Request 1 GPU
+#SBATCH -J googlenet_gemm_gpuL40s      # Job name
+#SBATCH -o googlenet_gemm_gpuL40s.out  # Output file
+#SBATCH --time=20:00:00               # 20 hours of wall time
+#SBATCH -p gpu                        # GPU partition
+#SBATCH -A sxk1942                   # Account/Project ID
+#SBATCH -c 8                         # 8 processors (matching L40s pattern)
+#SBATCH --mem=64GB                  # 64GB memory (AI3 GEMM is CPU-intensive)
+#SBATCH -C gpul40s                  # Constraint for L40s GPU
+#SBATCH --gres=gpu:1                # Request 1 GPU
 
 # Exit on any error
 set -e
@@ -76,7 +76,7 @@ RESULTS_DIR=$SLURM_SUBMIT_DIR/results_${TIMESTAMP}
 mkdir -p $RESULTS_DIR
 
 # Create a directory in scratch for the job
-SCRATCH_DIR=$PFSDIR/googlenet_gemm_gpu2v100_${SLURM_JOB_ID}
+SCRATCH_DIR=$PFSDIR/googlenet_gemm_gpuL40s_${SLURM_JOB_ID}
 if ! mkdir -p $SCRATCH_DIR; then
     echo "Failed to create scratch directory: $SCRATCH_DIR"
     exit 1
@@ -128,7 +128,7 @@ fi
 # Deactivate virtual environment
 deactivate
 
-echo "GoogleNet GEMM GPU2V100 job completed successfully. Results are in: $RESULTS_DIR"
+echo "GoogleNet GEMM L40s job completed successfully. Results are in: $RESULTS_DIR"
 echo "Expected output files:"
 echo "  - GoogleNet_gemm_cuda_overall.csv"
 echo "  - GoogleNet_gemm_cuda_layers.csv"
