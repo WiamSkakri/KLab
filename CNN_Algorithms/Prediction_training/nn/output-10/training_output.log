@@ -1,0 +1,312 @@
+[2025-07-18 09:30:28] Starting CNN Execution Time Prediction Training
+[2025-07-18 09:30:28] Using device: cuda
+[2025-07-18 09:30:28] GPU: NVIDIA GeForce RTX 2080 Ti
+[2025-07-18 09:30:28] GPU Memory: 10.6 GB
+[2025-07-18 09:30:28] CUDA version: 12.4
+[2025-07-18 09:30:28] Loading data from combined.csv
+[2025-07-18 09:30:28] Data loaded successfully. Shape: (77000, 9)
+[2025-07-18 09:30:28] Scaling numerical features: ['Batch_Size', 'Input_Size', 'In_Channels', 'Out_Channels', 'Kernel_Size', 'Stride', 'Padding']
+[2025-07-18 09:30:28] Features: 9
+[2025-07-18 09:30:28] Feature columns: ['Batch_Size', 'Input_Size', 'In_Channels', 'Out_Channels', 'Kernel_Size', 'Stride', 'Padding', 'Algorithm_direct', 'Algorithm_smm']
+[2025-07-18 09:30:28] Data preprocessing complete. Features shape: (77000, 9), Target shape: (77000,)
+[2025-07-18 09:30:28] Training with 5-Fold Cross Validation
+[2025-07-18 09:30:28] Total samples: 77000
+[2025-07-18 09:30:28] Features: 9
+[2025-07-18 09:30:28] Preparing FOLD 1
+[2025-07-18 09:30:28] Training samples: 61600
+[2025-07-18 09:30:28] Validation samples: 15400
+[2025-07-18 09:30:28] Preparing FOLD 2
+[2025-07-18 09:30:28] Training samples: 61600
+[2025-07-18 09:30:28] Validation samples: 15400
+[2025-07-18 09:30:28] Preparing FOLD 3
+[2025-07-18 09:30:28] Training samples: 61600
+[2025-07-18 09:30:28] Validation samples: 15400
+[2025-07-18 09:30:28] Preparing FOLD 4
+[2025-07-18 09:30:28] Training samples: 61600
+[2025-07-18 09:30:28] Validation samples: 15400
+[2025-07-18 09:30:28] Preparing FOLD 5
+[2025-07-18 09:30:28] Training samples: 61600
+[2025-07-18 09:30:28] Validation samples: 15400
+[2025-07-18 09:30:28] Starting 5-Fold Cross Validation Training
+[2025-07-18 09:30:28] Epochs: 600, Early Stopping Patience: 150
+[2025-07-18 09:30:28] Learning Rate: 0.0001
+[2025-07-18 09:30:28] ================================================================================
+[2025-07-18 09:30:28] Starting FOLD 1
+[2025-07-18 09:30:28] ----------------------------------------
+/home/wxs428/ai3_env/lib/python3.12/site-packages/torch/optim/lr_scheduler.py:62: UserWarning: The verbose parameter is deprecated. Please use get_last_lr() to access the learning rate.
+  warnings.warn(
+[2025-07-18 09:31:48]   Epoch  10/600 | Train Loss: 20.6077 | Val Loss: 21.1803 | Val MAPE: 21.18% | Time: 7.48s
+[2025-07-18 09:33:03]   Epoch  20/600 | Train Loss: 17.3290 | Val Loss: 20.1215 | Val MAPE: 20.12% | Time: 7.54s
+[2025-07-18 09:34:18]   Epoch  30/600 | Train Loss: 15.0765 | Val Loss: 23.3218 | Val MAPE: 23.32% | Time: 7.60s
+[2025-07-18 09:35:33]   Epoch  40/600 | Train Loss: 13.6901 | Val Loss: 21.2919 | Val MAPE: 21.29% | Time: 7.59s
+[2025-07-18 09:36:48]   Epoch  50/600 | Train Loss: 13.0953 | Val Loss: 21.6287 | Val MAPE: 21.63% | Time: 7.52s
+[2025-07-18 09:38:04]   Epoch  60/600 | Train Loss: 12.6434 | Val Loss: 21.9565 | Val MAPE: 21.96% | Time: 7.55s
+[2025-07-18 09:39:19]   Epoch  70/600 | Train Loss: 12.6851 | Val Loss: 20.1925 | Val MAPE: 20.19% | Time: 7.56s
+[2025-07-18 09:40:34]   Epoch  80/600 | Train Loss: 12.3864 | Val Loss: 20.4451 | Val MAPE: 20.45% | Time: 7.27s
+[2025-07-18 09:41:49]   Epoch  90/600 | Train Loss: 12.2914 | Val Loss: 21.2804 | Val MAPE: 21.28% | Time: 7.51s
+[2025-07-18 09:43:04]   Epoch 100/600 | Train Loss: 12.1272 | Val Loss: 22.7448 | Val MAPE: 22.74% | Time: 7.60s
+[2025-07-18 09:44:19]   Epoch 110/600 | Train Loss: 12.0169 | Val Loss: 19.7181 | Val MAPE: 19.72% | Time: 7.53s
+[2025-07-18 09:45:35]   Epoch 120/600 | Train Loss: 12.1084 | Val Loss: 22.0162 | Val MAPE: 22.02% | Time: 7.45s
+[2025-07-18 09:46:50]   Epoch 130/600 | Train Loss: 11.8747 | Val Loss: 22.1345 | Val MAPE: 22.13% | Time: 7.54s
+[2025-07-18 09:48:05]   Epoch 140/600 | Train Loss: 11.7881 | Val Loss: 20.5890 | Val MAPE: 20.59% | Time: 7.54s
+[2025-07-18 09:49:21]   Epoch 150/600 | Train Loss: 11.8048 | Val Loss: 20.3396 | Val MAPE: 20.34% | Time: 7.63s
+[2025-07-18 09:50:35]   Epoch 160/600 | Train Loss: 11.9015 | Val Loss: 21.0774 | Val MAPE: 21.08% | Time: 7.52s
+[2025-07-18 09:51:50]   Epoch 170/600 | Train Loss: 11.8996 | Val Loss: 20.5847 | Val MAPE: 20.58% | Time: 7.55s
+[2025-07-18 09:53:05]   Epoch 180/600 | Train Loss: 11.9208 | Val Loss: 19.7691 | Val MAPE: 19.77% | Time: 7.49s
+[2025-07-18 09:54:21]   Epoch 190/600 | Train Loss: 11.9439 | Val Loss: 21.0914 | Val MAPE: 21.09% | Time: 7.63s
+[2025-07-18 09:55:37]   Epoch 200/600 | Train Loss: 11.9256 | Val Loss: 21.3710 | Val MAPE: 21.37% | Time: 7.51s
+[2025-07-18 09:56:53]   Epoch 210/600 | Train Loss: 11.9004 | Val Loss: 21.5808 | Val MAPE: 21.58% | Time: 7.55s
+[2025-07-18 09:58:08]   Epoch 220/600 | Train Loss: 11.8660 | Val Loss: 20.9438 | Val MAPE: 20.94% | Time: 7.49s
+[2025-07-18 09:59:23]   Epoch 230/600 | Train Loss: 12.0970 | Val Loss: 20.5301 | Val MAPE: 20.53% | Time: 7.45s
+[2025-07-18 10:00:36]   Epoch 240/600 | Train Loss: 11.9139 | Val Loss: 20.1393 | Val MAPE: 20.14% | Time: 6.96s
+[2025-07-18 10:01:45]   Epoch 250/600 | Train Loss: 11.9016 | Val Loss: 20.9666 | Val MAPE: 20.97% | Time: 6.86s
+[2025-07-18 10:02:53]   Epoch 260/600 | Train Loss: 11.9195 | Val Loss: 19.9601 | Val MAPE: 19.96% | Time: 6.95s
+[2025-07-18 10:04:02]   Epoch 270/600 | Train Loss: 12.0518 | Val Loss: 19.7218 | Val MAPE: 19.72% | Time: 6.80s
+[2025-07-18 10:05:10]   Epoch 280/600 | Train Loss: 11.9715 | Val Loss: 19.6419 | Val MAPE: 19.64% | Time: 6.78s
+[2025-07-18 10:06:18]   Epoch 290/600 | Train Loss: 11.9311 | Val Loss: 19.6077 | Val MAPE: 19.61% | Time: 6.80s
+[2025-07-18 10:07:29]   Epoch 300/600 | Train Loss: 11.8118 | Val Loss: 21.0434 | Val MAPE: 21.04% | Time: 7.26s
+[2025-07-18 10:08:40]   Epoch 310/600 | Train Loss: 12.1802 | Val Loss: 21.5454 | Val MAPE: 21.55% | Time: 7.06s
+[2025-07-18 10:09:52]   Epoch 320/600 | Train Loss: 11.7470 | Val Loss: 20.8417 | Val MAPE: 20.84% | Time: 7.29s
+[2025-07-18 10:11:04]   Epoch 330/600 | Train Loss: 11.9474 | Val Loss: 21.7669 | Val MAPE: 21.77% | Time: 7.27s
+[2025-07-18 10:12:16]   Epoch 340/600 | Train Loss: 11.9542 | Val Loss: 19.0863 | Val MAPE: 19.09% | Time: 7.23s
+[2025-07-18 10:12:53]   Early stopping at epoch 345
+[2025-07-18 10:12:55]   Fold 1 Complete in 2546.94 seconds
+[2025-07-18 10:12:55]      Train MAPE: 21.67% | Val MAPE: 21.74%
+[2025-07-18 10:12:55]      Train MAE:  9.5861 | Val MAE:  9.6660
+[2025-07-18 10:12:55]      Train R²:   0.8924 | Val R²:   0.8826
+[2025-07-18 10:12:55]      Epochs:     345/600
+[2025-07-18 10:12:55] Starting FOLD 2
+[2025-07-18 10:12:55] ----------------------------------------
+/home/wxs428/ai3_env/lib/python3.12/site-packages/torch/optim/lr_scheduler.py:62: UserWarning: The verbose parameter is deprecated. Please use get_last_lr() to access the learning rate.
+  warnings.warn(
+[2025-07-18 10:14:08]   Epoch  10/600 | Train Loss: 20.6390 | Val Loss: 23.7620 | Val MAPE: 23.76% | Time: 7.20s
+[2025-07-18 10:15:19]   Epoch  20/600 | Train Loss: 17.8041 | Val Loss: 22.8661 | Val MAPE: 22.87% | Time: 7.26s
+[2025-07-18 10:16:32]   Epoch  30/600 | Train Loss: 15.6526 | Val Loss: 23.8331 | Val MAPE: 23.83% | Time: 7.24s
+[2025-07-18 10:17:45]   Epoch  40/600 | Train Loss: 14.8077 | Val Loss: 22.0256 | Val MAPE: 22.03% | Time: 7.14s
+[2025-07-18 10:18:58]   Epoch  50/600 | Train Loss: 14.4852 | Val Loss: 20.5248 | Val MAPE: 20.52% | Time: 7.37s
+[2025-07-18 10:20:10]   Epoch  60/600 | Train Loss: 13.8170 | Val Loss: 20.6320 | Val MAPE: 20.63% | Time: 7.32s
+[2025-07-18 10:21:22]   Epoch  70/600 | Train Loss: 13.7339 | Val Loss: 20.6404 | Val MAPE: 20.64% | Time: 7.27s
+[2025-07-18 10:22:35]   Epoch  80/600 | Train Loss: 13.6502 | Val Loss: 23.8357 | Val MAPE: 23.84% | Time: 7.43s
+[2025-07-18 10:23:47]   Epoch  90/600 | Train Loss: 13.4229 | Val Loss: 21.1195 | Val MAPE: 21.12% | Time: 7.38s
+[2025-07-18 10:25:00]   Epoch 100/600 | Train Loss: 13.3442 | Val Loss: 20.9326 | Val MAPE: 20.93% | Time: 7.33s
+[2025-07-18 10:26:13]   Epoch 110/600 | Train Loss: 13.3494 | Val Loss: 20.4867 | Val MAPE: 20.49% | Time: 7.09s
+[2025-07-18 10:27:25]   Epoch 120/600 | Train Loss: 13.5111 | Val Loss: 20.4843 | Val MAPE: 20.48% | Time: 7.17s
+[2025-07-18 10:28:38]   Epoch 130/600 | Train Loss: 13.4648 | Val Loss: 21.7082 | Val MAPE: 21.71% | Time: 7.28s
+[2025-07-18 10:29:51]   Epoch 140/600 | Train Loss: 13.3985 | Val Loss: 20.7715 | Val MAPE: 20.77% | Time: 7.27s
+[2025-07-18 10:31:03]   Epoch 150/600 | Train Loss: 13.2447 | Val Loss: 23.0519 | Val MAPE: 23.05% | Time: 7.26s
+[2025-07-18 10:32:15]   Epoch 160/600 | Train Loss: 13.2364 | Val Loss: 20.7537 | Val MAPE: 20.75% | Time: 7.21s
+[2025-07-18 10:33:27]   Epoch 170/600 | Train Loss: 13.2703 | Val Loss: 22.6794 | Val MAPE: 22.68% | Time: 7.24s
+[2025-07-18 10:34:40]   Epoch 180/600 | Train Loss: 13.5090 | Val Loss: 20.6704 | Val MAPE: 20.67% | Time: 7.16s
+[2025-07-18 10:35:51]   Epoch 190/600 | Train Loss: 13.4423 | Val Loss: 20.0531 | Val MAPE: 20.05% | Time: 7.10s
+[2025-07-18 10:37:03]   Epoch 200/600 | Train Loss: 13.3246 | Val Loss: 20.5463 | Val MAPE: 20.55% | Time: 7.17s
+[2025-07-18 10:38:14]   Epoch 210/600 | Train Loss: 13.5006 | Val Loss: 20.3878 | Val MAPE: 20.39% | Time: 7.11s
+[2025-07-18 10:39:27]   Epoch 220/600 | Train Loss: 13.2057 | Val Loss: 20.7595 | Val MAPE: 20.76% | Time: 7.35s
+[2025-07-18 10:40:39]   Epoch 230/600 | Train Loss: 13.2048 | Val Loss: 21.7424 | Val MAPE: 21.74% | Time: 7.16s
+[2025-07-18 10:41:50]   Epoch 240/600 | Train Loss: 13.3518 | Val Loss: 19.6674 | Val MAPE: 19.67% | Time: 6.90s
+[2025-07-18 10:42:59]   Epoch 250/600 | Train Loss: 13.5089 | Val Loss: 20.5001 | Val MAPE: 20.50% | Time: 6.85s
+[2025-07-18 10:44:08]   Epoch 260/600 | Train Loss: 13.4756 | Val Loss: 20.6155 | Val MAPE: 20.62% | Time: 6.76s
+[2025-07-18 10:45:15]   Epoch 270/600 | Train Loss: 13.3701 | Val Loss: 21.3483 | Val MAPE: 21.35% | Time: 6.75s
+[2025-07-18 10:46:23]   Epoch 280/600 | Train Loss: 13.3452 | Val Loss: 20.1106 | Val MAPE: 20.11% | Time: 6.74s
+[2025-07-18 10:47:30]   Epoch 290/600 | Train Loss: 13.3522 | Val Loss: 21.9492 | Val MAPE: 21.95% | Time: 6.77s
+[2025-07-18 10:48:41]   Epoch 300/600 | Train Loss: 13.2922 | Val Loss: 20.6865 | Val MAPE: 20.69% | Time: 7.41s
+[2025-07-18 10:49:53]   Epoch 310/600 | Train Loss: 13.2953 | Val Loss: 20.8103 | Val MAPE: 20.81% | Time: 7.18s
+[2025-07-18 10:51:05]   Epoch 320/600 | Train Loss: 13.3364 | Val Loss: 19.9499 | Val MAPE: 19.95% | Time: 7.28s
+[2025-07-18 10:52:18]   Epoch 330/600 | Train Loss: 13.3597 | Val Loss: 21.3564 | Val MAPE: 21.36% | Time: 7.22s
+[2025-07-18 10:53:30]   Epoch 340/600 | Train Loss: 13.4335 | Val Loss: 19.2671 | Val MAPE: 19.27% | Time: 7.20s
+[2025-07-18 10:54:43]   Epoch 350/600 | Train Loss: 13.3419 | Val Loss: 19.9102 | Val MAPE: 19.91% | Time: 7.41s
+[2025-07-18 10:55:56]   Epoch 360/600 | Train Loss: 13.3857 | Val Loss: 23.3824 | Val MAPE: 23.38% | Time: 7.09s
+[2025-07-18 10:57:09]   Epoch 370/600 | Train Loss: 13.5290 | Val Loss: 19.4919 | Val MAPE: 19.49% | Time: 7.23s
+[2025-07-18 10:58:21]   Epoch 380/600 | Train Loss: 13.2709 | Val Loss: 20.8717 | Val MAPE: 20.87% | Time: 7.23s
+[2025-07-18 10:59:33]   Epoch 390/600 | Train Loss: 13.4090 | Val Loss: 20.8878 | Val MAPE: 20.89% | Time: 7.12s
+[2025-07-18 11:00:46]   Epoch 400/600 | Train Loss: 13.4280 | Val Loss: 19.7505 | Val MAPE: 19.75% | Time: 7.19s
+[2025-07-18 11:01:59]   Epoch 410/600 | Train Loss: 13.4426 | Val Loss: 20.4334 | Val MAPE: 20.43% | Time: 7.28s
+[2025-07-18 11:03:12]   Epoch 420/600 | Train Loss: 13.2725 | Val Loss: 22.1514 | Val MAPE: 22.15% | Time: 7.30s
+[2025-07-18 11:04:24]   Epoch 430/600 | Train Loss: 13.2727 | Val Loss: 19.9101 | Val MAPE: 19.91% | Time: 7.46s
+[2025-07-18 11:05:37]   Epoch 440/600 | Train Loss: 13.3265 | Val Loss: 20.0804 | Val MAPE: 20.08% | Time: 7.18s
+[2025-07-18 11:06:50]   Epoch 450/600 | Train Loss: 13.4613 | Val Loss: 21.0923 | Val MAPE: 21.09% | Time: 7.31s
+[2025-07-18 11:08:03]   Epoch 460/600 | Train Loss: 13.3575 | Val Loss: 21.1036 | Val MAPE: 21.10% | Time: 7.27s
+[2025-07-18 11:09:16]   Epoch 470/600 | Train Loss: 13.0090 | Val Loss: 19.3466 | Val MAPE: 19.35% | Time: 7.26s
+[2025-07-18 11:10:29]   Epoch 480/600 | Train Loss: 13.2610 | Val Loss: 22.1412 | Val MAPE: 22.14% | Time: 7.29s
+[2025-07-18 11:11:42]   Epoch 490/600 | Train Loss: 13.3765 | Val Loss: 19.1315 | Val MAPE: 19.13% | Time: 7.35s
+[2025-07-18 11:12:04]   Early stopping at epoch 493
+[2025-07-18 11:12:06]   Fold 2 Complete in 3551.03 seconds
+[2025-07-18 11:12:06]      Train MAPE: 21.26% | Val MAPE: 21.35%
+[2025-07-18 11:12:06]      Train MAE:  10.2880 | Val MAE:  10.4481
+[2025-07-18 11:12:06]      Train R²:   0.8566 | Val R²:   0.8784
+[2025-07-18 11:12:06]      Epochs:     493/600
+[2025-07-18 11:12:06] Starting FOLD 3
+[2025-07-18 11:12:06] ----------------------------------------
+/home/wxs428/ai3_env/lib/python3.12/site-packages/torch/optim/lr_scheduler.py:62: UserWarning: The verbose parameter is deprecated. Please use get_last_lr() to access the learning rate.
+  warnings.warn(
+[2025-07-18 11:13:19]   Epoch  10/600 | Train Loss: 20.5130 | Val Loss: 21.4530 | Val MAPE: 21.45% | Time: 7.27s
+[2025-07-18 11:14:31]   Epoch  20/600 | Train Loss: 17.4195 | Val Loss: 19.6148 | Val MAPE: 19.61% | Time: 7.27s
+[2025-07-18 11:15:44]   Epoch  30/600 | Train Loss: 15.4522 | Val Loss: 23.6854 | Val MAPE: 23.69% | Time: 7.10s
+[2025-07-18 11:16:56]   Epoch  40/600 | Train Loss: 14.2625 | Val Loss: 22.1265 | Val MAPE: 22.13% | Time: 7.17s
+[2025-07-18 11:18:09]   Epoch  50/600 | Train Loss: 13.7887 | Val Loss: 21.1349 | Val MAPE: 21.13% | Time: 7.29s
+[2025-07-18 11:19:21]   Epoch  60/600 | Train Loss: 13.5637 | Val Loss: 21.7835 | Val MAPE: 21.78% | Time: 7.26s
+[2025-07-18 11:20:34]   Epoch  70/600 | Train Loss: 13.1144 | Val Loss: 20.6524 | Val MAPE: 20.65% | Time: 7.29s
+[2025-07-18 11:21:47]   Epoch  80/600 | Train Loss: 13.0750 | Val Loss: 21.4045 | Val MAPE: 21.40% | Time: 7.29s
+[2025-07-18 11:22:59]   Epoch  90/600 | Train Loss: 12.8042 | Val Loss: 20.8910 | Val MAPE: 20.89% | Time: 7.16s
+[2025-07-18 11:24:11]   Epoch 100/600 | Train Loss: 13.1448 | Val Loss: 20.5456 | Val MAPE: 20.55% | Time: 7.19s
+[2025-07-18 11:25:19]   Epoch 110/600 | Train Loss: 12.9258 | Val Loss: 22.5718 | Val MAPE: 22.57% | Time: 6.73s
+[2025-07-18 11:26:27]   Epoch 120/600 | Train Loss: 12.8083 | Val Loss: 20.1247 | Val MAPE: 20.12% | Time: 6.72s
+[2025-07-18 11:27:34]   Epoch 130/600 | Train Loss: 12.9549 | Val Loss: 19.8538 | Val MAPE: 19.85% | Time: 6.74s
+[2025-07-18 11:28:42]   Epoch 140/600 | Train Loss: 12.8656 | Val Loss: 20.8534 | Val MAPE: 20.85% | Time: 6.79s
+[2025-07-18 11:29:50]   Epoch 150/600 | Train Loss: 12.8712 | Val Loss: 22.6271 | Val MAPE: 22.63% | Time: 6.88s
+[2025-07-18 11:30:59]   Epoch 160/600 | Train Loss: 13.1360 | Val Loss: 20.3834 | Val MAPE: 20.38% | Time: 6.87s
+[2025-07-18 11:32:08]   Epoch 170/600 | Train Loss: 12.8737 | Val Loss: 19.6979 | Val MAPE: 19.70% | Time: 7.02s
+[2025-07-18 11:33:20]   Epoch 180/600 | Train Loss: 12.8457 | Val Loss: 21.7198 | Val MAPE: 21.72% | Time: 7.17s
+[2025-07-18 11:34:32]   Epoch 190/600 | Train Loss: 12.8958 | Val Loss: 20.3179 | Val MAPE: 20.32% | Time: 7.16s
+[2025-07-18 11:35:44]   Epoch 200/600 | Train Loss: 12.9564 | Val Loss: 22.0479 | Val MAPE: 22.05% | Time: 7.15s
+[2025-07-18 11:36:56]   Epoch 210/600 | Train Loss: 12.7003 | Val Loss: 21.7985 | Val MAPE: 21.80% | Time: 7.26s
+[2025-07-18 11:38:08]   Epoch 220/600 | Train Loss: 12.8339 | Val Loss: 19.9742 | Val MAPE: 19.97% | Time: 7.21s
+[2025-07-18 11:39:20]   Epoch 230/600 | Train Loss: 12.9683 | Val Loss: 24.6666 | Val MAPE: 24.67% | Time: 7.19s
+[2025-07-18 11:40:33]   Epoch 240/600 | Train Loss: 13.0449 | Val Loss: 21.3885 | Val MAPE: 21.39% | Time: 7.21s
+[2025-07-18 11:41:45]   Epoch 250/600 | Train Loss: 12.8243 | Val Loss: 21.3611 | Val MAPE: 21.36% | Time: 7.17s
+[2025-07-18 11:42:14]   Early stopping at epoch 254
+[2025-07-18 11:42:16]   Fold 3 Complete in 1809.53 seconds
+[2025-07-18 11:42:16]      Train MAPE: 22.54% | Val MAPE: 22.44%
+[2025-07-18 11:42:16]      Train MAE:  11.4241 | Val MAE:  10.8933
+[2025-07-18 11:42:16]      Train R²:   0.8423 | Val R²:   0.8550
+[2025-07-18 11:42:16]      Epochs:     254/600
+[2025-07-18 11:42:16] Starting FOLD 4
+[2025-07-18 11:42:16] ----------------------------------------
+/home/wxs428/ai3_env/lib/python3.12/site-packages/torch/optim/lr_scheduler.py:62: UserWarning: The verbose parameter is deprecated. Please use get_last_lr() to access the learning rate.
+  warnings.warn(
+[2025-07-18 11:43:29]   Epoch  10/600 | Train Loss: 20.6823 | Val Loss: 24.3861 | Val MAPE: 24.39% | Time: 7.36s
+[2025-07-18 11:44:41]   Epoch  20/600 | Train Loss: 17.6423 | Val Loss: 22.2523 | Val MAPE: 22.25% | Time: 7.19s
+[2025-07-18 11:45:54]   Epoch  30/600 | Train Loss: 15.5328 | Val Loss: 21.8766 | Val MAPE: 21.88% | Time: 7.20s
+[2025-07-18 11:47:06]   Epoch  40/600 | Train Loss: 14.4761 | Val Loss: 22.6159 | Val MAPE: 22.62% | Time: 7.26s
+[2025-07-18 11:48:18]   Epoch  50/600 | Train Loss: 13.9985 | Val Loss: 22.4058 | Val MAPE: 22.41% | Time: 7.20s
+[2025-07-18 11:49:31]   Epoch  60/600 | Train Loss: 13.4916 | Val Loss: 20.6510 | Val MAPE: 20.65% | Time: 7.15s
+[2025-07-18 11:50:44]   Epoch  70/600 | Train Loss: 13.3187 | Val Loss: 21.2322 | Val MAPE: 21.23% | Time: 7.40s
+[2025-07-18 11:51:56]   Epoch  80/600 | Train Loss: 13.5401 | Val Loss: 21.1383 | Val MAPE: 21.14% | Time: 7.23s
+[2025-07-18 11:53:09]   Epoch  90/600 | Train Loss: 13.1475 | Val Loss: 22.6975 | Val MAPE: 22.70% | Time: 7.26s
+[2025-07-18 11:54:22]   Epoch 100/600 | Train Loss: 13.0202 | Val Loss: 22.9717 | Val MAPE: 22.97% | Time: 7.32s
+[2025-07-18 11:55:35]   Epoch 110/600 | Train Loss: 13.2446 | Val Loss: 20.3674 | Val MAPE: 20.37% | Time: 7.21s
+[2025-07-18 11:56:49]   Epoch 120/600 | Train Loss: 13.0992 | Val Loss: 22.9933 | Val MAPE: 22.99% | Time: 7.29s
+[2025-07-18 11:58:01]   Epoch 130/600 | Train Loss: 13.2776 | Val Loss: 20.3932 | Val MAPE: 20.39% | Time: 7.26s
+[2025-07-18 11:59:14]   Epoch 140/600 | Train Loss: 13.3875 | Val Loss: 21.1200 | Val MAPE: 21.12% | Time: 7.25s
+[2025-07-18 12:00:27]   Epoch 150/600 | Train Loss: 13.1002 | Val Loss: 21.6351 | Val MAPE: 21.64% | Time: 7.31s
+[2025-07-18 12:01:39]   Epoch 160/600 | Train Loss: 13.1733 | Val Loss: 21.8049 | Val MAPE: 21.80% | Time: 7.22s
+[2025-07-18 12:02:52]   Epoch 170/600 | Train Loss: 13.2881 | Val Loss: 20.3307 | Val MAPE: 20.33% | Time: 7.43s
+[2025-07-18 12:04:05]   Epoch 180/600 | Train Loss: 13.2249 | Val Loss: 20.6778 | Val MAPE: 20.68% | Time: 7.31s
+[2025-07-18 12:05:18]   Epoch 190/600 | Train Loss: 13.2513 | Val Loss: 21.3495 | Val MAPE: 21.35% | Time: 7.30s
+[2025-07-18 12:06:30]   Epoch 200/600 | Train Loss: 13.2078 | Val Loss: 20.6174 | Val MAPE: 20.62% | Time: 7.33s
+[2025-07-18 12:07:43]   Epoch 210/600 | Train Loss: 13.3201 | Val Loss: 20.6188 | Val MAPE: 20.62% | Time: 7.16s
+[2025-07-18 12:08:56]   Epoch 220/600 | Train Loss: 13.3226 | Val Loss: 20.3833 | Val MAPE: 20.38% | Time: 7.30s
+[2025-07-18 12:10:08]   Epoch 230/600 | Train Loss: 13.2388 | Val Loss: 21.2796 | Val MAPE: 21.28% | Time: 7.36s
+[2025-07-18 12:11:21]   Epoch 240/600 | Train Loss: 13.1526 | Val Loss: 20.8555 | Val MAPE: 20.86% | Time: 7.16s
+[2025-07-18 12:12:33]   Epoch 250/600 | Train Loss: 13.1587 | Val Loss: 22.3891 | Val MAPE: 22.39% | Time: 7.16s
+[2025-07-18 12:13:45]   Epoch 260/600 | Train Loss: 13.1430 | Val Loss: 21.9348 | Val MAPE: 21.93% | Time: 7.20s
+[2025-07-18 12:14:00]   Early stopping at epoch 262
+[2025-07-18 12:14:02]   Fold 4 Complete in 1906.07 seconds
+[2025-07-18 12:14:02]      Train MAPE: 20.01% | Val MAPE: 20.22%
+[2025-07-18 12:14:02]      Train MAE:  11.6411 | Val MAE:  12.3841
+[2025-07-18 12:14:02]      Train R²:   0.8435 | Val R²:   0.8197
+[2025-07-18 12:14:02]      Epochs:     262/600
+[2025-07-18 12:14:02] Starting FOLD 5
+[2025-07-18 12:14:02] ----------------------------------------
+/home/wxs428/ai3_env/lib/python3.12/site-packages/torch/optim/lr_scheduler.py:62: UserWarning: The verbose parameter is deprecated. Please use get_last_lr() to access the learning rate.
+  warnings.warn(
+[2025-07-18 12:15:14]   Epoch  10/600 | Train Loss: 20.8446 | Val Loss: 24.1533 | Val MAPE: 24.15% | Time: 7.23s
+[2025-07-18 12:16:27]   Epoch  20/600 | Train Loss: 17.9673 | Val Loss: 20.7343 | Val MAPE: 20.73% | Time: 7.23s
+[2025-07-18 12:17:36]   Epoch  30/600 | Train Loss: 16.2556 | Val Loss: 23.8183 | Val MAPE: 23.82% | Time: 6.72s
+[2025-07-18 12:18:44]   Epoch  40/600 | Train Loss: 14.8349 | Val Loss: 21.3445 | Val MAPE: 21.34% | Time: 6.87s
+[2025-07-18 12:19:53]   Epoch  50/600 | Train Loss: 14.2004 | Val Loss: 20.4876 | Val MAPE: 20.49% | Time: 6.87s
+[2025-07-18 12:21:02]   Epoch  60/600 | Train Loss: 13.7559 | Val Loss: 21.5708 | Val MAPE: 21.57% | Time: 6.72s
+[2025-07-18 12:22:10]   Epoch  70/600 | Train Loss: 13.7129 | Val Loss: 21.0732 | Val MAPE: 21.07% | Time: 6.73s
+[2025-07-18 12:23:17]   Epoch  80/600 | Train Loss: 13.5264 | Val Loss: 23.1842 | Val MAPE: 23.18% | Time: 6.72s
+[2025-07-18 12:24:24]   Epoch  90/600 | Train Loss: 13.1606 | Val Loss: 21.1931 | Val MAPE: 21.19% | Time: 6.73s
+[2025-07-18 12:25:34]   Epoch 100/600 | Train Loss: 13.2452 | Val Loss: 20.0347 | Val MAPE: 20.03% | Time: 7.32s
+[2025-07-18 12:26:47]   Epoch 110/600 | Train Loss: 13.3676 | Val Loss: 22.1438 | Val MAPE: 22.14% | Time: 7.17s
+[2025-07-18 12:27:59]   Epoch 120/600 | Train Loss: 13.0718 | Val Loss: 20.7856 | Val MAPE: 20.79% | Time: 7.25s
+[2025-07-18 12:29:12]   Epoch 130/600 | Train Loss: 13.2239 | Val Loss: 21.9917 | Val MAPE: 21.99% | Time: 7.43s
+[2025-07-18 12:30:24]   Epoch 140/600 | Train Loss: 13.3052 | Val Loss: 21.5059 | Val MAPE: 21.51% | Time: 7.23s
+[2025-07-18 12:31:38]   Epoch 150/600 | Train Loss: 13.2603 | Val Loss: 20.5063 | Val MAPE: 20.51% | Time: 7.28s
+[2025-07-18 12:32:49]   Epoch 160/600 | Train Loss: 13.3298 | Val Loss: 19.7461 | Val MAPE: 19.75% | Time: 7.16s
+[2025-07-18 12:34:02]   Epoch 170/600 | Train Loss: 13.1817 | Val Loss: 22.9362 | Val MAPE: 22.94% | Time: 7.24s
+[2025-07-18 12:35:14]   Epoch 180/600 | Train Loss: 12.9665 | Val Loss: 19.7364 | Val MAPE: 19.74% | Time: 7.26s
+[2025-07-18 12:36:26]   Epoch 190/600 | Train Loss: 13.3305 | Val Loss: 22.6807 | Val MAPE: 22.68% | Time: 7.18s
+[2025-07-18 12:37:39]   Epoch 200/600 | Train Loss: 13.3413 | Val Loss: 21.2693 | Val MAPE: 21.27% | Time: 7.22s
+[2025-07-18 12:38:51]   Epoch 210/600 | Train Loss: 13.0922 | Val Loss: 23.1524 | Val MAPE: 23.15% | Time: 7.23s
+[2025-07-18 12:40:04]   Epoch 220/600 | Train Loss: 13.2691 | Val Loss: 21.8168 | Val MAPE: 21.82% | Time: 7.34s
+[2025-07-18 12:41:16]   Epoch 230/600 | Train Loss: 13.2933 | Val Loss: 19.8355 | Val MAPE: 19.84% | Time: 7.21s
+[2025-07-18 12:42:28]   Epoch 240/600 | Train Loss: 13.2095 | Val Loss: 20.4943 | Val MAPE: 20.49% | Time: 7.21s
+[2025-07-18 12:43:40]   Epoch 250/600 | Train Loss: 13.1625 | Val Loss: 19.8202 | Val MAPE: 19.82% | Time: 7.30s
+[2025-07-18 12:44:52]   Epoch 260/600 | Train Loss: 13.1677 | Val Loss: 20.4549 | Val MAPE: 20.45% | Time: 7.14s
+[2025-07-18 12:46:04]   Epoch 270/600 | Train Loss: 13.2763 | Val Loss: 20.8423 | Val MAPE: 20.84% | Time: 7.14s
+[2025-07-18 12:47:17]   Epoch 280/600 | Train Loss: 13.0735 | Val Loss: 19.0451 | Val MAPE: 19.05% | Time: 7.40s
+[2025-07-18 12:48:30]   Epoch 290/600 | Train Loss: 13.1066 | Val Loss: 22.0823 | Val MAPE: 22.08% | Time: 7.09s
+[2025-07-18 12:49:42]   Epoch 300/600 | Train Loss: 13.2103 | Val Loss: 20.1366 | Val MAPE: 20.14% | Time: 7.40s
+[2025-07-18 12:50:55]   Epoch 310/600 | Train Loss: 13.3049 | Val Loss: 22.9768 | Val MAPE: 22.98% | Time: 7.24s
+[2025-07-18 12:52:07]   Epoch 320/600 | Train Loss: 13.0533 | Val Loss: 20.2092 | Val MAPE: 20.21% | Time: 7.24s
+[2025-07-18 12:53:19]   Epoch 330/600 | Train Loss: 13.0346 | Val Loss: 20.4879 | Val MAPE: 20.49% | Time: 7.21s
+[2025-07-18 12:54:31]   Epoch 340/600 | Train Loss: 13.2204 | Val Loss: 22.0775 | Val MAPE: 22.08% | Time: 7.06s
+[2025-07-18 12:55:43]   Epoch 350/600 | Train Loss: 13.3127 | Val Loss: 21.4967 | Val MAPE: 21.50% | Time: 7.20s
+[2025-07-18 12:56:55]   Epoch 360/600 | Train Loss: 13.2190 | Val Loss: 20.2572 | Val MAPE: 20.26% | Time: 7.24s
+[2025-07-18 12:58:07]   Epoch 370/600 | Train Loss: 13.0630 | Val Loss: 20.9059 | Val MAPE: 20.91% | Time: 7.32s
+[2025-07-18 12:59:15]   Epoch 380/600 | Train Loss: 13.2814 | Val Loss: 21.4015 | Val MAPE: 21.40% | Time: 6.74s
+[2025-07-18 13:00:23]   Epoch 390/600 | Train Loss: 13.3995 | Val Loss: 21.0347 | Val MAPE: 21.03% | Time: 6.74s
+[2025-07-18 13:01:30]   Epoch 400/600 | Train Loss: 13.0794 | Val Loss: 21.4889 | Val MAPE: 21.49% | Time: 6.74s
+[2025-07-18 13:02:37]   Epoch 410/600 | Train Loss: 13.1419 | Val Loss: 20.6784 | Val MAPE: 20.68% | Time: 6.72s
+[2025-07-18 13:03:18]   Early stopping at epoch 416
+[2025-07-18 13:03:20]   Fold 5 Complete in 2958.25 seconds
+[2025-07-18 13:03:20]      Train MAPE: 19.77% | Val MAPE: 19.83%
+[2025-07-18 13:03:20]      Train MAE:  8.9890 | Val MAE:  8.8146
+[2025-07-18 13:03:20]      Train R²:   0.9011 | Val R²:   0.9039
+[2025-07-18 13:03:20]      Epochs:     416/600
+[2025-07-18 13:03:20] 
+================================================================================
+[2025-07-18 13:03:20] 📊 CROSS VALIDATION SUMMARY
+[2025-07-18 13:03:20] ================================================================================
+[2025-07-18 13:03:20] Average Train MAPE: 21.05%
+[2025-07-18 13:03:20] Average Val MAPE:   21.11% ± 0.97%
+[2025-07-18 13:03:20] Average Train MAE:  10.3856
+[2025-07-18 13:03:20] Average Val MAE:    10.4412 ± 1.2022
+[2025-07-18 13:03:20] Average Train R²:   0.8672
+[2025-07-18 13:03:20] Average Val R²:     0.8679 ± 0.0287
+[2025-07-18 13:03:20] Average Training Time per Fold: 2554.36 seconds
+[2025-07-18 13:03:20] Total Training Time: 12771.82 seconds (212.86 minutes)
+[2025-07-18 13:03:20] 
+Detailed Results by Fold:
+[2025-07-18 13:03:20] Fold Train MAPE  Val MAPE  Train R² Val R²  Epochs  Time(s) 
+[2025-07-18 13:03:20] ----------------------------------------------------------------------
+[2025-07-18 13:03:20] 1    21.67       21.74     0.8924   0.8826  345     2546.94 
+[2025-07-18 13:03:20] 2    21.26       21.35     0.8566   0.8784  493     3551.03 
+[2025-07-18 13:03:20] 3    22.54       22.44     0.8423   0.8550  254     1809.53 
+[2025-07-18 13:03:20] 4    20.01       20.22     0.8435   0.8197  262     1906.07 
+[2025-07-18 13:03:20] 5    19.77       19.83     0.9011   0.9039  416     2958.25 
+[2025-07-18 13:03:20] 
+🎉 Training Complete!
+[2025-07-18 13:03:20] 📈 Best performing fold: Fold 5 (Val MAPE: 19.83%)
+[2025-07-18 13:03:20] Results saved to training_results.csv
+[2025-07-18 13:03:20] Best model saved to best_model.pth
+[2025-07-18 13:03:20] Creating evaluation plots...
+[2025-07-18 13:03:20] Collecting predictions for visualization...
+[2025-07-18 13:03:26] Main evaluation plot saved to nn_training_evaluation.png
+[2025-07-18 13:03:28] Detailed metrics plot saved to nn_detailed_metrics.png
+[2025-07-18 13:03:30] Cross-validation comparison plot saved to nn_cross_validation_comparison.png
+[2025-07-18 13:03:30] 
+================================================================================
+[2025-07-18 13:03:30] 📊 VISUALIZATION SUMMARY
+[2025-07-18 13:03:30] ================================================================================
+[2025-07-18 13:03:30] Generated evaluation plots:
+[2025-07-18 13:03:30]   1. nn_training_evaluation.png - Main evaluation dashboard (6 plots)
+[2025-07-18 13:03:30]      • Training/Validation loss curves
+[2025-07-18 13:03:30]      • Prediction vs Actual scatter plot
+[2025-07-18 13:03:30]      • Residual analysis
+[2025-07-18 13:03:30]      • MAPE over epochs
+[2025-07-18 13:03:30]      • Cross-validation results
+[2025-07-18 13:03:30]      • Error distribution
+[2025-07-18 13:03:30]   2. nn_detailed_metrics.png - Detailed metrics (4 plots)
+[2025-07-18 13:03:30]      • R² progression
+[2025-07-18 13:03:30]      • MAE progression
+[2025-07-18 13:03:30]      • Learning rate schedule
+[2025-07-18 13:03:30]      • Residual distribution
+[2025-07-18 13:03:30]   3. nn_cross_validation_comparison.png - CV analysis (6 plots)
+[2025-07-18 13:03:30]      • Metric comparisons across folds
+[2025-07-18 13:03:30]      • Training times and epochs
+[2025-07-18 13:03:30]      • Summary statistics
+[2025-07-18 13:03:30] GPU memory cleared
+[2025-07-18 13:03:30] Script completed successfully!
