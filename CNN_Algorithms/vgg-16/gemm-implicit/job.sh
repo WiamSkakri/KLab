@@ -1,12 +1,13 @@
 #!/bin/bash
-#SBATCH -J vgg16_implicit_gemm_gpu      # Job name
-#SBATCH -o vgg16_implicit_gemm_gpu.out  # Output file
+#SBATCH -J vgg16_implicit_gemm_gpuV100  # Job name
+#SBATCH -o vgg16_implicit_gemm_gpuV100.out  # Output file
 #SBATCH --time=20:00:00                 # 20 hours of wall time
 #SBATCH -p gpu                          # GPU partition
 #SBATCH -A sxk1942                     # Account/Project ID
 #SBATCH -c 4                           # 4 processors
 #SBATCH --mem=32GB                     # 32GB memory
-#SBATCH --gpus=1                       # Request 1 GPU
+#SBATCH -C gpuv100                     # Constraint for V100 GPU
+#SBATCH --gres=gpu:1                   # Request 1 GPU
 
 # Exit on any error
 set -e
@@ -75,7 +76,7 @@ RESULTS_DIR=$SLURM_SUBMIT_DIR/results_${TIMESTAMP}
 mkdir -p $RESULTS_DIR
 
 # Create a directory in scratch for the job
-SCRATCH_DIR=$PFSDIR/vgg16_implicit_gemm_gpu_${SLURM_JOB_ID}
+SCRATCH_DIR=$PFSDIR/vgg16_implicit_gemm_gpuV100_${SLURM_JOB_ID}
 if ! mkdir -p $SCRATCH_DIR; then
     echo "Failed to create scratch directory: $SCRATCH_DIR"
     exit 1
@@ -127,7 +128,7 @@ fi
 # Deactivate virtual environment
 deactivate
 
-echo "VGG16 Implicit GEMM job completed successfully. Results are in: $RESULTS_DIR"
+echo "VGG16 Implicit GEMM V100 job completed successfully. Results are in: $RESULTS_DIR"
 echo "Expected output files:"
 echo "  - VGG16_implicit_gemm_cuda_overall.csv"
 echo "  - VGG16_implicit_gemm_cuda_layers.csv" 

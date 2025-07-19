@@ -1,13 +1,16 @@
 #!/bin/bash
-#SBATCH -J vgg16_gemm_gpu      # Job name
-#SBATCH -o vgg16_gemm_gpu.out  # Output file
+#SBATCH -J vgg16_gemm_gpuL40s      # Job name
+#SBATCH -o vgg16_gemm_gpuL40s.out  # Output file
 #SBATCH --time=20:00:00          # 20 hours of wall time
 #SBATCH -p gpu                   # GPU partition
 #SBATCH -A sxk1942              # Account/Project ID
 #SBATCH -c 8                    # 8 processors (matching your srun command)
-#SBATCH --mem=64GB             # 64GB memory (matching your srun command)
-#SBATCH -C gpu2v100            # Constraint for V100 GPU
+#SBATCH --mem=64GB             # 64GB memory (AI3 GEMM is CPU-intensive)
+#SBATCH -C gpuL40s            # Constraint for L40s GPU
 #SBATCH --gres=gpu:1           # Request 1 GPU
+
+# Note: AI3 GEMM algorithm runs on CPU even with CUDA available
+# The GPU will be used for initialization but computation is CPU-bound
 
 # Exit on any error
 set -e
