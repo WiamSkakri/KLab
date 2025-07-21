@@ -178,7 +178,7 @@ def main():
     # Generate random input sizes between 224 and 512 for comprehensive testing
     input_sizes = [random.randint(224, 512)
                    # Quick testing for device fix verification
-                   for _ in range(3)]
+                   for _ in range(100)]
 
     # CUDA initialization and verification
     if device == "cuda":

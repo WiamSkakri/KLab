@@ -1,0 +1,156 @@
+[2025-07-21 10:45:18] Starting LINEAR Polynomial Regression CNN Execution Time Prediction Training
+[2025-07-21 10:45:18] Loading data from combined.csv
+[2025-07-21 10:45:18] Data loaded successfully. Shape: (77000, 9)
+[2025-07-21 10:45:18] Scaling numerical features: ['Batch_Size', 'Input_Size', 'In_Channels', 'Out_Channels', 'Kernel_Size', 'Stride', 'Padding']
+[2025-07-21 10:45:18] Features: 9
+[2025-07-21 10:45:18] Feature columns: ['Batch_Size', 'Input_Size', 'In_Channels', 'Out_Channels', 'Kernel_Size', 'Stride', 'Padding', 'Algorithm_direct', 'Algorithm_smm']
+[2025-07-21 10:45:18] Data preprocessing complete. Features shape: (77000, 9), Target shape: (77000,)
+[2025-07-21 10:45:18] Training LINEAR Polynomial Regression with 5-Fold Cross Validation
+[2025-07-21 10:45:18] Total samples: 77000
+[2025-07-21 10:45:18] Features: 9
+[2025-07-21 10:45:18] 
+============================================================
+[2025-07-21 10:45:18] 🔢 TRAINING LINEAR POLYNOMIAL REGRESSION
+[2025-07-21 10:45:18] ============================================================
+[2025-07-21 10:45:18] 
+🔢 LINEAR - FOLD 1
+[2025-07-21 10:45:18] ----------------------------------------
+[2025-07-21 10:45:18] Training samples: 61600
+[2025-07-21 10:45:18] Validation samples: 15400
+[2025-07-21 10:45:18] Running hyperparameter search...
+Fitting 3 folds for each of 1 candidates, totalling 3 fits
+[2025-07-21 10:45:24] ✅ Training complete in 6.1 seconds
+[2025-07-21 10:45:24] Best parameters: {'polynomialfeatures__degree': 2}
+[2025-07-21 10:45:24] Best CV score (neg MSE): -27901.7265
+[2025-07-21 10:45:25] 🔢 LINEAR Fold 1 Results:
+[2025-07-21 10:45:25]   Training:
+[2025-07-21 10:45:25]   MAPE: 412.57%
+[2025-07-21 10:45:25]   MAE:  46.0268
+[2025-07-21 10:45:25]   RMSE: 94.5073
+[2025-07-21 10:45:25]   R²:   0.5725
+[2025-07-21 10:45:25]   Validation:
+[2025-07-21 10:45:25]   MAPE: 398.92%
+[2025-07-21 10:45:25]   MAE:  45.6456
+[2025-07-21 10:45:25]   RMSE: 95.2344
+[2025-07-21 10:45:25]   R²:   0.5906
+[2025-07-21 10:45:25]   Polynomial Degree: 2
+[2025-07-21 10:45:25] Model saved: linear_model_fold_1.joblib
+[2025-07-21 10:45:25] 
+🔢 LINEAR - FOLD 2
+[2025-07-21 10:45:25] ----------------------------------------
+[2025-07-21 10:45:25] Training samples: 61600
+[2025-07-21 10:45:25] Validation samples: 15400
+[2025-07-21 10:45:25] Running hyperparameter search...
+Fitting 3 folds for each of 1 candidates, totalling 3 fits
+[2025-07-21 10:45:29] ✅ Training complete in 4.5 seconds
+[2025-07-21 10:45:29] Best parameters: {'polynomialfeatures__degree': 2}
+[2025-07-21 10:45:29] Best CV score (neg MSE): -27774.6577
+[2025-07-21 10:45:29] 🔢 LINEAR Fold 2 Results:
+[2025-07-21 10:45:29]   Training:
+[2025-07-21 10:45:29]   MAPE: 399.09%
+[2025-07-21 10:45:29]   MAE:  45.4717
+[2025-07-21 10:45:29]   RMSE: 94.4152
+[2025-07-21 10:45:29]   R²:   0.5734
+[2025-07-21 10:45:29]   Validation:
+[2025-07-21 10:45:29]   MAPE: 399.86%
+[2025-07-21 10:45:29]   MAE:  45.4844
+[2025-07-21 10:45:29]   RMSE: 95.3558
+[2025-07-21 10:45:29]   R²:   0.5893
+[2025-07-21 10:45:29]   Polynomial Degree: 2
+[2025-07-21 10:45:29] Model saved: linear_model_fold_2.joblib
+[2025-07-21 10:45:29] 
+🔢 LINEAR - FOLD 3
+[2025-07-21 10:45:29] ----------------------------------------
+[2025-07-21 10:45:29] Training samples: 61600
+[2025-07-21 10:45:29] Validation samples: 15400
+[2025-07-21 10:45:29] Running hyperparameter search...
+Fitting 3 folds for each of 1 candidates, totalling 3 fits
+[2025-07-21 10:45:30] ✅ Training complete in 0.4 seconds
+[2025-07-21 10:45:30] Best parameters: {'polynomialfeatures__degree': 2}
+[2025-07-21 10:45:30] Best CV score (neg MSE): -28289.8733
+[2025-07-21 10:45:30] 🔢 LINEAR Fold 3 Results:
+[2025-07-21 10:45:30]   Training:
+[2025-07-21 10:45:30]   MAPE: 405.01%
+[2025-07-21 10:45:30]   MAE:  45.9150
+[2025-07-21 10:45:30]   RMSE: 94.5996
+[2025-07-21 10:45:30]   R²:   0.5838
+[2025-07-21 10:45:30]   Validation:
+[2025-07-21 10:45:30]   MAPE: 418.66%
+[2025-07-21 10:45:30]   MAE:  46.0323
+[2025-07-21 10:45:30]   RMSE: 94.6584
+[2025-07-21 10:45:30]   R²:   0.5456
+[2025-07-21 10:45:30]   Polynomial Degree: 2
+[2025-07-21 10:45:30] Model saved: linear_model_fold_3.joblib
+[2025-07-21 10:45:30] 
+🔢 LINEAR - FOLD 4
+[2025-07-21 10:45:30] ----------------------------------------
+[2025-07-21 10:45:30] Training samples: 61600
+[2025-07-21 10:45:30] Validation samples: 15400
+[2025-07-21 10:45:30] Running hyperparameter search...
+Fitting 3 folds for each of 1 candidates, totalling 3 fits
+[2025-07-21 10:45:30] ✅ Training complete in 0.4 seconds
+[2025-07-21 10:45:30] Best parameters: {'polynomialfeatures__degree': 2}
+[2025-07-21 10:45:30] Best CV score (neg MSE): -27455.7005
+[2025-07-21 10:45:30] 🔢 LINEAR Fold 4 Results:
+[2025-07-21 10:45:30]   Training:
+[2025-07-21 10:45:30]   MAPE: 402.56%
+[2025-07-21 10:45:30]   MAE:  45.4847
+[2025-07-21 10:45:30]   RMSE: 93.5192
+[2025-07-21 10:45:30]   R²:   0.5763
+[2025-07-21 10:45:30]   Validation:
+[2025-07-21 10:45:30]   MAPE: 409.70%
+[2025-07-21 10:45:30]   MAE:  46.5999
+[2025-07-21 10:45:30]   RMSE: 98.8008
+[2025-07-21 10:45:30]   R²:   0.5785
+[2025-07-21 10:45:30]   Polynomial Degree: 2
+[2025-07-21 10:45:30] Model saved: linear_model_fold_4.joblib
+[2025-07-21 10:45:30] 
+🔢 LINEAR - FOLD 5
+[2025-07-21 10:45:30] ----------------------------------------
+[2025-07-21 10:45:30] Training samples: 61600
+[2025-07-21 10:45:30] Validation samples: 15400
+[2025-07-21 10:45:30] Running hyperparameter search...
+Fitting 3 folds for each of 1 candidates, totalling 3 fits
+[2025-07-21 10:45:31] ✅ Training complete in 0.4 seconds
+[2025-07-21 10:45:31] Best parameters: {'polynomialfeatures__degree': 2}
+[2025-07-21 10:45:31] Best CV score (neg MSE): -29329.5969
+[2025-07-21 10:45:31] 🔢 LINEAR Fold 5 Results:
+[2025-07-21 10:45:31]   Training:
+[2025-07-21 10:45:31]   MAPE: 410.26%
+[2025-07-21 10:45:31]   MAE:  46.4979
+[2025-07-21 10:45:31]   RMSE: 95.7260
+[2025-07-21 10:45:31]   R²:   0.5795
+[2025-07-21 10:45:31]   Validation:
+[2025-07-21 10:45:31]   MAPE: 403.64%
+[2025-07-21 10:45:31]   MAE:  45.9365
+[2025-07-21 10:45:31]   RMSE: 90.1575
+[2025-07-21 10:45:31]   R²:   0.5620
+[2025-07-21 10:45:31]   Polynomial Degree: 2
+[2025-07-21 10:45:31] Model saved: linear_model_fold_5.joblib
+[2025-07-21 10:45:31] 
+================================================================================
+[2025-07-21 10:45:31] 🔢 LINEAR POLYNOMIAL REGRESSION SUMMARY
+[2025-07-21 10:45:31] ================================================================================
+[2025-07-21 10:45:31] 📊 Average Performance:
+[2025-07-21 10:45:31] Average Val MAPE: 406.16% ± 7.31%
+[2025-07-21 10:45:31] Average Val R²: 0.5732
+[2025-07-21 10:45:31] Average Training Time: 2.4 seconds per fold
+[2025-07-21 10:45:31] 
+🏆 Best Fold: Fold 1 (Val MAPE: 398.92%)
+[2025-07-21 10:45:31] 📐 Polynomial Degree: 2
+[2025-07-21 10:45:31] ⏱️  Total Training Time: 12.5 seconds (0.2 minutes)
+[2025-07-21 10:45:31] Best model saved as: best_linear_model.joblib
+[2025-07-21 10:45:31] Results saved to: linear_training_results.csv
+[2025-07-21 10:45:31] 📊 Creating visualization...
+[2025-07-21 10:45:33] ✅ Visualization saved: linear_polynomial_results.png
+[2025-07-21 10:45:33] 
+🎉 Linear Polynomial Regression Training Complete!
+[2025-07-21 10:45:33] ⏱️  Total time: 12.5 seconds (0.2 minutes)
+[2025-07-21 10:45:33] 📊 Best performance: 398.92% MAPE
+[2025-07-21 10:45:33] Script completed at: 2025-07-21 10:45:33.407338
+[2025-07-21 10:45:33] 
+📁 Generated Files:
+[2025-07-21 10:45:33]   • best_linear_model.joblib - Best trained model
+[2025-07-21 10:45:33]   • linear_training_results.csv - Detailed results
+[2025-07-21 10:45:33]   • linear_polynomial_results.png - Visualization
+[2025-07-21 10:45:33]   • Individual fold models: linear_model_fold_*.joblib

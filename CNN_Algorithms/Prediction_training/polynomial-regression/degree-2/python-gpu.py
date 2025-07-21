@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import os
 import sys
 from datetime import datetime
+from itertools import combinations_with_replacement
 
 # PyTorch imports for GPU computation
 import torch
@@ -27,6 +28,45 @@ def print_with_timestamp(message):
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     print(f"[{timestamp}] {message}")
     sys.stdout.flush()
+
+
+def verify_polynomial_features():
+    """Verify that polynomial features are generated correctly"""
+    print_with_timestamp("🔍 Verifying polynomial feature generation...")
+
+    # Test with simple input
+    test_input = torch.tensor(
+        [[1.0, 2.0]], dtype=torch.float32)  # 1 sample, 2 features
+
+    # Test degree 2
+    poly_gen = PolynomialFeatures(degree=2, include_bias=False)
+    poly_features = poly_gen(test_input)
+
+    print_with_timestamp(f"Input: {test_input.tolist()}")
+    print_with_timestamp(
+        f"Degree 2 polynomial features shape: {poly_features.shape}")
+    print_with_timestamp(
+        f"Degree 2 polynomial features: {poly_features.tolist()}")
+
+    # Expected features for degree 2 with input [1, 2]:
+    # Degree 1: x1=1, x2=2
+    # Degree 2: x1²=1, x1*x2=2, x2²=4
+    # Total: [1, 2, 1, 2, 4] = 5 features
+    expected_features = [1.0, 2.0, 1.0, 2.0, 4.0]
+
+    if poly_features.shape[1] == 5:
+        print_with_timestamp("✅ Polynomial features dimension is correct!")
+    else:
+        print_with_timestamp(
+            f"❌ Expected 5 features, got {poly_features.shape[1]}")
+
+    # Test degree 3
+    poly_gen_3 = PolynomialFeatures(degree=3, include_bias=False)
+    poly_features_3 = poly_gen_3(test_input)
+    print_with_timestamp(
+        f"Degree 3 polynomial features shape: {poly_features_3.shape}")
+
+    return True
 
 
 print_with_timestamp(
@@ -60,30 +100,26 @@ class PolynomialFeatures(nn.Module):
     def forward(self, x):
         # x shape: (batch_size, num_features)
         batch_size, num_features = x.shape
-        features = [x]  # degree 1 features
 
-        # Generate polynomial features up to specified degree
-        for d in range(2, self.degree + 1):
-            # For simplicity, we'll create powers of individual features
-            # and some interaction terms
-            power_features = torch.pow(x, d)
-            features.append(power_features)
+        # Start with bias term if requested
+        features = []
+        if self.include_bias:
+            bias = torch.ones(batch_size, 1, device=x.device)
+            features.append(bias)
 
-        # Add interaction terms for degree >= 2
-        if self.degree >= 2:
-            for i in range(num_features):
-                for j in range(i + 1, num_features):
-                    interaction = x[:, i:i+1] * x[:, j:j+1]
-                    features.append(interaction)
+        # Generate all polynomial terms up to degree using itertools approach
+        # Create all possible combinations of features for each degree
+        for degree in range(1, self.degree + 1):
+            # Get all combinations of features with replacement for this degree
+            for combo in combinations_with_replacement(range(num_features), degree):
+                # Calculate the polynomial term for this combination
+                term = torch.ones(batch_size, 1, device=x.device)
+                for feature_idx in combo:
+                    term = term * x[:, feature_idx:feature_idx+1]
+                features.append(term)
 
         # Concatenate all features
         poly_features = torch.cat(features, dim=1)
-
-        # Add bias term if requested
-        if self.include_bias:
-            bias = torch.ones(batch_size, 1, device=x.device)
-            poly_features = torch.cat([bias, poly_features], dim=1)
-
         return poly_features
 
 
@@ -96,22 +132,48 @@ class PolynomialRegressionModel(nn.Module):
         self.reg_type = reg_type
         self.alpha = alpha
         self.l1_ratio = l1_ratio
+        self.input_dim = input_dim
 
         # Create polynomial features layer
         self.poly_features = PolynomialFeatures(
             degree=degree, include_bias=False)
 
-        # Calculate output dimension after polynomial expansion
-        # This is an approximation - we'll set it properly after seeing the data
-        self.poly_dim = None
-        self.linear = None
+        # Calculate the exact number of polynomial features
+        # For degree d and n input features, the number of polynomial terms is:
+        # sum_{k=1}^{d} C(n+k-1, k) where C is the binomial coefficient
+
+        def binomial_coefficient(n, k):
+            if k > n or k < 0:
+                return 0
+            if k == 0 or k == n:
+                return 1
+
+            # Calculate C(n,k) = n! / (k! * (n-k)!)
+            result = 1
+            for i in range(min(k, n - k)):
+                result = result * (n - i) // (i + 1)
+            return result
+
+        poly_dim = 0
+        for k in range(1, degree + 1):
+            poly_dim += binomial_coefficient(input_dim + k - 1, k)
+
+        self.poly_dim = poly_dim
+        self.linear = nn.Linear(self.poly_dim, 1, bias=True)
+
+        print(f"  Polynomial degree: {degree}")
+        print(f"  Input features: {input_dim}")
+        print(f"  Polynomial features generated: {poly_dim}")
 
     def forward(self, x):
         # Generate polynomial features
         poly_x = self.poly_features(x)
 
-        # Initialize linear layer if not done yet
-        if self.linear is None:
+        # Ensure the polynomial features match expected dimension
+        if poly_x.shape[1] != self.poly_dim:
+            # If there's a mismatch, reinitialize the linear layer with actual dimension
+            print(
+                f"  Warning: Expected {self.poly_dim} features, got {poly_x.shape[1]}. Adjusting...")
             self.poly_dim = poly_x.shape[1]
             self.linear = nn.Linear(self.poly_dim, 1, bias=True).to(x.device)
 

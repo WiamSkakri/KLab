@@ -1,0 +1,357 @@
+[2025-07-21 10:48:10] Starting ELASTICNET Polynomial Regression CNN Execution Time Prediction Training
+[2025-07-21 10:48:10] Loading data from combined.csv
+[2025-07-21 10:48:10] Data loaded successfully. Shape: (77000, 9)
+[2025-07-21 10:48:10] Scaling numerical features: ['Batch_Size', 'Input_Size', 'In_Channels', 'Out_Channels', 'Kernel_Size', 'Stride', 'Padding']
+[2025-07-21 10:48:10] Features: 9
+[2025-07-21 10:48:10] Feature columns: ['Batch_Size', 'Input_Size', 'In_Channels', 'Out_Channels', 'Kernel_Size', 'Stride', 'Padding', 'Algorithm_direct', 'Algorithm_smm']
+[2025-07-21 10:48:10] Data preprocessing complete. Features shape: (77000, 9), Target shape: (77000,)
+[2025-07-21 10:48:10] Training ELASTICNET Polynomial Regression with 5-Fold Cross Validation
+[2025-07-21 10:48:10] Total samples: 77000
+[2025-07-21 10:48:10] Features: 9
+[2025-07-21 10:48:10] 
+============================================================
+[2025-07-21 10:48:10] 🔢 TRAINING ELASTICNET POLYNOMIAL REGRESSION
+[2025-07-21 10:48:10] ============================================================
+[2025-07-21 10:48:10] 
+🔢 ELASTICNET - FOLD 1
+[2025-07-21 10:48:10] ----------------------------------------
+[2025-07-21 10:48:10] Training samples: 61600
+[2025-07-21 10:48:10] Validation samples: 15400
+[2025-07-21 10:48:10] Running hyperparameter search...
+Fitting 3 folds for each of 20 candidates, totalling 60 fits
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 2.225e+08, tolerance: 1.046e+05
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 2.323e+08, tolerance: 1.254e+05
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 2.031e+08, tolerance: 1.046e+05
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 2.970e+07, tolerance: 2.563e+04
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 2.175e+08, tolerance: 1.254e+05
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 2.014e+08, tolerance: 1.046e+05
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 2.747e+07, tolerance: 2.563e+04
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 3.067e+07, tolerance: 2.563e+04
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 1.858e+08, tolerance: 1.254e+05
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 1.839e+08, tolerance: 1.254e+05
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 1.770e+07, tolerance: 2.563e+04
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 2.020e+08, tolerance: 1.254e+05
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 2.430e+07, tolerance: 2.563e+04
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 1.965e+08, tolerance: 1.046e+05
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 1.833e+08, tolerance: 1.046e+05
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 3.257e+06, tolerance: 1.046e+05
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 1.793e+05, tolerance: 2.563e+04
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 3.427e+06, tolerance: 1.254e+05
+  model = cd_fast.enet_coordinate_descent(
+[2025-07-21 10:48:53] ✅ Training complete in 42.8 seconds
+[2025-07-21 10:48:53] Best parameters: {'elasticnet__alpha': 10.0, 'elasticnet__l1_ratio': 0.1, 'polynomialfeatures__degree': 2}
+[2025-07-21 10:48:53] Best CV score (neg MSE): -21028.2135
+[2025-07-21 10:48:53] 🔢 ELASTICNET Fold 1 Results:
+[2025-07-21 10:48:53]   Training:
+[2025-07-21 10:48:53]   MAPE: 515.10%
+[2025-07-21 10:48:53]   MAE:  51.8464
+[2025-07-21 10:48:53]   RMSE: 136.0820
+[2025-07-21 10:48:53]   R²:   0.1137
+[2025-07-21 10:48:53]   Validation:
+[2025-07-21 10:48:53]   MAPE: 514.44%
+[2025-07-21 10:48:53]   MAE:  52.4174
+[2025-07-21 10:48:53]   RMSE: 138.5108
+[2025-07-21 10:48:53]   R²:   0.1339
+[2025-07-21 10:48:53]   Polynomial Degree: 2
+[2025-07-21 10:48:53]   Alpha (regularization strength): 10.0
+[2025-07-21 10:48:53]   L1 Ratio (L1 vs L2 mix): 0.1
+[2025-07-21 10:48:53]   Feature Selection: 40/54 features selected (74.1%)
+[2025-07-21 10:48:53] Model saved: elasticnet_model_fold_1.joblib
+[2025-07-21 10:48:53] 
+🔢 ELASTICNET - FOLD 2
+[2025-07-21 10:48:53] ----------------------------------------
+[2025-07-21 10:48:53] Training samples: 61600
+[2025-07-21 10:48:53] Validation samples: 15400
+[2025-07-21 10:48:53] Running hyperparameter search...
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 2.178e+08, tolerance: 1.254e+05
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 2.983e+07, tolerance: 2.468e+04
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 2.076e+08, tolerance: 1.057e+05
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 2.253e+08, tolerance: 1.057e+05
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 3.042e+07, tolerance: 2.468e+04
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 2.041e+08, tolerance: 1.057e+05
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 3.052e+07, tolerance: 2.468e+04
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 2.316e+08, tolerance: 1.254e+05
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 1.865e+08, tolerance: 1.254e+05
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 1.796e+07, tolerance: 2.468e+04
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 2.044e+08, tolerance: 1.254e+05
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 1.852e+08, tolerance: 1.254e+05
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 2.306e+07, tolerance: 2.468e+04
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 1.988e+08, tolerance: 1.057e+05
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 1.845e+08, tolerance: 1.057e+05
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 4.241e+06, tolerance: 1.057e+05
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 1.531e+05, tolerance: 2.468e+04
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 4.400e+06, tolerance: 1.254e+05
+  model = cd_fast.enet_coordinate_descent(
+Fitting 3 folds for each of 20 candidates, totalling 60 fits
+[2025-07-21 10:49:17] ✅ Training complete in 24.2 seconds
+[2025-07-21 10:49:17] Best parameters: {'elasticnet__alpha': 10.0, 'elasticnet__l1_ratio': 0.1, 'polynomialfeatures__degree': 2}
+[2025-07-21 10:49:17] Best CV score (neg MSE): -21066.1232
+[2025-07-21 10:49:17] 🔢 ELASTICNET Fold 2 Results:
+[2025-07-21 10:49:17]   Training:
+[2025-07-21 10:49:17]   MAPE: 512.45%
+[2025-07-21 10:49:17]   MAE:  51.7678
+[2025-07-21 10:49:17]   RMSE: 135.2003
+[2025-07-21 10:49:17]   R²:   0.1253
+[2025-07-21 10:49:17]   Validation:
+[2025-07-21 10:49:17]   MAPE: 515.77%
+[2025-07-21 10:49:17]   MAE:  52.6497
+[2025-07-21 10:49:17]   RMSE: 140.8169
+[2025-07-21 10:49:17]   R²:   0.1042
+[2025-07-21 10:49:17]   Polynomial Degree: 2
+[2025-07-21 10:49:17]   Alpha (regularization strength): 10.0
+[2025-07-21 10:49:17]   L1 Ratio (L1 vs L2 mix): 0.1
+[2025-07-21 10:49:17]   Feature Selection: 40/54 features selected (74.1%)
+[2025-07-21 10:49:17] Model saved: elasticnet_model_fold_2.joblib
+[2025-07-21 10:49:17] 
+🔢 ELASTICNET - FOLD 3
+[2025-07-21 10:49:17] ----------------------------------------
+[2025-07-21 10:49:17] Training samples: 61600
+[2025-07-21 10:49:17] Validation samples: 15400
+[2025-07-21 10:49:17] Running hyperparameter search...
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 2.080e+08, tolerance: 1.078e+05
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 2.330e+08, tolerance: 1.290e+05
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 3.219e+07, tolerance: 2.629e+04
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 2.258e+08, tolerance: 1.078e+05
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 2.045e+08, tolerance: 1.078e+05
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 3.061e+07, tolerance: 2.629e+04
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 2.197e+08, tolerance: 1.290e+05
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 3.330e+07, tolerance: 2.629e+04
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 1.857e+08, tolerance: 1.290e+05
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 1.876e+07, tolerance: 2.629e+04
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 2.061e+08, tolerance: 1.290e+05
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 1.867e+08, tolerance: 1.290e+05
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 2.566e+07, tolerance: 2.629e+04
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 1.846e+08, tolerance: 1.078e+05
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 1.988e+08, tolerance: 1.078e+05
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 4.335e+06, tolerance: 1.078e+05
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 1.908e+05, tolerance: 2.629e+04
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 4.544e+06, tolerance: 1.290e+05
+  model = cd_fast.enet_coordinate_descent(
+Fitting 3 folds for each of 20 candidates, totalling 60 fits
+[2025-07-21 10:49:42] ✅ Training complete in 24.1 seconds
+[2025-07-21 10:49:42] Best parameters: {'elasticnet__alpha': 10.0, 'elasticnet__l1_ratio': 0.1, 'polynomialfeatures__degree': 2}
+[2025-07-21 10:49:42] Best CV score (neg MSE): -21685.4733
+[2025-07-21 10:49:42] 🔢 ELASTICNET Fold 3 Results:
+[2025-07-21 10:49:42]   Training:
+[2025-07-21 10:49:42]   MAPE: 519.78%
+[2025-07-21 10:49:42]   MAE:  52.6151
+[2025-07-21 10:49:42]   RMSE: 137.0131
+[2025-07-21 10:49:42]   R²:   0.1269
+[2025-07-21 10:49:42]   Validation:
+[2025-07-21 10:49:42]   MAPE: 524.48%
+[2025-07-21 10:49:42]   MAE:  50.7396
+[2025-07-21 10:49:42]   RMSE: 132.7696
+[2025-07-21 10:49:42]   R²:   0.1060
+[2025-07-21 10:49:42]   Polynomial Degree: 2
+[2025-07-21 10:49:42]   Alpha (regularization strength): 10.0
+[2025-07-21 10:49:42]   L1 Ratio (L1 vs L2 mix): 0.1
+[2025-07-21 10:49:42]   Feature Selection: 40/54 features selected (74.1%)
+[2025-07-21 10:49:42] Model saved: elasticnet_model_fold_3.joblib
+[2025-07-21 10:49:42] 
+🔢 ELASTICNET - FOLD 4
+[2025-07-21 10:49:42] ----------------------------------------
+[2025-07-21 10:49:42] Training samples: 61600
+[2025-07-21 10:49:42] Validation samples: 15400
+[2025-07-21 10:49:42] Running hyperparameter search...
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 2.020e+08, tolerance: 1.037e+05
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 2.197e+08, tolerance: 1.037e+05
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 3.072e+07, tolerance: 2.509e+04
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 2.143e+08, tolerance: 1.238e+05
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 3.595e+07, tolerance: 2.509e+04
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 3.251e+07, tolerance: 2.509e+04
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 1.989e+08, tolerance: 1.037e+05
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 2.277e+08, tolerance: 1.238e+05
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 1.801e+08, tolerance: 1.238e+05
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 1.814e+07, tolerance: 2.509e+04
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 1.802e+08, tolerance: 1.238e+05
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 2.408e+07, tolerance: 2.509e+04
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 2.001e+08, tolerance: 1.238e+05
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 1.796e+08, tolerance: 1.037e+05
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 1.938e+08, tolerance: 1.037e+05
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 3.814e+06, tolerance: 1.037e+05
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 4.207e+06, tolerance: 1.238e+05
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 1.920e+05, tolerance: 2.509e+04
+  model = cd_fast.enet_coordinate_descent(
+Fitting 3 folds for each of 20 candidates, totalling 60 fits
+[2025-07-21 10:50:06] ✅ Training complete in 24.2 seconds
+[2025-07-21 10:50:06] Best parameters: {'elasticnet__alpha': 10.0, 'elasticnet__l1_ratio': 0.1, 'polynomialfeatures__degree': 2}
+[2025-07-21 10:50:06] Best CV score (neg MSE): -20859.4330
+[2025-07-21 10:50:06] 🔢 ELASTICNET Fold 4 Results:
+[2025-07-21 10:50:06]   Training:
+[2025-07-21 10:50:06]   MAPE: 514.42%
+[2025-07-21 10:50:06]   MAE:  51.7329
+[2025-07-21 10:50:06]   RMSE: 135.2685
+[2025-07-21 10:50:06]   R²:   0.1136
+[2025-07-21 10:50:06]   Validation:
+[2025-07-21 10:50:06]   MAPE: 514.68%
+[2025-07-21 10:50:06]   MAE:  52.8145
+[2025-07-21 10:50:06]   RMSE: 141.5385
+[2025-07-21 10:50:06]   R²:   0.1349
+[2025-07-21 10:50:06]   Polynomial Degree: 2
+[2025-07-21 10:50:06]   Alpha (regularization strength): 10.0
+[2025-07-21 10:50:06]   L1 Ratio (L1 vs L2 mix): 0.1
+[2025-07-21 10:50:06]   Feature Selection: 40/54 features selected (74.1%)
+[2025-07-21 10:50:06] Model saved: elasticnet_model_fold_4.joblib
+[2025-07-21 10:50:06] 
+🔢 ELASTICNET - FOLD 5
+[2025-07-21 10:50:06] ----------------------------------------
+[2025-07-21 10:50:06] Training samples: 61600
+[2025-07-21 10:50:06] Validation samples: 15400
+[2025-07-21 10:50:06] Running hyperparameter search...
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 2.327e+08, tolerance: 1.111e+05
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 3.158e+07, tolerance: 2.480e+04
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 2.148e+08, tolerance: 1.111e+05
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 2.232e+08, tolerance: 1.309e+05
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 2.110e+08, tolerance: 1.111e+05
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 3.067e+07, tolerance: 2.480e+04
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 3.021e+07, tolerance: 2.480e+04
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 2.374e+08, tolerance: 1.309e+05
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 1.902e+08, tolerance: 1.309e+05
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 1.842e+07, tolerance: 2.480e+04
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 2.338e+07, tolerance: 2.480e+04
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 2.051e+08, tolerance: 1.111e+05
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 1.879e+08, tolerance: 1.309e+05
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 2.089e+08, tolerance: 1.309e+05
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 1.904e+08, tolerance: 1.111e+05
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 4.592e+06, tolerance: 1.111e+05
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 1.643e+05, tolerance: 2.480e+04
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 4.466e+06, tolerance: 1.309e+05
+  model = cd_fast.enet_coordinate_descent(
+Fitting 3 folds for each of 20 candidates, totalling 60 fits
+[2025-07-21 10:50:30] ✅ Training complete in 24.2 seconds
+[2025-07-21 10:50:30] Best parameters: {'elasticnet__alpha': 10.0, 'elasticnet__l1_ratio': 0.1, 'polynomialfeatures__degree': 2}
+[2025-07-21 10:50:30] Best CV score (neg MSE): -21916.0191
+[2025-07-21 10:50:30] 🔢 ELASTICNET Fold 5 Results:
+[2025-07-21 10:50:30]   Training:
+[2025-07-21 10:50:30]   MAPE: 517.92%
+[2025-07-21 10:50:30]   MAE:  52.2280
+[2025-07-21 10:50:30]   RMSE: 138.1487
+[2025-07-21 10:50:30]   R²:   0.1242
+[2025-07-21 10:50:30]   Validation:
+[2025-07-21 10:50:30]   MAPE: 510.42%
+[2025-07-21 10:50:30]   MAE:  51.6133
+[2025-07-21 10:50:30]   RMSE: 128.1151
+[2025-07-21 10:50:30]   R²:   0.1155
+[2025-07-21 10:50:30]   Polynomial Degree: 2
+[2025-07-21 10:50:30]   Alpha (regularization strength): 10.0
+[2025-07-21 10:50:30]   L1 Ratio (L1 vs L2 mix): 0.1
+[2025-07-21 10:50:30]   Feature Selection: 40/54 features selected (74.1%)
+[2025-07-21 10:50:30] Model saved: elasticnet_model_fold_5.joblib
+[2025-07-21 10:50:30] 
+================================================================================
+[2025-07-21 10:50:30] 🔢 ELASTICNET POLYNOMIAL REGRESSION SUMMARY
+[2025-07-21 10:50:30] ================================================================================
+[2025-07-21 10:50:30] 📊 Average Performance:
+[2025-07-21 10:50:30] Average Val MAPE: 515.96% ± 4.63%
+[2025-07-21 10:50:30] Average Val R²: 0.1189
+[2025-07-21 10:50:30] Average Training Time: 27.9 seconds per fold
+[2025-07-21 10:50:30] Average Sparsity: 0.26 (25.9% features removed)
+[2025-07-21 10:50:30] 
+🏆 Best Fold: Fold 5 (Val MAPE: 510.42%)
+[2025-07-21 10:50:30] 📐 Polynomial Degree: 2
+[2025-07-21 10:50:30] 🎯 Best Alpha: 10.0
+[2025-07-21 10:50:30] ⚖️  Best L1 Ratio: 0.1 (10% L1, 90% L2)
+[2025-07-21 10:50:30] 🔍 Feature Selection: 40/54 features (74.1% kept)
+[2025-07-21 10:50:30] ⏱️  Total Training Time: 140.2 seconds (2.3 minutes)
+[2025-07-21 10:50:30] Best model saved as: best_elasticnet_model.joblib
+[2025-07-21 10:50:30] Results saved to: elasticnet_training_results.csv
+[2025-07-21 10:50:30] 📊 Creating visualization...
+[2025-07-21 10:50:32] ✅ Visualization saved: elasticnet_polynomial_results.png
+[2025-07-21 10:50:32] 
+🎉 ElasticNet Polynomial Regression Training Complete!
+[2025-07-21 10:50:32] ⏱️  Total time: 140.2 seconds (2.3 minutes)
+[2025-07-21 10:50:32] 📊 Best performance: 510.42% MAPE
+[2025-07-21 10:50:32] 🎯 Best regularization: Alpha = 10.0, L1 Ratio = 0.1
+[2025-07-21 10:50:32] 🔍 Feature selection: 74.1% features kept
+[2025-07-21 10:50:32] Script completed at: 2025-07-21 10:50:32.715016
+[2025-07-21 10:50:32] 
+📁 Generated Files:
+[2025-07-21 10:50:32]   • best_elasticnet_model.joblib - Best trained model
+[2025-07-21 10:50:32]   • elasticnet_training_results.csv - Detailed results
+[2025-07-21 10:50:32]   • elasticnet_polynomial_results.png - Visualization
+[2025-07-21 10:50:32]   • Individual fold models: elasticnet_model_fold_*.joblib

@@ -1,0 +1,125 @@
+(ai3_env) [wxs428@gput053 precomp-gemm]$ ls
+job.sh  python.py
+(ai3_env) [wxs428@gput053 precomp-gemm]$ vim python.py 
+(ai3_env) [wxs428@gput053 precomp-gemm]$ python python.py 
+================================================================================
+VGG16 AI3 IMPLICIT PRECOMPUTED GEMM IMPLEMENTATION
+================================================================================
+CUDA Device Information:
+  ✓ CUDA is available
+  ✓ CUDA version: 12.4
+  ✓ Number of GPUs: 1
+  ✓ Current GPU: Tesla V100-SXM2-32GB
+  ✓ GPU Memory: 31.7 GB
+  ✓ CUDA context initialized successfully
+
+Configuration:
+  Model: VGG16
+  Algorithm: implicit_precomp_gemm
+  Device: cuda
+  Batch size: 1
+  Iterations per input size: 10
+  Input sizes to test: 1
+
+Loading VGG16 model...
+✓ VGG16 model loaded successfully
+
+Original model loaded. Analyzing structure...
+Found 13 Conv2D layers in original model
+
+Applying AI3 implicit_precomp_gemm algorithm conversion...
+✗ Error during AI3 conversion: algorithm, implicit_precomp_gemm, is unsupported for conv2d
+This might be due to AI3 library not being installed or configured properly.
+Falling back to standard PyTorch implementation...
+
+============================================================
+MODEL STRUCTURE ANALYSIS
+============================================================
+⚠ PyTorch Layer: features.0
+  - Type: Conv2d
+  - In/Out channels: 3/64
+⚠ PyTorch Layer: features.2
+  - Type: Conv2d
+  - In/Out channels: 64/64
+⚠ PyTorch Layer: features.5
+  - Type: Conv2d
+  - In/Out channels: 64/128
+⚠ PyTorch Layer: features.7
+  - Type: Conv2d
+  - In/Out channels: 128/128
+⚠ PyTorch Layer: features.10
+  - Type: Conv2d
+  - In/Out channels: 128/256
+⚠ PyTorch Layer: features.12
+  - Type: Conv2d
+  - In/Out channels: 256/256
+⚠ PyTorch Layer: features.14
+  - Type: Conv2d
+  - In/Out channels: 256/256
+⚠ PyTorch Layer: features.17
+  - Type: Conv2d
+  - In/Out channels: 256/512
+⚠ PyTorch Layer: features.19
+  - Type: Conv2d
+  - In/Out channels: 512/512
+⚠ PyTorch Layer: features.21
+  - Type: Conv2d
+  - In/Out channels: 512/512
+⚠ PyTorch Layer: features.24
+  - Type: Conv2d
+  - In/Out channels: 512/512
+⚠ PyTorch Layer: features.26
+  - Type: Conv2d
+  - In/Out channels: 512/512
+⚠ PyTorch Layer: features.28
+  - Type: Conv2d
+  - In/Out channels: 512/512
+
+============================================================
+CONVERSION SUMMARY:
+  Total Conv2D layers: 13
+  AI3 converted: 0
+  PyTorch remaining: 13
+  Conversion rate: 0.0%
+============================================================
+
+
+Analyzing device placement after AI3 conversion...
+✓ AI3 device distribution:
+  - Parameters on CUDA: 0/32
+  - Parameters on CPU: 32/32
+  - Mixed device usage is expected with AI3
+
+Starting performance testing...
+This will test the model with various input sizes to measure AI3 Implicit Precomputed GEMM performance.
+
+[1/1] Testing with input size 236x236
+  ✓ Created input tensor: torch.Size([1, 3, 236, 236]) on cuda:0
+  GPU Memory - Allocated: 0.00 GB, Reserved: 0.00 GB
+  Running warmup...
+  ✗ Error during warmup: Input type (torch.cuda.FloatTensor) and weight type (torch.FloatTensor) should be the same
+  Note: This may indicate memory or device issues
+  GPU Memory at error: 0.00 GB allocated
+  Measuring performance over 10 iterations...
+    Iteration 1/10
+  ✗ Error during performance measurement: Input type (torch.cuda.FloatTensor) and weight type (torch.FloatTensor) should be the same
+
+================================================================================
+VGG16 AI3 IMPLICIT PRECOMPUTED GEMM TESTING COMPLETED
+================================================================================
+Results saved to:
+  - Overall performance: /home/wxs428/vgg16/precomp-gemm/VGG16_implicit_precomp_gemm_cuda_overall.csv
+  - Layer-wise performance: /home/wxs428/vgg16/precomp-gemm/VGG16_implicit_precomp_gemm_cuda_layers.csv
+
+Summary:
+  ✓ Tested 1 different input sizes
+  ✓ 10 iterations per input size
+  ✓ AI3 Implicit Precomputed GEMM algorithm optimization
+  ✓ Comprehensive layer-wise performance analysis
+
+Next steps:
+  1. Analyze the CSV files to compare AI3 Implicit Precomputed GEMM performance vs other algorithms
+  2. Run the same test with different AI3 algorithms (gemm, implicit_gemm, smm, etc.) for comparison
+  3. Compare AI3 optimized vs standard PyTorch implementations
+================================================================================
+(ai3_env) [wxs428@gput053 precomp-gemm]$ 

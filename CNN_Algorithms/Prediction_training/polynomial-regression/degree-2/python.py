@@ -149,23 +149,23 @@ for fold, (train_idx, val_idx) in enumerate(kf.split(X), 1):
 # Polynomial Regression Configuration
 print_with_timestamp("🔢 Polynomial Regression Configuration:")
 
-# Hyperparameter grid for polynomial regression
+# Hyperparameter grid for polynomial regression (degree 2 only for faster execution)
 param_grids = {
     'ridge': {
-        'polynomialfeatures__degree': [1, 2, 3, 4],
+        'polynomialfeatures__degree': [2],
         'ridge__alpha': [0.01, 0.1, 1.0, 10.0, 100.0]
     },
     'lasso': {
-        'polynomialfeatures__degree': [1, 2, 3, 4],
+        'polynomialfeatures__degree': [2],
         'lasso__alpha': [0.01, 0.1, 1.0, 10.0, 100.0]
     },
     'elasticnet': {
-        'polynomialfeatures__degree': [1, 2, 3, 4],
+        'polynomialfeatures__degree': [2],
         'elasticnet__alpha': [0.01, 0.1, 1.0, 10.0],
         'elasticnet__l1_ratio': [0.1, 0.3, 0.5, 0.7, 0.9]
     },
     'linear': {
-        'polynomialfeatures__degree': [1, 2, 3, 4, 5]
+        'polynomialfeatures__degree': [2]
     }
 }
 

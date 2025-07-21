@@ -196,7 +196,7 @@ def main():
     iterations = 10
     # Generate random input sizes between 224 and 512 for comprehensive testing
     input_sizes = [random.randint(224, 512)
-                   for _ in range(100)]  # Reduced for faster testing
+                   for _ in range(1)]  # Reduced for faster testing
 
     # CUDA initialization and verification
     if device == "cuda":
