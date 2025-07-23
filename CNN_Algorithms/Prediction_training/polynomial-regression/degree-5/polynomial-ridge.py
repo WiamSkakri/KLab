@@ -172,7 +172,7 @@ trained_models = []
 print_with_timestamp("🔧 USING SMALLER ALPHA VALUES for better regularization")
 param_grid = {
     'polynomialfeatures__degree': [5],
-    'ridge__alpha': [1e-5, 1e-4, 1e-3, 1e-2, 1e-1]  # Much smaller values!
+    'ridge__alpha': [1e-5, 1e-4]  # Much smaller values!
 }
 
 
