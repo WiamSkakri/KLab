@@ -1,0 +1,214 @@
+[2025-07-22 10:17:54] 🚀 Starting ENHANCED ELASTICNET Polynomial Regression CNN Execution Time Prediction Training
+[2025-07-22 10:17:54] 🔧 CRITICAL FIXES APPLIED:
+[2025-07-22 10:17:54]   ✅ Log transformation of target variable (CRITICAL)
+[2025-07-22 10:17:54]   ✅ Proper inverse transformation for evaluation
+[2025-07-22 10:17:54]   ✅ Separate scalers for features and targets
+[2025-07-22 10:17:54]   ✅ Optimized alpha range (0.0001 to 0.1)
+[2025-07-22 10:17:54]   ✅ Enhanced convergence (10,000 iterations)
+[2025-07-22 10:17:54]   ✅ Random feature selection for better convergence
+[2025-07-22 10:17:54]   ✅ Polynomial degree 2 optimization
+[2025-07-22 10:17:54] Loading data from combined.csv
+[2025-07-22 10:17:54] Data loaded successfully. Shape: (77000, 9)
+[2025-07-22 10:17:54] Original target variable statistics:
+[2025-07-22 10:17:54]   Min: 0.4120
+[2025-07-22 10:17:54]   Max: 3194.3893
+[2025-07-22 10:17:54]   Mean: 50.2547
+[2025-07-22 10:17:54]   Std: 145.4140
+[2025-07-22 10:17:54] 🔧 APPLYING LOG TRANSFORMATION to target variable
+[2025-07-22 10:17:54] Log-transformed target statistics:
+[2025-07-22 10:17:54]   Min: 0.3450
+[2025-07-22 10:17:54]   Max: 8.0695
+[2025-07-22 10:17:54]   Mean: 2.9474
+[2025-07-22 10:17:54]   Std: 1.2665
+[2025-07-22 10:17:54] Scaling numerical features: ['Batch_Size', 'Input_Size', 'In_Channels', 'Out_Channels', 'Kernel_Size', 'Stride', 'Padding']
+[2025-07-22 10:17:55] 🔧 SCALING LOG-TRANSFORMED TARGET variable
+[2025-07-22 10:17:55] Features: 9
+[2025-07-22 10:17:55] Feature columns: ['Batch_Size', 'Input_Size', 'In_Channels', 'Out_Channels', 'Kernel_Size', 'Stride', 'Padding', 'Algorithm_direct', 'Algorithm_smm']
+[2025-07-22 10:17:55] Data preprocessing complete. Features shape: (77000, 9), Target shape: (77000,)
+[2025-07-22 10:17:55] Training ELASTICNET Polynomial Regression with 5-Fold Cross Validation
+[2025-07-22 10:17:55] Total samples: 77000
+[2025-07-22 10:17:55] Features: 9
+[2025-07-22 10:17:55] 🔧 USING ENHANCED PARAMETER GRID with improved alpha range
+[2025-07-22 10:17:55] 
+============================================================
+[2025-07-22 10:17:55] �� TRAINING ENHANCED ELASTICNET POLYNOMIAL REGRESSION
+[2025-07-22 10:17:55] ============================================================
+[2025-07-22 10:17:55] 
+🔢 ENHANCED ELASTICNET - FOLD 1
+[2025-07-22 10:17:55] ----------------------------------------
+[2025-07-22 10:17:55] Training samples: 61600
+[2025-07-22 10:17:55] Validation samples: 15400
+[2025-07-22 10:17:55] Running hyperparameter search...
+Fitting 3 folds for each of 30 candidates, totalling 90 fits
+[2025-07-22 10:50:38] ✅ Training complete in 1963.6 seconds
+[2025-07-22 10:50:38] Best parameters: {'elasticnet__alpha': 0.01, 'elasticnet__l1_ratio': 0.9, 'polynomialfeatures__degree': 3}
+[2025-07-22 10:50:38] Best CV score (neg MSE): -0.8821
+[2025-07-22 10:50:38] 🔢 ENHANCED ELASTICNET Fold 1 Results:
+[2025-07-22 10:50:38]   Training:
+[2025-07-22 10:50:38]   MAPE: 39.99%
+[2025-07-22 10:50:38]   MAE:  22.1048
+[2025-07-22 10:50:38]   RMSE: 88.8779
+[2025-07-22 10:50:38]   R²:   0.6219
+[2025-07-22 10:50:38]   Validation:
+[2025-07-22 10:50:38]   MAPE: 40.59%
+[2025-07-22 10:50:38]   MAE:  22.5813
+[2025-07-22 10:50:38]   RMSE: 89.7444
+[2025-07-22 10:50:38]   R²:   0.6364
+[2025-07-22 10:50:38]   Polynomial Degree: 3
+[2025-07-22 10:50:38]   Alpha (regularization strength): 0.01
+[2025-07-22 10:50:38]   L1 Ratio (L1 vs L2 mix): 0.9
+[2025-07-22 10:50:38]   Feature Selection: 51/219 features selected (23.3%)
+[2025-07-22 10:50:38] Model saved: elasticnet_model_fold_1.joblib
+[2025-07-22 10:50:38] 
+🔢 ENHANCED ELASTICNET - FOLD 2
+[2025-07-22 10:50:38] ----------------------------------------
+[2025-07-22 10:50:38] Training samples: 61600
+[2025-07-22 10:50:38] Validation samples: 15400
+[2025-07-22 10:50:38] Running hyperparameter search...
+Fitting 3 folds for each of 30 candidates, totalling 90 fits
+[2025-07-22 11:23:41] ✅ Training complete in 1982.2 seconds
+[2025-07-22 11:23:41] Best parameters: {'elasticnet__alpha': 0.01, 'elasticnet__l1_ratio': 0.9, 'polynomialfeatures__degree': 3}
+[2025-07-22 11:23:41] Best CV score (neg MSE): -0.8710
+[2025-07-22 11:23:41] 🔢 ENHANCED ELASTICNET Fold 2 Results:
+[2025-07-22 11:23:41]   Training:
+[2025-07-22 11:23:41]   MAPE: 40.16%
+[2025-07-22 11:23:41]   MAE:  22.1277
+[2025-07-22 11:23:41]   RMSE: 87.8587
+[2025-07-22 11:23:41]   R²:   0.6306
+[2025-07-22 11:23:41]   Validation:
+[2025-07-22 11:23:41]   MAPE: 40.16%
+[2025-07-22 11:23:41]   MAE:  22.6311
+[2025-07-22 11:23:41]   RMSE: 93.8005
+[2025-07-22 11:23:41]   R²:   0.6025
+[2025-07-22 11:23:41]   Polynomial Degree: 3
+[2025-07-22 11:23:41]   Alpha (regularization strength): 0.01
+[2025-07-22 11:23:41]   L1 Ratio (L1 vs L2 mix): 0.9
+[2025-07-22 11:23:41]   Feature Selection: 56/219 features selected (25.6%)
+[2025-07-22 11:23:41] Model saved: elasticnet_model_fold_2.joblib
+[2025-07-22 11:23:41] 
+🔢 ENHANCED ELASTICNET - FOLD 3
+[2025-07-22 11:23:41] ----------------------------------------
+[2025-07-22 11:23:41] Training samples: 61600
+[2025-07-22 11:23:41] Validation samples: 15400
+[2025-07-22 11:23:41] Running hyperparameter search...
+Fitting 3 folds for each of 30 candidates, totalling 90 fits
+[2025-07-22 11:57:20] ✅ Training complete in 2019.6 seconds
+[2025-07-22 11:57:20] Best parameters: {'elasticnet__alpha': 0.01, 'elasticnet__l1_ratio': 0.9, 'polynomialfeatures__degree': 3}
+[2025-07-22 11:57:20] Best CV score (neg MSE): -0.8691
+[2025-07-22 11:57:21] 🔢 ENHANCED ELASTICNET Fold 3 Results:
+[2025-07-22 11:57:21]   Training:
+[2025-07-22 11:57:21]   MAPE: 40.09%
+[2025-07-22 11:57:21]   MAE:  22.3461
+[2025-07-22 11:57:21]   RMSE: 88.7835
+[2025-07-22 11:57:21]   R²:   0.6334
+[2025-07-22 11:57:21]   Validation:
+[2025-07-22 11:57:21]   MAPE: 39.98%
+[2025-07-22 11:57:21]   MAE:  21.6653
+[2025-07-22 11:57:21]   RMSE: 86.7798
+[2025-07-22 11:57:21]   R²:   0.6181
+[2025-07-22 11:57:21]   Polynomial Degree: 3
+[2025-07-22 11:57:21]   Alpha (regularization strength): 0.01
+[2025-07-22 11:57:21]   L1 Ratio (L1 vs L2 mix): 0.9
+[2025-07-22 11:57:21]   Feature Selection: 57/219 features selected (26.0%)
+[2025-07-22 11:57:21] Model saved: elasticnet_model_fold_3.joblib
+[2025-07-22 11:57:21] 
+🔢 ENHANCED ELASTICNET - FOLD 4
+[2025-07-22 11:57:21] ----------------------------------------
+[2025-07-22 11:57:21] Training samples: 61600
+[2025-07-22 11:57:21] Validation samples: 15400
+[2025-07-22 11:57:21] Running hyperparameter search...
+Fitting 3 folds for each of 30 candidates, totalling 90 fits
+[2025-07-22 12:30:55] ✅ Training complete in 2014.6 seconds
+[2025-07-22 12:30:55] Best parameters: {'elasticnet__alpha': 0.01, 'elasticnet__l1_ratio': 0.9, 'polynomialfeatures__degree': 3}
+[2025-07-22 12:30:55] Best CV score (neg MSE): -0.8293
+[2025-07-22 12:30:56] 🔢 ENHANCED ELASTICNET Fold 4 Results:
+[2025-07-22 12:30:56]   Training:
+[2025-07-22 12:30:56]   MAPE: 40.05%
+[2025-07-22 12:30:56]   MAE:  22.1565
+[2025-07-22 12:30:56]   RMSE: 88.5639
+[2025-07-22 12:30:56]   R²:   0.6200
+[2025-07-22 12:30:56]   Validation:
+[2025-07-22 12:30:56]   MAPE: 39.96%
+[2025-07-22 12:30:56]   MAE:  22.7666
+[2025-07-22 12:30:56]   RMSE: 91.2248
+[2025-07-22 12:30:56]   R²:   0.6406
+[2025-07-22 12:30:56]   Polynomial Degree: 3
+[2025-07-22 12:30:56]   Alpha (regularization strength): 0.01
+[2025-07-22 12:30:56]   L1 Ratio (L1 vs L2 mix): 0.9
+[2025-07-22 12:30:56]   Feature Selection: 54/219 features selected (24.7%)
+[2025-07-22 12:30:56] Model saved: elasticnet_model_fold_4.joblib
+[2025-07-22 12:30:56] 
+🔢 ENHANCED ELASTICNET - FOLD 5
+[2025-07-22 12:30:56] ----------------------------------------
+[2025-07-22 12:30:56] Training samples: 61600
+[2025-07-22 12:30:56] Validation samples: 15400
+[2025-07-22 12:30:56] Running hyperparameter search...
+Fitting 3 folds for each of 30 candidates, totalling 90 fits
+[2025-07-22 13:04:03] ✅ Training complete in 1987.3 seconds
+[2025-07-22 13:04:03] Best parameters: {'elasticnet__alpha': 0.01, 'elasticnet__l1_ratio': 0.9, 'polynomialfeatures__degree': 3}
+[2025-07-22 13:04:03] Best CV score (neg MSE): -0.8764
+[2025-07-22 13:04:03] 🔢 ENHANCED ELASTICNET Fold 5 Results:
+[2025-07-22 13:04:03]   Training:
+[2025-07-22 13:04:03]   MAPE: 40.04%
+[2025-07-22 13:04:03]   MAE:  22.3549
+[2025-07-22 13:04:03]   RMSE: 90.1201
+[2025-07-22 13:04:03]   R²:   0.6273
+[2025-07-22 13:04:03]   Validation:
+[2025-07-22 13:04:03]   MAPE: 39.82%
+[2025-07-22 13:04:03]   MAE:  21.5297
+[2025-07-22 13:04:03]   RMSE: 82.3656
+[2025-07-22 13:04:03]   R²:   0.6344
+[2025-07-22 13:04:03]   Polynomial Degree: 3
+[2025-07-22 13:04:03]   Alpha (regularization strength): 0.01
+[2025-07-22 13:04:03]   L1 Ratio (L1 vs L2 mix): 0.9
+[2025-07-22 13:04:03]   Feature Selection: 54/219 features selected (24.7%)
+[2025-07-22 13:04:03] Model saved: elasticnet_model_fold_5.joblib
+[2025-07-22 13:04:03] 
+================================================================================
+[2025-07-22 13:04:03] 🔢 ENHANCED ELASTICNET POLYNOMIAL REGRESSION SUMMARY
+[2025-07-22 13:04:03] ================================================================================
+[2025-07-22 13:04:03] 📊 Average Performance:
+[2025-07-22 13:04:03] Average Val MAPE: 40.10% ± 0.27%
+[2025-07-22 13:04:03] Average Val R²: 0.6264
+[2025-07-22 13:04:03] Average Training Time: 1993.5 seconds per fold
+[2025-07-22 13:04:03] Average Sparsity: 0.75 (75.2% features removed)
+[2025-07-22 13:04:03] 
+🏆 Best Fold: Fold 5 (Val MAPE: 39.82%)
+[2025-07-22 13:04:03] 📐 Polynomial Degree: 3
+[2025-07-22 13:04:03] 🎯 Best Alpha: 0.01
+[2025-07-22 13:04:03] ⚖️  Best L1 Ratio: 0.9 (90% L1, 10% L2)
+[2025-07-22 13:04:03] 🔍 Feature Selection: 54/219 features (24.7% kept)
+[2025-07-22 13:04:03] ⏱️  Total Training Time: 9968.7 seconds (166.1 minutes)
+[2025-07-22 13:04:03] Best model saved as: best_enhanced_elasticnet_model.joblib
+[2025-07-22 13:04:03] Scalers saved as: enhanced_elasticnet_scaler_X.joblib, enhanced_elasticnet_scaler_y.joblib
+[2025-07-22 13:04:03] Results saved to: enhanced_elasticnet_training_results.csv
+[2025-07-22 13:04:03] 📊 Creating visualization...
+/scratch/pioneer/jobs/job.2685571.pioneer/poly_elasticnet_training_2685571/polynomial_elasticnet.py:520: UserWarning: Glyph 128640 (\N{ROCKET}) missing from font(s) DejaVu Sans Mono.
+  plt.tight_layout()
+/scratch/pioneer/jobs/job.2685571.pioneer/poly_elasticnet_training_2685571/polynomial_elasticnet.py:520: UserWarning: Glyph 9989 (\N{WHITE HEAVY CHECK MARK}) missing from font(s) DejaVu Sans Mono.
+  plt.tight_layout()
+/scratch/pioneer/jobs/job.2685571.pioneer/poly_elasticnet_training_2685571/polynomial_elasticnet.py:521: UserWarning: Glyph 128640 (\N{ROCKET}) missing from font(s) DejaVu Sans Mono.
+  plt.savefig('enhanced_elasticnet_polynomial_results.png',
+/scratch/pioneer/jobs/job.2685571.pioneer/poly_elasticnet_training_2685571/polynomial_elasticnet.py:521: UserWarning: Glyph 9989 (\N{WHITE HEAVY CHECK MARK}) missing from font(s) DejaVu Sans Mono.
+  plt.savefig('enhanced_elasticnet_polynomial_results.png',
+[2025-07-22 13:04:06] ✅ Visualization saved: enhanced_elasticnet_polynomial_results.png
+[2025-07-22 13:04:06] 
+�� ENHANCED ElasticNet Polynomial Regression Training Complete!
+[2025-07-22 13:04:06] 🚀 CRITICAL FIXES SUCCESSFULLY APPLIED!
+[2025-07-22 13:04:06] ✅ Log transformation applied to target variable
+[2025-07-22 13:04:06] ✅ Proper inverse transformation implemented
+[2025-07-22 13:04:06] ✅ Optimized alpha range for log-scale targets
+[2025-07-22 13:04:06] ⏱️  Total time: 9968.7 seconds (166.1 minutes)
+[2025-07-22 13:04:06] 📊 Best performance: 39.82% MAPE
+[2025-07-22 13:04:06] 🎯 Best regularization: Alpha = 0.01, L1 Ratio = 0.9
+[2025-07-22 13:04:06] 🔍 Feature selection: 24.7% features kept
+[2025-07-22 13:04:06] 📐 Best polynomial degree: 3
+[2025-07-22 13:04:06] Script completed at: 2025-07-22 13:04:06.117330
+[2025-07-22 13:04:06] 
+📁 Generated Files:
+[2025-07-22 13:04:06]   • best_enhanced_elasticnet_model.joblib - Best trained model
+[2025-07-22 13:04:06]   • enhanced_elasticnet_scaler_X.joblib - Feature scaler
+[2025-07-22 13:04:06]   • enhanced_elasticnet_scaler_y.joblib - Target scaler
+[2025-07-22 13:04:06]   • enhanced_elasticnet_training_results.csv - Detailed results
+[2025-07-22 13:04:06]   • enhanced_elasticnet_polynomial_results.png - Visualization
+[2025-07-22 13:04:06]   • Individual fold models: elasticnet_model_fold_*.joblib

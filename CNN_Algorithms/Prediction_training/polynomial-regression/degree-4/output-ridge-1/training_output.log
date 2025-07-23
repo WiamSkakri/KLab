@@ -1,0 +1,1278 @@
+[2025-07-21 15:27:25] Starting FIXED RIDGE Polynomial Regression CNN Execution Time Prediction Training
+[2025-07-21 15:27:25] Loading data from combined.csv
+[2025-07-21 15:27:25] Data loaded successfully. Shape: (77000, 9)
+[2025-07-21 15:27:25] Original target variable statistics:
+[2025-07-21 15:27:25]   Min: 0.4120
+[2025-07-21 15:27:25]   Max: 3194.3893
+[2025-07-21 15:27:25]   Mean: 50.2547
+[2025-07-21 15:27:25]   Std: 145.4140
+[2025-07-21 15:27:25] 🔧 APPLYING LOG TRANSFORMATION to target variable
+[2025-07-21 15:27:25] Log-transformed target statistics:
+[2025-07-21 15:27:25]   Min: 0.3450
+[2025-07-21 15:27:25]   Max: 8.0695
+[2025-07-21 15:27:25]   Mean: 2.9474
+[2025-07-21 15:27:25]   Std: 1.2665
+[2025-07-21 15:27:25] Scaling numerical features: ['Batch_Size', 'Input_Size', 'In_Channels', 'Out_Channels', 'Kernel_Size', 'Stride', 'Padding']
+[2025-07-21 15:27:25] 🔧 SCALING LOG-TRANSFORMED TARGET variable
+[2025-07-21 15:27:25] Features: 9
+[2025-07-21 15:27:25] Feature columns: ['Batch_Size', 'Input_Size', 'In_Channels', 'Out_Channels', 'Kernel_Size', 'Stride', 'Padding', 'Algorithm_direct', 'Algorithm_smm']
+[2025-07-21 15:27:25] Data preprocessing complete. Features shape: (77000, 9), Target shape: (77000,)
+[2025-07-21 15:27:25] Training FIXED RIDGE Polynomial Regression with 5-Fold Cross Validation
+[2025-07-21 15:27:25] Total samples: 77000
+[2025-07-21 15:27:25] Features: 9
+[2025-07-21 15:27:25] 🔧 USING SMALLER ALPHA VALUES for better regularization
+[2025-07-21 15:27:25] 
+============================================================
+[2025-07-21 15:27:25] 🔢 TRAINING FIXED RIDGE POLYNOMIAL REGRESSION
+[2025-07-21 15:27:25] ============================================================
+[2025-07-21 15:27:25] 
+🔢 RIDGE - FOLD 1
+[2025-07-21 15:27:25] ----------------------------------------
+[2025-07-21 15:27:25] Training samples: 61600
+[2025-07-21 15:27:25] Validation samples: 15400
+[2025-07-21 15:27:25] Running hyperparameter search...
+Fitting 3 folds for each of 5 candidates, totalling 15 fits
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=4.14653e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=3.23265e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=3.18602e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=1.87869e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+[2025-07-21 15:27:40] ✅ Training complete in 15.5 seconds
+[2025-07-21 15:27:40] Best parameters: {'polynomialfeatures__degree': 4, 'ridge__alpha': 1e-05}
+[2025-07-21 15:27:40] Best CV score (neg MSE): -1008.1178
+[2025-07-21 15:27:40] 📊 Generating validation curve (MAE vs Alpha)...
+[2025-07-21 15:27:42] 📊 Generating learning curve (MAE vs Training Size)...
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=5.66457e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+/scratch/pioneer/jobs/job.2684170.pioneer/poly_ridge_training_2684170/polynomial_ridge.py:122: RuntimeWarning: overflow encountered in expm1
+  y_pred_original = np.expm1(y_pred_log)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/model_selection/_validation.py:953: UserWarning: Scoring failed. The score on this train-test partition for these parameters will be set to nan. Details: 
+Traceback (most recent call last):
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/model_selection/_validation.py", line 942, in _score
+    scores = scorer(estimator, X_test, y_test, **score_params)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/pioneer/jobs/job.2684170.pioneer/poly_ridge_training_2684170/polynomial_ridge.py", line 257, in mae_scorer_original_scale
+    return -mean_absolute_error(y_original, y_pred_original)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/_param_validation.py", line 218, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/metrics/_regression.py", line 284, in mean_absolute_error
+    _check_reg_targets_with_floating_dtype(
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/metrics/_regression.py", line 209, in _check_reg_targets_with_floating_dtype
+    y_type, y_true, y_pred, sample_weight, multioutput = _check_reg_targets(
+                                                         ^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/metrics/_regression.py", line 116, in _check_reg_targets
+    y_pred = check_array(y_pred, ensure_2d=False, dtype=dtype)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/validation.py", line 1105, in check_array
+    _assert_all_finite(
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/validation.py", line 120, in _assert_all_finite
+    _assert_all_finite_element_wise(
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/validation.py", line 169, in _assert_all_finite_element_wise
+    raise ValueError(msg_err)
+ValueError: Input contains infinity or a value too large for dtype('float64').
+
+  warnings.warn(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=5.81198e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+/scratch/pioneer/jobs/job.2684170.pioneer/poly_ridge_training_2684170/polynomial_ridge.py:122: RuntimeWarning: overflow encountered in expm1
+  y_pred_original = np.expm1(y_pred_log)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/model_selection/_validation.py:953: UserWarning: Scoring failed. The score on this train-test partition for these parameters will be set to nan. Details: 
+Traceback (most recent call last):
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/model_selection/_validation.py", line 942, in _score
+    scores = scorer(estimator, X_test, y_test, **score_params)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/pioneer/jobs/job.2684170.pioneer/poly_ridge_training_2684170/polynomial_ridge.py", line 257, in mae_scorer_original_scale
+    return -mean_absolute_error(y_original, y_pred_original)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/_param_validation.py", line 218, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/metrics/_regression.py", line 284, in mean_absolute_error
+    _check_reg_targets_with_floating_dtype(
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/metrics/_regression.py", line 209, in _check_reg_targets_with_floating_dtype
+    y_type, y_true, y_pred, sample_weight, multioutput = _check_reg_targets(
+                                                         ^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/metrics/_regression.py", line 116, in _check_reg_targets
+    y_pred = check_array(y_pred, ensure_2d=False, dtype=dtype)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/validation.py", line 1105, in check_array
+    _assert_all_finite(
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/validation.py", line 120, in _assert_all_finite
+    _assert_all_finite_element_wise(
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/validation.py", line 169, in _assert_all_finite_element_wise
+    raise ValueError(msg_err)
+ValueError: Input contains infinity or a value too large for dtype('float64').
+
+  warnings.warn(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=4.9532e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+/scratch/pioneer/jobs/job.2684170.pioneer/poly_ridge_training_2684170/polynomial_ridge.py:122: RuntimeWarning: overflow encountered in expm1
+  y_pred_original = np.expm1(y_pred_log)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/model_selection/_validation.py:953: UserWarning: Scoring failed. The score on this train-test partition for these parameters will be set to nan. Details: 
+Traceback (most recent call last):
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/model_selection/_validation.py", line 942, in _score
+    scores = scorer(estimator, X_test, y_test, **score_params)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/pioneer/jobs/job.2684170.pioneer/poly_ridge_training_2684170/polynomial_ridge.py", line 257, in mae_scorer_original_scale
+    return -mean_absolute_error(y_original, y_pred_original)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/_param_validation.py", line 218, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/metrics/_regression.py", line 284, in mean_absolute_error
+    _check_reg_targets_with_floating_dtype(
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/metrics/_regression.py", line 209, in _check_reg_targets_with_floating_dtype
+    y_type, y_true, y_pred, sample_weight, multioutput = _check_reg_targets(
+                                                         ^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/metrics/_regression.py", line 116, in _check_reg_targets
+    y_pred = check_array(y_pred, ensure_2d=False, dtype=dtype)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/validation.py", line 1105, in check_array
+    _assert_all_finite(
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/validation.py", line 120, in _assert_all_finite
+    _assert_all_finite_element_wise(
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/validation.py", line 169, in _assert_all_finite_element_wise
+    raise ValueError(msg_err)
+ValueError: Input contains infinity or a value too large for dtype('float64').
+
+  warnings.warn(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=5.37872e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+/scratch/pioneer/jobs/job.2684170.pioneer/poly_ridge_training_2684170/polynomial_ridge.py:122: RuntimeWarning: overflow encountered in expm1
+  y_pred_original = np.expm1(y_pred_log)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/model_selection/_validation.py:953: UserWarning: Scoring failed. The score on this train-test partition for these parameters will be set to nan. Details: 
+Traceback (most recent call last):
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/model_selection/_validation.py", line 942, in _score
+    scores = scorer(estimator, X_test, y_test, **score_params)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/pioneer/jobs/job.2684170.pioneer/poly_ridge_training_2684170/polynomial_ridge.py", line 257, in mae_scorer_original_scale
+    return -mean_absolute_error(y_original, y_pred_original)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/_param_validation.py", line 218, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/metrics/_regression.py", line 284, in mean_absolute_error
+    _check_reg_targets_with_floating_dtype(
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/metrics/_regression.py", line 209, in _check_reg_targets_with_floating_dtype
+    y_type, y_true, y_pred, sample_weight, multioutput = _check_reg_targets(
+                                                         ^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/metrics/_regression.py", line 116, in _check_reg_targets
+    y_pred = check_array(y_pred, ensure_2d=False, dtype=dtype)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/validation.py", line 1105, in check_array
+    _assert_all_finite(
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/validation.py", line 120, in _assert_all_finite
+    _assert_all_finite_element_wise(
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/validation.py", line 169, in _assert_all_finite_element_wise
+    raise ValueError(msg_err)
+ValueError: Input contains infinity or a value too large for dtype('float64').
+
+  warnings.warn(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=4.79014e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=3.0383e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=3.18602e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=8.98005e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=7.13065e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=4.67612e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=4.76427e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=5.36536e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=3.23041e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=6.9387e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=8.98005e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+/scratch/pioneer/jobs/job.2684170.pioneer/poly_ridge_training_2684170/polynomial_ridge.py:122: RuntimeWarning: overflow encountered in expm1
+  y_pred_original = np.expm1(y_pred_log)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/model_selection/_validation.py:953: UserWarning: Scoring failed. The score on this train-test partition for these parameters will be set to nan. Details: 
+Traceback (most recent call last):
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/model_selection/_validation.py", line 942, in _score
+    scores = scorer(estimator, X_test, y_test, **score_params)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/pioneer/jobs/job.2684170.pioneer/poly_ridge_training_2684170/polynomial_ridge.py", line 257, in mae_scorer_original_scale
+    return -mean_absolute_error(y_original, y_pred_original)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/_param_validation.py", line 218, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/metrics/_regression.py", line 284, in mean_absolute_error
+    _check_reg_targets_with_floating_dtype(
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/metrics/_regression.py", line 209, in _check_reg_targets_with_floating_dtype
+    y_type, y_true, y_pred, sample_weight, multioutput = _check_reg_targets(
+                                                         ^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/metrics/_regression.py", line 116, in _check_reg_targets
+    y_pred = check_array(y_pred, ensure_2d=False, dtype=dtype)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/validation.py", line 1105, in check_array
+    _assert_all_finite(
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/validation.py", line 120, in _assert_all_finite
+    _assert_all_finite_element_wise(
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/validation.py", line 169, in _assert_all_finite_element_wise
+    raise ValueError(msg_err)
+ValueError: Input contains infinity or a value too large for dtype('float64').
+
+  warnings.warn(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=7.13065e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=4.97406e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=5.27343e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=4.69784e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+/scratch/pioneer/jobs/job.2684170.pioneer/poly_ridge_training_2684170/polynomial_ridge.py:122: RuntimeWarning: overflow encountered in expm1
+  y_pred_original = np.expm1(y_pred_log)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/model_selection/_validation.py:953: UserWarning: Scoring failed. The score on this train-test partition for these parameters will be set to nan. Details: 
+Traceback (most recent call last):
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/model_selection/_validation.py", line 942, in _score
+    scores = scorer(estimator, X_test, y_test, **score_params)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/pioneer/jobs/job.2684170.pioneer/poly_ridge_training_2684170/polynomial_ridge.py", line 257, in mae_scorer_original_scale
+    return -mean_absolute_error(y_original, y_pred_original)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/_param_validation.py", line 218, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/metrics/_regression.py", line 284, in mean_absolute_error
+    _check_reg_targets_with_floating_dtype(
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/metrics/_regression.py", line 209, in _check_reg_targets_with_floating_dtype
+    y_type, y_true, y_pred, sample_weight, multioutput = _check_reg_targets(
+                                                         ^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/metrics/_regression.py", line 116, in _check_reg_targets
+    y_pred = check_array(y_pred, ensure_2d=False, dtype=dtype)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/validation.py", line 1105, in check_array
+    _assert_all_finite(
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/validation.py", line 120, in _assert_all_finite
+    _assert_all_finite_element_wise(
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/validation.py", line 169, in _assert_all_finite_element_wise
+    raise ValueError(msg_err)
+ValueError: Input contains infinity or a value too large for dtype('float64').
+
+  warnings.warn(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=3.27328e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=4.64891e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+[2025-07-21 15:27:50] 🔢 FIXED RIDGE Fold 1 Results:
+[2025-07-21 15:27:50]   Training:
+[2025-07-21 15:27:50]   MAPE: 25.15%
+[2025-07-21 15:27:50]   MAE:  11.4236
+[2025-07-21 15:27:50]   RMSE: 43.9439
+[2025-07-21 15:27:50]   R²:   0.9076
+[2025-07-21 15:27:50]   Validation:
+[2025-07-21 15:27:50]   MAPE: 25.59%
+[2025-07-21 15:27:50]   MAE:  11.7513
+[2025-07-21 15:27:50]   RMSE: 48.4917
+[2025-07-21 15:27:50]   R²:   0.8939
+[2025-07-21 15:27:50]   Polynomial Degree: 4
+[2025-07-21 15:27:50]   Alpha (L2 regularization): 1e-05
+[2025-07-21 15:27:50] Model saved: ridge_model_fold_1.joblib
+[2025-07-21 15:27:50] 
+🔢 RIDGE - FOLD 2
+[2025-07-21 15:27:50] ----------------------------------------
+[2025-07-21 15:27:50] Training samples: 61600
+[2025-07-21 15:27:50] Validation samples: 15400
+[2025-07-21 15:27:50] Running hyperparameter search...
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=3.95701e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=3.03611e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=2.96587e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=1.24417e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+Fitting 3 folds for each of 5 candidates, totalling 15 fits
+[2025-07-21 15:27:56] ✅ Training complete in 6.2 seconds
+[2025-07-21 15:27:56] Best parameters: {'polynomialfeatures__degree': 4, 'ridge__alpha': 1e-05}
+[2025-07-21 15:27:56] Best CV score (neg MSE): -1015.0453
+[2025-07-21 15:27:56] 📊 Generating validation curve (MAE vs Alpha)...
+[2025-07-21 15:27:58] 📊 Generating learning curve (MAE vs Training Size)...
+/scratch/pioneer/jobs/job.2684170.pioneer/poly_ridge_training_2684170/polynomial_ridge.py:122: RuntimeWarning: overflow encountered in expm1
+  y_pred_original = np.expm1(y_pred_log)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/model_selection/_validation.py:953: UserWarning: Scoring failed. The score on this train-test partition for these parameters will be set to nan. Details: 
+Traceback (most recent call last):
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/model_selection/_validation.py", line 942, in _score
+    scores = scorer(estimator, X_test, y_test, **score_params)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/pioneer/jobs/job.2684170.pioneer/poly_ridge_training_2684170/polynomial_ridge.py", line 257, in mae_scorer_original_scale
+    return -mean_absolute_error(y_original, y_pred_original)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/_param_validation.py", line 218, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/metrics/_regression.py", line 284, in mean_absolute_error
+    _check_reg_targets_with_floating_dtype(
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/metrics/_regression.py", line 209, in _check_reg_targets_with_floating_dtype
+    y_type, y_true, y_pred, sample_weight, multioutput = _check_reg_targets(
+                                                         ^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/metrics/_regression.py", line 116, in _check_reg_targets
+    y_pred = check_array(y_pred, ensure_2d=False, dtype=dtype)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/validation.py", line 1105, in check_array
+    _assert_all_finite(
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/validation.py", line 120, in _assert_all_finite
+    _assert_all_finite_element_wise(
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/validation.py", line 169, in _assert_all_finite_element_wise
+    raise ValueError(msg_err)
+ValueError: Input contains infinity or a value too large for dtype('float64').
+
+  warnings.warn(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=9.96904e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+/scratch/pioneer/jobs/job.2684170.pioneer/poly_ridge_training_2684170/polynomial_ridge.py:122: RuntimeWarning: overflow encountered in expm1
+  y_pred_original = np.expm1(y_pred_log)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/model_selection/_validation.py:953: UserWarning: Scoring failed. The score on this train-test partition for these parameters will be set to nan. Details: 
+Traceback (most recent call last):
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/model_selection/_validation.py", line 942, in _score
+    scores = scorer(estimator, X_test, y_test, **score_params)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/pioneer/jobs/job.2684170.pioneer/poly_ridge_training_2684170/polynomial_ridge.py", line 257, in mae_scorer_original_scale
+    return -mean_absolute_error(y_original, y_pred_original)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/_param_validation.py", line 218, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/metrics/_regression.py", line 284, in mean_absolute_error
+    _check_reg_targets_with_floating_dtype(
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/metrics/_regression.py", line 209, in _check_reg_targets_with_floating_dtype
+    y_type, y_true, y_pred, sample_weight, multioutput = _check_reg_targets(
+                                                         ^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/metrics/_regression.py", line 116, in _check_reg_targets
+    y_pred = check_array(y_pred, ensure_2d=False, dtype=dtype)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/validation.py", line 1105, in check_array
+    _assert_all_finite(
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/validation.py", line 120, in _assert_all_finite
+    _assert_all_finite_element_wise(
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/validation.py", line 169, in _assert_all_finite_element_wise
+    raise ValueError(msg_err)
+ValueError: Input contains infinity or a value too large for dtype('float64').
+
+  warnings.warn(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=6.18982e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+/scratch/pioneer/jobs/job.2684170.pioneer/poly_ridge_training_2684170/polynomial_ridge.py:122: RuntimeWarning: overflow encountered in expm1
+  y_pred_original = np.expm1(y_pred_log)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/model_selection/_validation.py:953: UserWarning: Scoring failed. The score on this train-test partition for these parameters will be set to nan. Details: 
+Traceback (most recent call last):
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/model_selection/_validation.py", line 942, in _score
+    scores = scorer(estimator, X_test, y_test, **score_params)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/pioneer/jobs/job.2684170.pioneer/poly_ridge_training_2684170/polynomial_ridge.py", line 257, in mae_scorer_original_scale
+    return -mean_absolute_error(y_original, y_pred_original)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/_param_validation.py", line 218, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/metrics/_regression.py", line 284, in mean_absolute_error
+    _check_reg_targets_with_floating_dtype(
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/metrics/_regression.py", line 209, in _check_reg_targets_with_floating_dtype
+    y_type, y_true, y_pred, sample_weight, multioutput = _check_reg_targets(
+                                                         ^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/metrics/_regression.py", line 116, in _check_reg_targets
+    y_pred = check_array(y_pred, ensure_2d=False, dtype=dtype)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/validation.py", line 1105, in check_array
+    _assert_all_finite(
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/validation.py", line 120, in _assert_all_finite
+    _assert_all_finite_element_wise(
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/validation.py", line 169, in _assert_all_finite_element_wise
+    raise ValueError(msg_err)
+ValueError: Input contains infinity or a value too large for dtype('float64').
+
+  warnings.warn(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=7.11456e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+/scratch/pioneer/jobs/job.2684170.pioneer/poly_ridge_training_2684170/polynomial_ridge.py:122: RuntimeWarning: overflow encountered in expm1
+  y_pred_original = np.expm1(y_pred_log)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/model_selection/_validation.py:953: UserWarning: Scoring failed. The score on this train-test partition for these parameters will be set to nan. Details: 
+Traceback (most recent call last):
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/model_selection/_validation.py", line 942, in _score
+    scores = scorer(estimator, X_test, y_test, **score_params)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/pioneer/jobs/job.2684170.pioneer/poly_ridge_training_2684170/polynomial_ridge.py", line 257, in mae_scorer_original_scale
+    return -mean_absolute_error(y_original, y_pred_original)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/_param_validation.py", line 218, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/metrics/_regression.py", line 284, in mean_absolute_error
+    _check_reg_targets_with_floating_dtype(
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/metrics/_regression.py", line 209, in _check_reg_targets_with_floating_dtype
+    y_type, y_true, y_pred, sample_weight, multioutput = _check_reg_targets(
+                                                         ^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/metrics/_regression.py", line 116, in _check_reg_targets
+    y_pred = check_array(y_pred, ensure_2d=False, dtype=dtype)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/validation.py", line 1105, in check_array
+    _assert_all_finite(
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/validation.py", line 120, in _assert_all_finite
+    _assert_all_finite_element_wise(
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/validation.py", line 169, in _assert_all_finite_element_wise
+    raise ValueError(msg_err)
+ValueError: Input contains infinity or a value too large for dtype('float64').
+
+  warnings.warn(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=5.70953e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+/scratch/pioneer/jobs/job.2684170.pioneer/poly_ridge_training_2684170/polynomial_ridge.py:122: RuntimeWarning: overflow encountered in expm1
+  y_pred_original = np.expm1(y_pred_log)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/model_selection/_validation.py:953: UserWarning: Scoring failed. The score on this train-test partition for these parameters will be set to nan. Details: 
+Traceback (most recent call last):
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/model_selection/_validation.py", line 942, in _score
+    scores = scorer(estimator, X_test, y_test, **score_params)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/pioneer/jobs/job.2684170.pioneer/poly_ridge_training_2684170/polynomial_ridge.py", line 257, in mae_scorer_original_scale
+    return -mean_absolute_error(y_original, y_pred_original)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/_param_validation.py", line 218, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/metrics/_regression.py", line 284, in mean_absolute_error
+    _check_reg_targets_with_floating_dtype(
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/metrics/_regression.py", line 209, in _check_reg_targets_with_floating_dtype
+    y_type, y_true, y_pred, sample_weight, multioutput = _check_reg_targets(
+                                                         ^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/metrics/_regression.py", line 116, in _check_reg_targets
+    y_pred = check_array(y_pred, ensure_2d=False, dtype=dtype)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/validation.py", line 1105, in check_array
+    _assert_all_finite(
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/validation.py", line 120, in _assert_all_finite
+    _assert_all_finite_element_wise(
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/validation.py", line 169, in _assert_all_finite_element_wise
+    raise ValueError(msg_err)
+ValueError: Input contains infinity or a value too large for dtype('float64').
+
+  warnings.warn(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=4.44979e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=4.13545e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=4.22094e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=3.95701e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=8.2147e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=6.66549e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=6.15866e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=3.78508e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=4.01629e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=7.10505e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=2.93803e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=8.2147e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+/scratch/pioneer/jobs/job.2684170.pioneer/poly_ridge_training_2684170/polynomial_ridge.py:122: RuntimeWarning: overflow encountered in expm1
+  y_pred_original = np.expm1(y_pred_log)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/model_selection/_validation.py:953: UserWarning: Scoring failed. The score on this train-test partition for these parameters will be set to nan. Details: 
+Traceback (most recent call last):
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/model_selection/_validation.py", line 942, in _score
+    scores = scorer(estimator, X_test, y_test, **score_params)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/pioneer/jobs/job.2684170.pioneer/poly_ridge_training_2684170/polynomial_ridge.py", line 257, in mae_scorer_original_scale
+    return -mean_absolute_error(y_original, y_pred_original)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/_param_validation.py", line 218, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/metrics/_regression.py", line 284, in mean_absolute_error
+    _check_reg_targets_with_floating_dtype(
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/metrics/_regression.py", line 209, in _check_reg_targets_with_floating_dtype
+    y_type, y_true, y_pred, sample_weight, multioutput = _check_reg_targets(
+                                                         ^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/metrics/_regression.py", line 116, in _check_reg_targets
+    y_pred = check_array(y_pred, ensure_2d=False, dtype=dtype)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/validation.py", line 1105, in check_array
+    _assert_all_finite(
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/validation.py", line 120, in _assert_all_finite
+    _assert_all_finite_element_wise(
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/validation.py", line 169, in _assert_all_finite_element_wise
+    raise ValueError(msg_err)
+ValueError: Input contains infinity or a value too large for dtype('float64').
+
+  warnings.warn(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=6.66549e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=5.0524e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=5.12491e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=3.19883e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+/scratch/pioneer/jobs/job.2684170.pioneer/poly_ridge_training_2684170/polynomial_ridge.py:122: RuntimeWarning: overflow encountered in expm1
+  y_pred_original = np.expm1(y_pred_log)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/model_selection/_validation.py:953: UserWarning: Scoring failed. The score on this train-test partition for these parameters will be set to nan. Details: 
+Traceback (most recent call last):
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/model_selection/_validation.py", line 942, in _score
+    scores = scorer(estimator, X_test, y_test, **score_params)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/pioneer/jobs/job.2684170.pioneer/poly_ridge_training_2684170/polynomial_ridge.py", line 257, in mae_scorer_original_scale
+    return -mean_absolute_error(y_original, y_pred_original)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/_param_validation.py", line 218, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/metrics/_regression.py", line 284, in mean_absolute_error
+    _check_reg_targets_with_floating_dtype(
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/metrics/_regression.py", line 209, in _check_reg_targets_with_floating_dtype
+    y_type, y_true, y_pred, sample_weight, multioutput = _check_reg_targets(
+                                                         ^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/metrics/_regression.py", line 116, in _check_reg_targets
+    y_pred = check_array(y_pred, ensure_2d=False, dtype=dtype)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/validation.py", line 1105, in check_array
+    _assert_all_finite(
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/validation.py", line 120, in _assert_all_finite
+    _assert_all_finite_element_wise(
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/validation.py", line 169, in _assert_all_finite_element_wise
+    raise ValueError(msg_err)
+ValueError: Input contains infinity or a value too large for dtype('float64').
+
+  warnings.warn(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=3.27598e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=2.36835e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+[2025-07-21 15:28:06] 🔢 FIXED RIDGE Fold 2 Results:
+[2025-07-21 15:28:06]   Training:
+[2025-07-21 15:28:06]   MAPE: 25.27%
+[2025-07-21 15:28:06]   MAE:  11.4149
+[2025-07-21 15:28:06]   RMSE: 43.3411
+[2025-07-21 15:28:06]   R²:   0.9101
+[2025-07-21 15:28:06]   Validation:
+[2025-07-21 15:28:06]   MAPE: 25.29%
+[2025-07-21 15:28:06]   MAE:  11.3101
+[2025-07-21 15:28:06]   RMSE: 45.5812
+[2025-07-21 15:28:06]   R²:   0.9061
+[2025-07-21 15:28:06]   Polynomial Degree: 4
+[2025-07-21 15:28:06]   Alpha (L2 regularization): 1e-05
+[2025-07-21 15:28:06] Model saved: ridge_model_fold_2.joblib
+[2025-07-21 15:28:06] 
+🔢 RIDGE - FOLD 3
+[2025-07-21 15:28:06] ----------------------------------------
+[2025-07-21 15:28:06] Training samples: 61600
+[2025-07-21 15:28:06] Validation samples: 15400
+[2025-07-21 15:28:06] Running hyperparameter search...
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=4.19816e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=2.9304e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=2.88383e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=1.68618e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+Fitting 3 folds for each of 5 candidates, totalling 15 fits
+[2025-07-21 15:28:12] ✅ Training complete in 6.1 seconds
+[2025-07-21 15:28:12] Best parameters: {'polynomialfeatures__degree': 4, 'ridge__alpha': 1e-05}
+[2025-07-21 15:28:12] Best CV score (neg MSE): -1012.5500
+[2025-07-21 15:28:12] 📊 Generating validation curve (MAE vs Alpha)...
+[2025-07-21 15:28:14] 📊 Generating learning curve (MAE vs Training Size)...
+/scratch/pioneer/jobs/job.2684170.pioneer/poly_ridge_training_2684170/polynomial_ridge.py:122: RuntimeWarning: overflow encountered in expm1
+  y_pred_original = np.expm1(y_pred_log)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/model_selection/_validation.py:953: UserWarning: Scoring failed. The score on this train-test partition for these parameters will be set to nan. Details: 
+Traceback (most recent call last):
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/model_selection/_validation.py", line 942, in _score
+    scores = scorer(estimator, X_test, y_test, **score_params)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/pioneer/jobs/job.2684170.pioneer/poly_ridge_training_2684170/polynomial_ridge.py", line 257, in mae_scorer_original_scale
+    return -mean_absolute_error(y_original, y_pred_original)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/_param_validation.py", line 218, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/metrics/_regression.py", line 284, in mean_absolute_error
+    _check_reg_targets_with_floating_dtype(
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/metrics/_regression.py", line 209, in _check_reg_targets_with_floating_dtype
+    y_type, y_true, y_pred, sample_weight, multioutput = _check_reg_targets(
+                                                         ^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/metrics/_regression.py", line 116, in _check_reg_targets
+    y_pred = check_array(y_pred, ensure_2d=False, dtype=dtype)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/validation.py", line 1105, in check_array
+    _assert_all_finite(
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/validation.py", line 120, in _assert_all_finite
+    _assert_all_finite_element_wise(
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/validation.py", line 169, in _assert_all_finite_element_wise
+    raise ValueError(msg_err)
+ValueError: Input contains infinity or a value too large for dtype('float64').
+
+  warnings.warn(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=8.0592e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+/scratch/pioneer/jobs/job.2684170.pioneer/poly_ridge_training_2684170/polynomial_ridge.py:122: RuntimeWarning: overflow encountered in expm1
+  y_pred_original = np.expm1(y_pred_log)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/model_selection/_validation.py:953: UserWarning: Scoring failed. The score on this train-test partition for these parameters will be set to nan. Details: 
+Traceback (most recent call last):
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/model_selection/_validation.py", line 942, in _score
+    scores = scorer(estimator, X_test, y_test, **score_params)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/pioneer/jobs/job.2684170.pioneer/poly_ridge_training_2684170/polynomial_ridge.py", line 257, in mae_scorer_original_scale
+    return -mean_absolute_error(y_original, y_pred_original)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/_param_validation.py", line 218, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/metrics/_regression.py", line 284, in mean_absolute_error
+    _check_reg_targets_with_floating_dtype(
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/metrics/_regression.py", line 209, in _check_reg_targets_with_floating_dtype
+    y_type, y_true, y_pred, sample_weight, multioutput = _check_reg_targets(
+                                                         ^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/metrics/_regression.py", line 116, in _check_reg_targets
+    y_pred = check_array(y_pred, ensure_2d=False, dtype=dtype)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/validation.py", line 1105, in check_array
+    _assert_all_finite(
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/validation.py", line 120, in _assert_all_finite
+    _assert_all_finite_element_wise(
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/validation.py", line 169, in _assert_all_finite_element_wise
+    raise ValueError(msg_err)
+ValueError: Input contains infinity or a value too large for dtype('float64').
+
+  warnings.warn(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=6.45574e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+/scratch/pioneer/jobs/job.2684170.pioneer/poly_ridge_training_2684170/polynomial_ridge.py:122: RuntimeWarning: overflow encountered in expm1
+  y_pred_original = np.expm1(y_pred_log)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/model_selection/_validation.py:953: UserWarning: Scoring failed. The score on this train-test partition for these parameters will be set to nan. Details: 
+Traceback (most recent call last):
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/model_selection/_validation.py", line 942, in _score
+    scores = scorer(estimator, X_test, y_test, **score_params)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/pioneer/jobs/job.2684170.pioneer/poly_ridge_training_2684170/polynomial_ridge.py", line 257, in mae_scorer_original_scale
+    return -mean_absolute_error(y_original, y_pred_original)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/_param_validation.py", line 218, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/metrics/_regression.py", line 284, in mean_absolute_error
+    _check_reg_targets_with_floating_dtype(
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/metrics/_regression.py", line 209, in _check_reg_targets_with_floating_dtype
+    y_type, y_true, y_pred, sample_weight, multioutput = _check_reg_targets(
+                                                         ^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/metrics/_regression.py", line 116, in _check_reg_targets
+    y_pred = check_array(y_pred, ensure_2d=False, dtype=dtype)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/validation.py", line 1105, in check_array
+    _assert_all_finite(
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/validation.py", line 120, in _assert_all_finite
+    _assert_all_finite_element_wise(
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/validation.py", line 169, in _assert_all_finite_element_wise
+    raise ValueError(msg_err)
+ValueError: Input contains infinity or a value too large for dtype('float64').
+
+  warnings.warn(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=5.72492e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+/scratch/pioneer/jobs/job.2684170.pioneer/poly_ridge_training_2684170/polynomial_ridge.py:122: RuntimeWarning: overflow encountered in expm1
+  y_pred_original = np.expm1(y_pred_log)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/model_selection/_validation.py:953: UserWarning: Scoring failed. The score on this train-test partition for these parameters will be set to nan. Details: 
+Traceback (most recent call last):
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/model_selection/_validation.py", line 942, in _score
+    scores = scorer(estimator, X_test, y_test, **score_params)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/pioneer/jobs/job.2684170.pioneer/poly_ridge_training_2684170/polynomial_ridge.py", line 257, in mae_scorer_original_scale
+    return -mean_absolute_error(y_original, y_pred_original)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/_param_validation.py", line 218, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/metrics/_regression.py", line 284, in mean_absolute_error
+    _check_reg_targets_with_floating_dtype(
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/metrics/_regression.py", line 209, in _check_reg_targets_with_floating_dtype
+    y_type, y_true, y_pred, sample_weight, multioutput = _check_reg_targets(
+                                                         ^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/metrics/_regression.py", line 116, in _check_reg_targets
+    y_pred = check_array(y_pred, ensure_2d=False, dtype=dtype)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/validation.py", line 1105, in check_array
+    _assert_all_finite(
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/validation.py", line 120, in _assert_all_finite
+    _assert_all_finite_element_wise(
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/validation.py", line 169, in _assert_all_finite_element_wise
+    raise ValueError(msg_err)
+ValueError: Input contains infinity or a value too large for dtype('float64').
+
+  warnings.warn(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=4.77591e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+/scratch/pioneer/jobs/job.2684170.pioneer/poly_ridge_training_2684170/polynomial_ridge.py:122: RuntimeWarning: overflow encountered in expm1
+  y_pred_original = np.expm1(y_pred_log)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/model_selection/_validation.py:953: UserWarning: Scoring failed. The score on this train-test partition for these parameters will be set to nan. Details: 
+Traceback (most recent call last):
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/model_selection/_validation.py", line 942, in _score
+    scores = scorer(estimator, X_test, y_test, **score_params)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/pioneer/jobs/job.2684170.pioneer/poly_ridge_training_2684170/polynomial_ridge.py", line 257, in mae_scorer_original_scale
+    return -mean_absolute_error(y_original, y_pred_original)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/_param_validation.py", line 218, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/metrics/_regression.py", line 284, in mean_absolute_error
+    _check_reg_targets_with_floating_dtype(
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/metrics/_regression.py", line 209, in _check_reg_targets_with_floating_dtype
+    y_type, y_true, y_pred, sample_weight, multioutput = _check_reg_targets(
+                                                         ^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/metrics/_regression.py", line 116, in _check_reg_targets
+    y_pred = check_array(y_pred, ensure_2d=False, dtype=dtype)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/validation.py", line 1105, in check_array
+    _assert_all_finite(
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/validation.py", line 120, in _assert_all_finite
+    _assert_all_finite_element_wise(
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/validation.py", line 169, in _assert_all_finite_element_wise
+    raise ValueError(msg_err)
+ValueError: Input contains infinity or a value too large for dtype('float64').
+
+  warnings.warn(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=3.46137e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=3.31851e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=4.19816e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=8.39818e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=7.52917e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=6.45932e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=4.79226e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+/scratch/pioneer/jobs/job.2684170.pioneer/poly_ridge_training_2684170/polynomial_ridge.py:122: RuntimeWarning: overflow encountered in expm1
+  y_pred_original = np.expm1(y_pred_log)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/model_selection/_validation.py:953: UserWarning: Scoring failed. The score on this train-test partition for these parameters will be set to nan. Details: 
+Traceback (most recent call last):
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/model_selection/_validation.py", line 942, in _score
+    scores = scorer(estimator, X_test, y_test, **score_params)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/pioneer/jobs/job.2684170.pioneer/poly_ridge_training_2684170/polynomial_ridge.py", line 257, in mae_scorer_original_scale
+    return -mean_absolute_error(y_original, y_pred_original)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/_param_validation.py", line 218, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/metrics/_regression.py", line 284, in mean_absolute_error
+    _check_reg_targets_with_floating_dtype(
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/metrics/_regression.py", line 209, in _check_reg_targets_with_floating_dtype
+    y_type, y_true, y_pred, sample_weight, multioutput = _check_reg_targets(
+                                                         ^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/metrics/_regression.py", line 116, in _check_reg_targets
+    y_pred = check_array(y_pred, ensure_2d=False, dtype=dtype)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/validation.py", line 1105, in check_array
+    _assert_all_finite(
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/validation.py", line 120, in _assert_all_finite
+    _assert_all_finite_element_wise(
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/validation.py", line 169, in _assert_all_finite_element_wise
+    raise ValueError(msg_err)
+ValueError: Input contains infinity or a value too large for dtype('float64').
+
+  warnings.warn(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=3.62912e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=3.07952e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=4.07572e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=8.39818e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+/scratch/pioneer/jobs/job.2684170.pioneer/poly_ridge_training_2684170/polynomial_ridge.py:122: RuntimeWarning: overflow encountered in expm1
+  y_pred_original = np.expm1(y_pred_log)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/model_selection/_validation.py:953: UserWarning: Scoring failed. The score on this train-test partition for these parameters will be set to nan. Details: 
+Traceback (most recent call last):
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/model_selection/_validation.py", line 942, in _score
+    scores = scorer(estimator, X_test, y_test, **score_params)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/pioneer/jobs/job.2684170.pioneer/poly_ridge_training_2684170/polynomial_ridge.py", line 257, in mae_scorer_original_scale
+    return -mean_absolute_error(y_original, y_pred_original)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/_param_validation.py", line 218, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/metrics/_regression.py", line 284, in mean_absolute_error
+    _check_reg_targets_with_floating_dtype(
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/metrics/_regression.py", line 209, in _check_reg_targets_with_floating_dtype
+    y_type, y_true, y_pred, sample_weight, multioutput = _check_reg_targets(
+                                                         ^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/metrics/_regression.py", line 116, in _check_reg_targets
+    y_pred = check_array(y_pred, ensure_2d=False, dtype=dtype)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/validation.py", line 1105, in check_array
+    _assert_all_finite(
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/validation.py", line 120, in _assert_all_finite
+    _assert_all_finite_element_wise(
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/validation.py", line 169, in _assert_all_finite_element_wise
+    raise ValueError(msg_err)
+ValueError: Input contains infinity or a value too large for dtype('float64').
+
+  warnings.warn(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=7.52917e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=7.41772e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=5.2939e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=4.11455e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+/scratch/pioneer/jobs/job.2684170.pioneer/poly_ridge_training_2684170/polynomial_ridge.py:122: RuntimeWarning: overflow encountered in expm1
+  y_pred_original = np.expm1(y_pred_log)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/model_selection/_validation.py:953: UserWarning: Scoring failed. The score on this train-test partition for these parameters will be set to nan. Details: 
+Traceback (most recent call last):
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/model_selection/_validation.py", line 942, in _score
+    scores = scorer(estimator, X_test, y_test, **score_params)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/pioneer/jobs/job.2684170.pioneer/poly_ridge_training_2684170/polynomial_ridge.py", line 257, in mae_scorer_original_scale
+    return -mean_absolute_error(y_original, y_pred_original)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/_param_validation.py", line 218, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/metrics/_regression.py", line 284, in mean_absolute_error
+    _check_reg_targets_with_floating_dtype(
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/metrics/_regression.py", line 209, in _check_reg_targets_with_floating_dtype
+    y_type, y_true, y_pred, sample_weight, multioutput = _check_reg_targets(
+                                                         ^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/metrics/_regression.py", line 116, in _check_reg_targets
+    y_pred = check_array(y_pred, ensure_2d=False, dtype=dtype)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/validation.py", line 1105, in check_array
+    _assert_all_finite(
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/validation.py", line 120, in _assert_all_finite
+    _assert_all_finite_element_wise(
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/validation.py", line 169, in _assert_all_finite_element_wise
+    raise ValueError(msg_err)
+ValueError: Input contains infinity or a value too large for dtype('float64').
+
+  warnings.warn(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=2.53082e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=3.08262e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+[2025-07-21 15:28:22] 🔢 FIXED RIDGE Fold 3 Results:
+[2025-07-21 15:28:22]   Training:
+[2025-07-21 15:28:22]   MAPE: 25.27%
+[2025-07-21 15:28:22]   MAE:  11.5425
+[2025-07-21 15:28:22]   RMSE: 45.0273
+[2025-07-21 15:28:22]   R²:   0.9057
+[2025-07-21 15:28:22]   Validation:
+[2025-07-21 15:28:22]   MAPE: 25.19%
+[2025-07-21 15:28:22]   MAE:  11.0758
+[2025-07-21 15:28:22]   RMSE: 43.3252
+[2025-07-21 15:28:22]   R²:   0.9048
+[2025-07-21 15:28:22]   Polynomial Degree: 4
+[2025-07-21 15:28:22]   Alpha (L2 regularization): 1e-05
+[2025-07-21 15:28:22] Model saved: ridge_model_fold_3.joblib
+[2025-07-21 15:28:22] 
+🔢 RIDGE - FOLD 4
+[2025-07-21 15:28:22] ----------------------------------------
+[2025-07-21 15:28:22] Training samples: 61600
+[2025-07-21 15:28:22] Validation samples: 15400
+[2025-07-21 15:28:22] Running hyperparameter search...
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=3.72233e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=4.28141e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=2.61866e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+Fitting 3 folds for each of 5 candidates, totalling 15 fits
+[2025-07-21 15:28:28] ✅ Training complete in 6.3 seconds
+[2025-07-21 15:28:28] Best parameters: {'polynomialfeatures__degree': 4, 'ridge__alpha': 0.1}
+[2025-07-21 15:28:28] Best CV score (neg MSE): -1274.7500
+[2025-07-21 15:28:28] 📊 Generating validation curve (MAE vs Alpha)...
+[2025-07-21 15:28:30] 📊 Generating learning curve (MAE vs Training Size)...
+/scratch/pioneer/jobs/job.2684170.pioneer/poly_ridge_training_2684170/polynomial_ridge.py:122: RuntimeWarning: overflow encountered in expm1
+  y_pred_original = np.expm1(y_pred_log)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/model_selection/_validation.py:953: UserWarning: Scoring failed. The score on this train-test partition for these parameters will be set to nan. Details: 
+Traceback (most recent call last):
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/model_selection/_validation.py", line 942, in _score
+    scores = scorer(estimator, X_test, y_test, **score_params)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/pioneer/jobs/job.2684170.pioneer/poly_ridge_training_2684170/polynomial_ridge.py", line 257, in mae_scorer_original_scale
+    return -mean_absolute_error(y_original, y_pred_original)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/_param_validation.py", line 218, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/metrics/_regression.py", line 284, in mean_absolute_error
+    _check_reg_targets_with_floating_dtype(
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/metrics/_regression.py", line 209, in _check_reg_targets_with_floating_dtype
+    y_type, y_true, y_pred, sample_weight, multioutput = _check_reg_targets(
+                                                         ^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/metrics/_regression.py", line 116, in _check_reg_targets
+    y_pred = check_array(y_pred, ensure_2d=False, dtype=dtype)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/validation.py", line 1105, in check_array
+    _assert_all_finite(
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/validation.py", line 120, in _assert_all_finite
+    _assert_all_finite_element_wise(
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/validation.py", line 169, in _assert_all_finite_element_wise
+    raise ValueError(msg_err)
+ValueError: Input contains infinity or a value too large for dtype('float64').
+
+  warnings.warn(
+[2025-07-21 15:28:38] 🔢 FIXED RIDGE Fold 4 Results:
+[2025-07-21 15:28:38]   Training:
+[2025-07-21 15:28:38]   MAPE: 25.37%
+[2025-07-21 15:28:38]   MAE:  11.3871
+[2025-07-21 15:28:38]   RMSE: 44.3694
+[2025-07-21 15:28:38]   R²:   0.9046
+[2025-07-21 15:28:38]   Validation:
+[2025-07-21 15:28:38]   MAPE: 24.97%
+[2025-07-21 15:28:38]   MAE:  11.4761
+[2025-07-21 15:28:38]   RMSE: 43.1281
+[2025-07-21 15:28:38]   R²:   0.9197
+[2025-07-21 15:28:38]   Polynomial Degree: 4
+[2025-07-21 15:28:38]   Alpha (L2 regularization): 0.1
+[2025-07-21 15:28:38] Model saved: ridge_model_fold_4.joblib
+[2025-07-21 15:28:38] 
+🔢 RIDGE - FOLD 5
+[2025-07-21 15:28:38] ----------------------------------------
+[2025-07-21 15:28:38] Training samples: 61600
+[2025-07-21 15:28:38] Validation samples: 15400
+[2025-07-21 15:28:38] Running hyperparameter search...
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=4.10736e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=3.86281e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=2.44475e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=2.57416e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+Fitting 3 folds for each of 5 candidates, totalling 15 fits
+[2025-07-21 15:28:45] ✅ Training complete in 6.8 seconds
+[2025-07-21 15:28:45] Best parameters: {'polynomialfeatures__degree': 4, 'ridge__alpha': 1e-05}
+[2025-07-21 15:28:45] Best CV score (neg MSE): -1072.7609
+[2025-07-21 15:28:45] 📊 Generating validation curve (MAE vs Alpha)...
+[2025-07-21 15:28:46] 📊 Generating learning curve (MAE vs Training Size)...
+/scratch/pioneer/jobs/job.2684170.pioneer/poly_ridge_training_2684170/polynomial_ridge.py:122: RuntimeWarning: overflow encountered in expm1
+  y_pred_original = np.expm1(y_pred_log)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/model_selection/_validation.py:953: UserWarning: Scoring failed. The score on this train-test partition for these parameters will be set to nan. Details: 
+Traceback (most recent call last):
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/model_selection/_validation.py", line 942, in _score
+    scores = scorer(estimator, X_test, y_test, **score_params)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/pioneer/jobs/job.2684170.pioneer/poly_ridge_training_2684170/polynomial_ridge.py", line 257, in mae_scorer_original_scale
+    return -mean_absolute_error(y_original, y_pred_original)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/_param_validation.py", line 218, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/metrics/_regression.py", line 284, in mean_absolute_error
+    _check_reg_targets_with_floating_dtype(
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/metrics/_regression.py", line 209, in _check_reg_targets_with_floating_dtype
+    y_type, y_true, y_pred, sample_weight, multioutput = _check_reg_targets(
+                                                         ^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/metrics/_regression.py", line 116, in _check_reg_targets
+    y_pred = check_array(y_pred, ensure_2d=False, dtype=dtype)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/validation.py", line 1105, in check_array
+    _assert_all_finite(
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/validation.py", line 120, in _assert_all_finite
+    _assert_all_finite_element_wise(
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/validation.py", line 169, in _assert_all_finite_element_wise
+    raise ValueError(msg_err)
+ValueError: Input contains infinity or a value too large for dtype('float64').
+
+  warnings.warn(
+/scratch/pioneer/jobs/job.2684170.pioneer/poly_ridge_training_2684170/polynomial_ridge.py:122: RuntimeWarning: overflow encountered in expm1
+  y_pred_original = np.expm1(y_pred_log)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/model_selection/_validation.py:953: UserWarning: Scoring failed. The score on this train-test partition for these parameters will be set to nan. Details: 
+Traceback (most recent call last):
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/model_selection/_validation.py", line 942, in _score
+    scores = scorer(estimator, X_test, y_test, **score_params)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/pioneer/jobs/job.2684170.pioneer/poly_ridge_training_2684170/polynomial_ridge.py", line 257, in mae_scorer_original_scale
+    return -mean_absolute_error(y_original, y_pred_original)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/_param_validation.py", line 218, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/metrics/_regression.py", line 284, in mean_absolute_error
+    _check_reg_targets_with_floating_dtype(
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/metrics/_regression.py", line 209, in _check_reg_targets_with_floating_dtype
+    y_type, y_true, y_pred, sample_weight, multioutput = _check_reg_targets(
+                                                         ^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/metrics/_regression.py", line 116, in _check_reg_targets
+    y_pred = check_array(y_pred, ensure_2d=False, dtype=dtype)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/validation.py", line 1105, in check_array
+    _assert_all_finite(
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/validation.py", line 120, in _assert_all_finite
+    _assert_all_finite_element_wise(
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/validation.py", line 169, in _assert_all_finite_element_wise
+    raise ValueError(msg_err)
+ValueError: Input contains infinity or a value too large for dtype('float64').
+
+  warnings.warn(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=8.18874e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=6.89785e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+/scratch/pioneer/jobs/job.2684170.pioneer/poly_ridge_training_2684170/polynomial_ridge.py:122: RuntimeWarning: overflow encountered in expm1
+  y_pred_original = np.expm1(y_pred_log)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/model_selection/_validation.py:953: UserWarning: Scoring failed. The score on this train-test partition for these parameters will be set to nan. Details: 
+Traceback (most recent call last):
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/model_selection/_validation.py", line 942, in _score
+    scores = scorer(estimator, X_test, y_test, **score_params)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/pioneer/jobs/job.2684170.pioneer/poly_ridge_training_2684170/polynomial_ridge.py", line 257, in mae_scorer_original_scale
+    return -mean_absolute_error(y_original, y_pred_original)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/_param_validation.py", line 218, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/metrics/_regression.py", line 284, in mean_absolute_error
+    _check_reg_targets_with_floating_dtype(
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/metrics/_regression.py", line 209, in _check_reg_targets_with_floating_dtype
+    y_type, y_true, y_pred, sample_weight, multioutput = _check_reg_targets(
+                                                         ^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/metrics/_regression.py", line 116, in _check_reg_targets
+    y_pred = check_array(y_pred, ensure_2d=False, dtype=dtype)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/validation.py", line 1105, in check_array
+    _assert_all_finite(
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/validation.py", line 120, in _assert_all_finite
+    _assert_all_finite_element_wise(
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/validation.py", line 169, in _assert_all_finite_element_wise
+    raise ValueError(msg_err)
+ValueError: Input contains infinity or a value too large for dtype('float64').
+
+  warnings.warn(
+/scratch/pioneer/jobs/job.2684170.pioneer/poly_ridge_training_2684170/polynomial_ridge.py:122: RuntimeWarning: overflow encountered in expm1
+  y_pred_original = np.expm1(y_pred_log)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=5.08971e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/model_selection/_validation.py:953: UserWarning: Scoring failed. The score on this train-test partition for these parameters will be set to nan. Details: 
+Traceback (most recent call last):
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/model_selection/_validation.py", line 942, in _score
+    scores = scorer(estimator, X_test, y_test, **score_params)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/pioneer/jobs/job.2684170.pioneer/poly_ridge_training_2684170/polynomial_ridge.py", line 257, in mae_scorer_original_scale
+    return -mean_absolute_error(y_original, y_pred_original)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/_param_validation.py", line 218, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/metrics/_regression.py", line 284, in mean_absolute_error
+    _check_reg_targets_with_floating_dtype(
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/metrics/_regression.py", line 209, in _check_reg_targets_with_floating_dtype
+    y_type, y_true, y_pred, sample_weight, multioutput = _check_reg_targets(
+                                                         ^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/metrics/_regression.py", line 116, in _check_reg_targets
+    y_pred = check_array(y_pred, ensure_2d=False, dtype=dtype)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/validation.py", line 1105, in check_array
+    _assert_all_finite(
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/validation.py", line 120, in _assert_all_finite
+    _assert_all_finite_element_wise(
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/validation.py", line 169, in _assert_all_finite_element_wise
+    raise ValueError(msg_err)
+ValueError: Input contains infinity or a value too large for dtype('float64').
+
+  warnings.warn(
+/scratch/pioneer/jobs/job.2684170.pioneer/poly_ridge_training_2684170/polynomial_ridge.py:122: RuntimeWarning: overflow encountered in expm1
+  y_pred_original = np.expm1(y_pred_log)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/model_selection/_validation.py:953: UserWarning: Scoring failed. The score on this train-test partition for these parameters will be set to nan. Details: 
+Traceback (most recent call last):
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/model_selection/_validation.py", line 942, in _score
+    scores = scorer(estimator, X_test, y_test, **score_params)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/pioneer/jobs/job.2684170.pioneer/poly_ridge_training_2684170/polynomial_ridge.py", line 257, in mae_scorer_original_scale
+    return -mean_absolute_error(y_original, y_pred_original)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/_param_validation.py", line 218, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/metrics/_regression.py", line 284, in mean_absolute_error
+    _check_reg_targets_with_floating_dtype(
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/metrics/_regression.py", line 209, in _check_reg_targets_with_floating_dtype
+    y_type, y_true, y_pred, sample_weight, multioutput = _check_reg_targets(
+                                                         ^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/metrics/_regression.py", line 116, in _check_reg_targets
+    y_pred = check_array(y_pred, ensure_2d=False, dtype=dtype)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/validation.py", line 1105, in check_array
+    _assert_all_finite(
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/validation.py", line 120, in _assert_all_finite
+    _assert_all_finite_element_wise(
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/validation.py", line 169, in _assert_all_finite_element_wise
+    raise ValueError(msg_err)
+ValueError: Input contains infinity or a value too large for dtype('float64').
+
+  warnings.warn(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=4.33426e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=4.72682e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=3.90344e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=4.10736e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=8.38318e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=7.18202e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=5.91421e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=4.39738e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=3.55501e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=3.03551e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=2.95602e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=8.38318e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+/scratch/pioneer/jobs/job.2684170.pioneer/poly_ridge_training_2684170/polynomial_ridge.py:122: RuntimeWarning: overflow encountered in expm1
+  y_pred_original = np.expm1(y_pred_log)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/model_selection/_validation.py:953: UserWarning: Scoring failed. The score on this train-test partition for these parameters will be set to nan. Details: 
+Traceback (most recent call last):
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/model_selection/_validation.py", line 942, in _score
+    scores = scorer(estimator, X_test, y_test, **score_params)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/pioneer/jobs/job.2684170.pioneer/poly_ridge_training_2684170/polynomial_ridge.py", line 257, in mae_scorer_original_scale
+    return -mean_absolute_error(y_original, y_pred_original)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/_param_validation.py", line 218, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/metrics/_regression.py", line 284, in mean_absolute_error
+    _check_reg_targets_with_floating_dtype(
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/metrics/_regression.py", line 209, in _check_reg_targets_with_floating_dtype
+    y_type, y_true, y_pred, sample_weight, multioutput = _check_reg_targets(
+                                                         ^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/metrics/_regression.py", line 116, in _check_reg_targets
+    y_pred = check_array(y_pred, ensure_2d=False, dtype=dtype)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/validation.py", line 1105, in check_array
+    _assert_all_finite(
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/validation.py", line 120, in _assert_all_finite
+    _assert_all_finite_element_wise(
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/validation.py", line 169, in _assert_all_finite_element_wise
+    raise ValueError(msg_err)
+ValueError: Input contains infinity or a value too large for dtype('float64').
+
+  warnings.warn(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=7.18202e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=6.78131e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=5.5827e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=3.7451e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+/scratch/pioneer/jobs/job.2684170.pioneer/poly_ridge_training_2684170/polynomial_ridge.py:122: RuntimeWarning: overflow encountered in expm1
+  y_pred_original = np.expm1(y_pred_log)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/model_selection/_validation.py:953: UserWarning: Scoring failed. The score on this train-test partition for these parameters will be set to nan. Details: 
+Traceback (most recent call last):
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/model_selection/_validation.py", line 942, in _score
+    scores = scorer(estimator, X_test, y_test, **score_params)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/pioneer/jobs/job.2684170.pioneer/poly_ridge_training_2684170/polynomial_ridge.py", line 257, in mae_scorer_original_scale
+    return -mean_absolute_error(y_original, y_pred_original)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/_param_validation.py", line 218, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/metrics/_regression.py", line 284, in mean_absolute_error
+    _check_reg_targets_with_floating_dtype(
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/metrics/_regression.py", line 209, in _check_reg_targets_with_floating_dtype
+    y_type, y_true, y_pred, sample_weight, multioutput = _check_reg_targets(
+                                                         ^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/metrics/_regression.py", line 116, in _check_reg_targets
+    y_pred = check_array(y_pred, ensure_2d=False, dtype=dtype)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/validation.py", line 1105, in check_array
+    _assert_all_finite(
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/validation.py", line 120, in _assert_all_finite
+    _assert_all_finite_element_wise(
+  File "/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/utils/validation.py", line 169, in _assert_all_finite_element_wise
+    raise ValueError(msg_err)
+ValueError: Input contains infinity or a value too large for dtype('float64').
+
+  warnings.warn(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=2.60058e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/scipy/_lib/_util.py:1226: LinAlgWarning: Ill-conditioned matrix (rcond=3.37236e-17): result may not be accurate.
+  return f(*arrays, *other_args, **kwargs)
+[2025-07-21 15:28:54] 🔢 FIXED RIDGE Fold 5 Results:
+[2025-07-21 15:28:54]   Training:
+[2025-07-21 15:28:54]   MAPE: 25.14%
+[2025-07-21 15:28:54]   MAE:  11.2547
+[2025-07-21 15:28:54]   RMSE: 42.9425
+[2025-07-21 15:28:54]   R²:   0.9154
+[2025-07-21 15:28:54]   Validation:
+[2025-07-21 15:28:54]   MAPE: 25.39%
+[2025-07-21 15:28:54]   MAE:  11.7176
+[2025-07-21 15:28:54]   RMSE: 41.5096
+[2025-07-21 15:28:54]   R²:   0.9072
+[2025-07-21 15:28:54]   Polynomial Degree: 4
+[2025-07-21 15:28:54]   Alpha (L2 regularization): 1e-05
+[2025-07-21 15:28:54] Model saved: ridge_model_fold_5.joblib
+[2025-07-21 15:28:54] 
+================================================================================
+[2025-07-21 15:28:54] 🔢 FIXED RIDGE POLYNOMIAL REGRESSION SUMMARY
+[2025-07-21 15:28:54] ================================================================================
+[2025-07-21 15:28:54] 📊 Average Performance:
+[2025-07-21 15:28:54] Average Val MAPE: 25.29% ± 0.21%
+[2025-07-21 15:28:54] Average Val R²: 0.9063
+[2025-07-21 15:28:54] Average Training Time: 8.2 seconds per fold
+[2025-07-21 15:28:54] 
+🏆 Best Fold: Fold 4 (Val MAPE: 24.97%)
+[2025-07-21 15:28:54] 📐 Polynomial Degree: 4
+[2025-07-21 15:28:54] 🎯 Best Alpha: 0.1
+[2025-07-21 15:28:54] ⏱️  Total Training Time: 89.2 seconds (1.5 minutes)
+[2025-07-21 15:28:54] Best model saved as: best_ridge_model.joblib
+[2025-07-21 15:28:54] Scalers saved as: scaler_X.joblib, scaler_y.joblib
+[2025-07-21 15:28:54] Results saved to: ridge_training_results.csv
+[2025-07-21 15:28:54] 📊 Creating enhanced visualization with residual plots and learning curves...
+/home/wxs428/ai3_env/lib/python3.12/site-packages/numpy/_core/_methods.py:194: RuntimeWarning: overflow encountered in multiply
+  x = um.multiply(x, x, out=x)
+[2025-07-21 15:28:59] ✅ Enhanced visualization with residuals and learning curves saved: ridge_polynomial_results.png
+[2025-07-21 15:28:59] 
+🎉 FIXED Ridge Polynomial Regression Training Complete!
+[2025-07-21 15:28:59] ⏱️  Total time: 89.2 seconds (1.5 minutes)
+[2025-07-21 15:28:59] 📊 Best performance: 24.97% MAPE
+[2025-07-21 15:28:59] 🎯 Best regularization: Alpha = 0.1
+[2025-07-21 15:28:59] Script completed at: 2025-07-21 15:28:59.097280
+[2025-07-21 15:28:59] 
+📁 Generated Files:
+[2025-07-21 15:28:59]   • best_ridge_model.joblib - Best trained model
+[2025-07-21 15:28:59]   • scaler_X.joblib - Feature scaler
+[2025-07-21 15:28:59]   • scaler_y.joblib - Target scaler
+[2025-07-21 15:28:59]   • ridge_training_results.csv - Detailed results
+[2025-07-21 15:28:59]   • ridge_polynomial_results.png - Enhanced visualization with residuals & learning curves
+[2025-07-21 15:28:59]   • Individual fold models: ridge_model_fold_*.joblib
+[2025-07-21 15:28:59] 
+🔧 KEY FIXES APPLIED:
+[2025-07-21 15:28:59]   1. ✅ Log transformation of target variable (handles wide range)
+[2025-07-21 15:28:59]   2. ✅ Proper scaling of log-transformed target
+[2025-07-21 15:28:59]   3. ✅ Smaller alpha values: [1e-05, 0.0001, 0.001, 0.01, 0.1]
+[2025-07-21 15:28:59]   4. ✅ Proper inverse transform for evaluation on original scale
+[2025-07-21 15:28:59]   5. ✅ Residual plots for model diagnostics
+[2025-07-21 15:28:59]   6. ✅ Learning curves tracking MAE vs training size
+[2025-07-21 15:28:59]   7. ✅ Validation curves showing MAE vs alpha parameters

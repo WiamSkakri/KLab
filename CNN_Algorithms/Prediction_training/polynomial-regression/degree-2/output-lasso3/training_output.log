@@ -1,0 +1,216 @@
+[2025-07-21 14:19:51] Starting ENHANCED LASSO Polynomial Regression CNN Execution Time Prediction Training
+[2025-07-21 14:19:51] Loading data from combined.csv
+[2025-07-21 14:19:51] Data loaded successfully. Shape: (77000, 9)
+[2025-07-21 14:19:51] Original target variable statistics:
+[2025-07-21 14:19:51]   Min: 0.4120
+[2025-07-21 14:19:51]   Max: 3194.3893
+[2025-07-21 14:19:51]   Mean: 50.2547
+[2025-07-21 14:19:51]   Std: 145.4140
+[2025-07-21 14:19:51] 🔧 APPLYING LOG TRANSFORMATION to target variable
+[2025-07-21 14:19:51] Log-transformed target statistics:
+[2025-07-21 14:19:51]   Min: 0.3450
+[2025-07-21 14:19:51]   Max: 8.0695
+[2025-07-21 14:19:51]   Mean: 2.9474
+[2025-07-21 14:19:51]   Std: 1.2665
+[2025-07-21 14:19:51] Scaling numerical features: ['Batch_Size', 'Input_Size', 'In_Channels', 'Out_Channels', 'Kernel_Size', 'Stride', 'Padding']
+[2025-07-21 14:19:51] 🔧 SCALING LOG-TRANSFORMED TARGET variable
+[2025-07-21 14:19:51] Features: 9
+[2025-07-21 14:19:51] Feature columns: ['Batch_Size', 'Input_Size', 'In_Channels', 'Out_Channels', 'Kernel_Size', 'Stride', 'Padding', 'Algorithm_direct', 'Algorithm_smm']
+[2025-07-21 14:19:52] Data preprocessing complete. Features shape: (77000, 9), Target shape: (77000,)
+[2025-07-21 14:19:52] Training ENHANCED LASSO Polynomial Regression with 5-Fold Cross Validation
+[2025-07-21 14:19:52] Total samples: 77000
+[2025-07-21 14:19:52] Features: 9
+[2025-07-21 14:19:52] 🔧 USING ENHANCED PARAMETER GRID with multiple degrees
+[2025-07-21 14:19:52] 
+============================================================
+[2025-07-21 14:19:52] 🚀 TRAINING ENHANCED LASSO POLYNOMIAL REGRESSION
+[2025-07-21 14:19:52] ============================================================
+[2025-07-21 14:19:52] 
+🚀 ENHANCED LASSO - FOLD 1
+[2025-07-21 14:19:52] ----------------------------------------
+[2025-07-21 14:19:52] Training samples: 61600
+[2025-07-21 14:19:52] Validation samples: 15400
+[2025-07-21 14:19:52] Running enhanced hyperparameter search...
+[2025-07-21 14:20:51] ✅ Training complete in 59.1 seconds
+[2025-07-21 14:20:51] Best parameters: {'lasso__alpha': 0.0005, 'polynomialfeatures__degree': 2}
+[2025-07-21 14:20:51] Best CV score (neg MSE): -0.5010
+[2025-07-21 14:20:51] Convergence: 3305 iterations used (max: 25000)
+[2025-07-21 14:20:51] ✅ Model converged successfully
+[2025-07-21 14:20:51] 📊 Generating validation curve (MAE vs Alpha)...
+[2025-07-21 14:21:41] 📊 Generating learning curve (MAE vs Training Size)...
+[2025-07-21 14:22:27] 🚀 Enhanced LASSO Fold 1 Results:
+[2025-07-21 14:22:27]   Training:
+[2025-07-21 14:22:27]   MAPE: 46.88%
+[2025-07-21 14:22:27]   MAE:  25.7874
+[2025-07-21 14:22:27]   RMSE: 112.8376
+[2025-07-21 14:22:27]   R²:   0.3906
+[2025-07-21 14:22:27]   Validation:
+[2025-07-21 14:22:27]   MAPE: 47.32%
+[2025-07-21 14:22:27]   MAE:  26.3641
+[2025-07-21 14:22:27]   RMSE: 118.0004
+[2025-07-21 14:22:27]   R²:   0.3714
+[2025-07-21 14:22:27]   Polynomial Degree: 2
+[2025-07-21 14:22:27]   Alpha (L1 regularization): 0.0005
+[2025-07-21 14:22:27]   Feature Selection: 36/54 features selected (66.7%)
+[2025-07-21 14:22:27] Model saved: enhanced_lasso_model_fold_1.joblib
+[2025-07-21 14:22:27] 
+🚀 ENHANCED LASSO - FOLD 2
+[2025-07-21 14:22:27] ----------------------------------------
+[2025-07-21 14:22:27] Training samples: 61600
+[2025-07-21 14:22:27] Validation samples: 15400
+[2025-07-21 14:22:27] Running enhanced hyperparameter search...
+[2025-07-21 14:23:18] ✅ Training complete in 51.3 seconds
+[2025-07-21 14:23:18] Best parameters: {'lasso__alpha': 0.0005, 'polynomialfeatures__degree': 2}
+[2025-07-21 14:23:18] Best CV score (neg MSE): -0.5100
+[2025-07-21 14:23:18] Convergence: 3371 iterations used (max: 25000)
+[2025-07-21 14:23:18] ✅ Model converged successfully
+[2025-07-21 14:23:18] 📊 Generating validation curve (MAE vs Alpha)...
+[2025-07-21 14:24:09] 📊 Generating learning curve (MAE vs Training Size)...
+[2025-07-21 14:24:55] 🚀 Enhanced LASSO Fold 2 Results:
+[2025-07-21 14:24:55]   Training:
+[2025-07-21 14:24:55]   MAPE: 47.20%
+[2025-07-21 14:24:55]   MAE:  25.7608
+[2025-07-21 14:24:55]   RMSE: 112.6660
+[2025-07-21 14:24:55]   R²:   0.3926
+[2025-07-21 14:24:55]   Validation:
+[2025-07-21 14:24:55]   MAPE: 46.79%
+[2025-07-21 14:24:55]   MAE:  25.5774
+[2025-07-21 14:24:55]   RMSE: 107.8763
+[2025-07-21 14:24:55]   R²:   0.4743
+[2025-07-21 14:24:55]   Polynomial Degree: 2
+[2025-07-21 14:24:55]   Alpha (L1 regularization): 0.0005
+[2025-07-21 14:24:55]   Feature Selection: 35/54 features selected (64.8%)
+[2025-07-21 14:24:55] Model saved: enhanced_lasso_model_fold_2.joblib
+[2025-07-21 14:24:55] 
+🚀 ENHANCED LASSO - FOLD 3
+[2025-07-21 14:24:55] ----------------------------------------
+[2025-07-21 14:24:55] Training samples: 61600
+[2025-07-21 14:24:55] Validation samples: 15400
+[2025-07-21 14:24:55] Running enhanced hyperparameter search...
+[2025-07-21 14:25:46] ✅ Training complete in 51.0 seconds
+[2025-07-21 14:25:46] Best parameters: {'lasso__alpha': 0.0005, 'polynomialfeatures__degree': 2}
+[2025-07-21 14:25:46] Best CV score (neg MSE): -0.4910
+[2025-07-21 14:25:46] Convergence: 3379 iterations used (max: 25000)
+[2025-07-21 14:25:46] ✅ Model converged successfully
+[2025-07-21 14:25:46] 📊 Generating validation curve (MAE vs Alpha)...
+[2025-07-21 14:26:37] 📊 Generating learning curve (MAE vs Training Size)...
+[2025-07-21 14:27:23] 🚀 Enhanced LASSO Fold 3 Results:
+[2025-07-21 14:27:23]   Training:
+[2025-07-21 14:27:23]   MAPE: 46.72%
+[2025-07-21 14:27:23]   MAE:  26.0000
+[2025-07-21 14:27:23]   RMSE: 114.0503
+[2025-07-21 14:27:23]   R²:   0.3950
+[2025-07-21 14:27:23]   Validation:
+[2025-07-21 14:27:23]   MAPE: 47.19%
+[2025-07-21 14:27:23]   MAE:  23.9493
+[2025-07-21 14:27:23]   RMSE: 95.7139
+[2025-07-21 14:27:23]   R²:   0.5354
+[2025-07-21 14:27:23]   Polynomial Degree: 2
+[2025-07-21 14:27:23]   Alpha (L1 regularization): 0.0005
+[2025-07-21 14:27:23]   Feature Selection: 36/54 features selected (66.7%)
+[2025-07-21 14:27:23] Model saved: enhanced_lasso_model_fold_3.joblib
+[2025-07-21 14:27:23] 
+🚀 ENHANCED LASSO - FOLD 4
+[2025-07-21 14:27:23] ----------------------------------------
+[2025-07-21 14:27:23] Training samples: 61600
+[2025-07-21 14:27:23] Validation samples: 15400
+[2025-07-21 14:27:23] Running enhanced hyperparameter search...
+[2025-07-21 14:28:11] ✅ Training complete in 48.1 seconds
+[2025-07-21 14:28:11] Best parameters: {'lasso__alpha': 0.0005, 'polynomialfeatures__degree': 2}
+[2025-07-21 14:28:11] Best CV score (neg MSE): -0.4996
+[2025-07-21 14:28:11] Convergence: 3379 iterations used (max: 25000)
+[2025-07-21 14:28:11] ✅ Model converged successfully
+[2025-07-21 14:28:11] 📊 Generating validation curve (MAE vs Alpha)...
+[2025-07-21 14:29:02] 📊 Generating learning curve (MAE vs Training Size)...
+[2025-07-21 14:29:58] 🚀 Enhanced LASSO Fold 4 Results:
+[2025-07-21 14:29:58]   Training:
+[2025-07-21 14:29:58]   MAPE: 46.68%
+[2025-07-21 14:29:58]   MAE:  25.4420
+[2025-07-21 14:29:58]   RMSE: 109.8104
+[2025-07-21 14:29:58]   R²:   0.4158
+[2025-07-21 14:29:58]   Validation:
+[2025-07-21 14:29:58]   MAPE: 47.12%
+[2025-07-21 14:29:58]   MAE:  27.7015
+[2025-07-21 14:29:58]   RMSE: 129.8402
+[2025-07-21 14:29:58]   R²:   0.2720
+[2025-07-21 14:29:58]   Polynomial Degree: 2
+[2025-07-21 14:29:58]   Alpha (L1 regularization): 0.0005
+[2025-07-21 14:29:58]   Feature Selection: 36/54 features selected (66.7%)
+[2025-07-21 14:29:58] Model saved: enhanced_lasso_model_fold_4.joblib
+[2025-07-21 14:29:58] 
+🚀 ENHANCED LASSO - FOLD 5
+[2025-07-21 14:29:58] ----------------------------------------
+[2025-07-21 14:29:59] Training samples: 61600
+[2025-07-21 14:29:59] Validation samples: 15400
+[2025-07-21 14:29:59] Running enhanced hyperparameter search...
+[2025-07-21 14:30:50] ✅ Training complete in 51.0 seconds
+[2025-07-21 14:30:50] Best parameters: {'lasso__alpha': 0.0005, 'polynomialfeatures__degree': 2}
+[2025-07-21 14:30:50] Best CV score (neg MSE): -0.4956
+[2025-07-21 14:30:50] Convergence: 3307 iterations used (max: 25000)
+[2025-07-21 14:30:50] ✅ Model converged successfully
+[2025-07-21 14:30:50] 📊 Generating validation curve (MAE vs Alpha)...
+[2025-07-21 14:31:39] 📊 Generating learning curve (MAE vs Training Size)...
+[2025-07-21 14:32:26] 🚀 Enhanced LASSO Fold 5 Results:
+[2025-07-21 14:32:26]   Training:
+[2025-07-21 14:32:26]   MAPE: 46.92%
+[2025-07-21 14:32:26]   MAE:  25.8063
+[2025-07-21 14:32:26]   RMSE: 112.5433
+[2025-07-21 14:32:26]   R²:   0.4188
+[2025-07-21 14:32:26]   Validation:
+[2025-07-21 14:32:26]   MAPE: 46.15%
+[2025-07-21 14:32:26]   MAE:  25.3927
+[2025-07-21 14:32:26]   RMSE: 109.4728
+[2025-07-21 14:32:26]   R²:   0.3542
+[2025-07-21 14:32:26]   Polynomial Degree: 2
+[2025-07-21 14:32:26]   Alpha (L1 regularization): 0.0005
+[2025-07-21 14:32:26]   Feature Selection: 35/54 features selected (64.8%)
+[2025-07-21 14:32:26] Model saved: enhanced_lasso_model_fold_5.joblib
+[2025-07-21 14:32:26] 
+================================================================================
+[2025-07-21 14:32:26] 🚀 ENHANCED LASSO POLYNOMIAL REGRESSION SUMMARY
+[2025-07-21 14:32:26] ================================================================================
+[2025-07-21 14:32:26] 📊 Average Performance:
+[2025-07-21 14:32:26] Average Val MAPE: 46.91% ± 0.42%
+[2025-07-21 14:32:26] Average Val R²: 0.4015
+[2025-07-21 14:32:26] Average Training Time: 52.1 seconds per fold
+[2025-07-21 14:32:26] Average Sparsity: 0.34 (34.1% features removed)
+[2025-07-21 14:32:26] 
+🏆 Best Fold: Fold 5 (Val MAPE: 46.15%)
+[2025-07-21 14:32:26] 📐 Polynomial Degree: 2
+[2025-07-21 14:32:26] 🎯 Best Alpha: 0.0005
+[2025-07-21 14:32:26] 🔍 Feature Selection: 35/54 features (64.8% kept)
+[2025-07-21 14:32:26] ⏱️  Total Training Time: 754.7 seconds (12.6 minutes)
+[2025-07-21 14:32:26] Best model saved as: best_enhanced_lasso_model.joblib
+[2025-07-21 14:32:26] Scalers saved as: enhanced_scaler_X.joblib, enhanced_scaler_y.joblib
+[2025-07-21 14:32:26] Results saved to: enhanced_lasso_training_results.csv
+[2025-07-21 14:32:26] 📊 Creating enhanced visualization with polynomial degree analysis...
+[2025-07-21 14:32:30] ✅ Enhanced visualization with polynomial degree analysis saved: enhanced_lasso_polynomial_results.png
+[2025-07-21 14:32:30] 
+🎉 Enhanced Lasso Polynomial Regression Training Complete!
+[2025-07-21 14:32:30] ⏱️  Total time: 754.7 seconds (12.6 minutes)
+[2025-07-21 14:32:30] 📊 Best performance: 46.15% MAPE
+[2025-07-21 14:32:30] 📐 Best polynomial degree: 2
+[2025-07-21 14:32:30] 🎯 Best regularization: Alpha = 0.0005
+[2025-07-21 14:32:30] 🔍 Feature selection: 64.8% features kept
+[2025-07-21 14:32:30] Script completed at: 2025-07-21 14:32:30.214273
+[2025-07-21 14:32:30] 
+📁 Generated Files:
+[2025-07-21 14:32:30]   • best_enhanced_lasso_model.joblib - Best trained model
+[2025-07-21 14:32:30]   • enhanced_scaler_X.joblib - Feature scaler
+[2025-07-21 14:32:30]   • enhanced_scaler_y.joblib - Target scaler
+[2025-07-21 14:32:30]   • enhanced_lasso_training_results.csv - Detailed results
+[2025-07-21 14:32:30]   • enhanced_lasso_polynomial_results.png - Comprehensive visualization by polynomial degree
+[2025-07-21 14:32:30]   • Individual fold models: enhanced_lasso_model_fold_*.joblib
+[2025-07-21 14:32:30] 
+🚀 ENHANCED FEATURES APPLIED:
+[2025-07-21 14:32:30]   1. ✅ Log transformation of target variable (handles wide range)
+[2025-07-21 14:32:30]   2. ✅ Proper scaling of log-transformed target
+[2025-07-21 14:32:30]   3. ✅ Tests multiple polynomial degrees (1, 2, 3)
+[2025-07-21 14:32:30]   4. ✅ More granular alpha range for better optimization
+[2025-07-21 14:32:30]   5. ✅ Increased max_iter to 25000 with tolerance=1e-4 (better convergence)
+[2025-07-21 14:32:30]   6. ✅ Random feature selection for improved convergence
+[2025-07-21 14:32:30]   7. ✅ Enhanced convergence monitoring and warning suppression
+[2025-07-21 14:32:30]   8. ✅ Comprehensive visualization by polynomial degree
+[2025-07-21 14:32:30]   9. ✅ Performance comparison across different degrees
+[2025-07-21 14:32:30]   10. ✅ Proper inverse transform for evaluation on original scale
+[2025-07-21 14:32:30]   11. ✅ Improved error handling in GridSearchCV

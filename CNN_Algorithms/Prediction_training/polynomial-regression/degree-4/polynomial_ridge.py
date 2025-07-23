@@ -9,8 +9,8 @@ from datetime import datetime
 # Sklearn imports
 from sklearn.preprocessing import StandardScaler, PolynomialFeatures
 from sklearn.model_selection import KFold, GridSearchCV, validation_curve, learning_curve
-from sklearn.linear_model import Lasso
-from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
+from sklearn.linear_model import Ridge
+from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score, make_scorer
 from sklearn.pipeline import Pipeline
 
 # For saving models
@@ -26,7 +26,7 @@ def print_with_timestamp(message):
 
 
 print_with_timestamp(
-    "Starting ENHANCED LASSO Polynomial Regression CNN Execution Time Prediction Training")
+    "Starting OPTIMIZED RIDGE Polynomial Regression CNN Execution Time Prediction Training")
 
 # Set random seeds for reproducibility
 np.random.seed(42)
@@ -112,15 +112,33 @@ def calculate_mape(y_true, y_pred):
     return np.mean(np.abs((y_true[mask] - y_pred[mask]) / y_true[mask])) * 100
 
 
+# We'll use sklearn's built-in neg_mean_squared_error instead of custom scorer
+
+
 def inverse_transform_predictions(y_pred_scaled, scaler_y):
-    """Convert scaled log predictions back to original scale"""
-    # Step 1: Inverse scale
-    y_pred_log = scaler_y.inverse_transform(
-        y_pred_scaled.reshape(-1, 1)).flatten()
-    # Step 2: Inverse log transform
-    # expm1 = exp(x) - 1, inverse of log1p
-    y_pred_original = np.expm1(y_pred_log)
-    return y_pred_original
+    """Convert scaled log predictions back to original scale with overflow protection"""
+    try:
+        # Step 1: Inverse scale
+        y_pred_log = scaler_y.inverse_transform(
+            y_pred_scaled.reshape(-1, 1)).flatten()
+
+        # Step 2: Clip extreme values to prevent overflow in expm1
+        # Limit to reasonable range (log space)
+        # exp(-10) to exp(10) range
+        y_pred_log_clipped = np.clip(y_pred_log, -10, 10)
+
+        # Step 3: Inverse log transform with overflow protection
+        y_pred_original = np.expm1(y_pred_log_clipped)
+
+        # Step 4: Additional clipping to prevent extreme values
+        # Reasonable execution time range
+        y_pred_original = np.clip(y_pred_original, 0, 10000)
+
+        return y_pred_original
+    except Exception as e:
+        # Fallback: return zeros if transformation fails
+        print(f"Warning: Inverse transform failed: {e}")
+        return np.zeros_like(y_pred_scaled.flatten())
 
 
 def evaluate_model(model, X, y, scaler_y, y_original):
@@ -160,7 +178,7 @@ k = 5  # Number of folds
 kf = KFold(n_splits=k, shuffle=True, random_state=42)
 
 print_with_timestamp(
-    f"Training ENHANCED LASSO Polynomial Regression with {k}-Fold Cross Validation")
+    f"Training FIXED RIDGE Polynomial Regression with {k}-Fold Cross Validation")
 print_with_timestamp(f"Total samples: {len(X)}")
 print_with_timestamp(f"Features: {X.shape[1]}")
 
@@ -168,22 +186,21 @@ print_with_timestamp(f"Features: {X.shape[1]}")
 fold_results = []
 trained_models = []
 
-# CRITICAL FIX 5: Much smaller alpha values for proper regularization
-print_with_timestamp("🔧 USING ENHANCED PARAMETER GRID with multiple degrees")
+# OPTIMIZED: Include very small alphas based on previous results
+print_with_timestamp(
+    "🔧 EXPLORING VERY SMALL ALPHA VALUES based on model preference")
 param_grid = {
-    # Test multiple polynomial degrees
-    'polynomialfeatures__degree': [3],
-    # More granular alpha range for better optimization
-    'lasso__alpha': [1e-4, 5e-4, 1e-3, 5e-3, 1e-2, 5e-2, 1e-1, 0.5, 1.0]
+    'polynomialfeatures__degree': [3],  # Degree 3 for numerical stability
+    # Include very small alphas since model consistently chooses them
+    'ridge__alpha': [1e-05, 5e-05, 1e-04, 5e-04, 1e-03, 5e-03, 0.01, 0.05, 0.1]
 }
 
 
-def create_lasso_polynomial_pipeline():
-    """Create enhanced lasso polynomial regression pipeline"""
+def create_ridge_polynomial_pipeline():
+    """Create ridge polynomial regression pipeline"""
     pipeline = Pipeline([
         ('polynomialfeatures', PolynomialFeatures(include_bias=False)),
-        # Enhanced LASSO with better convergence settings and random selection
-        ('lasso', Lasso(random_state=42, max_iter=25000, tol=1e-4, selection='random'))
+        ('ridge', Ridge(random_state=42))
     ])
     return pipeline
 
@@ -192,7 +209,7 @@ def create_lasso_polynomial_pipeline():
 start_time = time.time()
 
 print_with_timestamp(f"\n{'='*60}")
-print_with_timestamp(f"🚀 TRAINING ENHANCED LASSO POLYNOMIAL REGRESSION")
+print_with_timestamp(f"🔢 TRAINING FIXED RIDGE POLYNOMIAL REGRESSION")
 print_with_timestamp(f"{'='*60}")
 
 # Store learning curve data
@@ -201,7 +218,7 @@ validation_curve_data = []
 
 # Loop through each fold
 for fold, (train_idx, val_idx) in enumerate(kf.split(X), 1):
-    print_with_timestamp(f"\n🚀 ENHANCED LASSO - FOLD {fold}")
+    print_with_timestamp(f"\n🔢 RIDGE - FOLD {fold}")
     print_with_timestamp("-" * 40)
 
     # Get train and validation data for this fold
@@ -217,32 +234,23 @@ for fold, (train_idx, val_idx) in enumerate(kf.split(X), 1):
     print_with_timestamp(f"Training samples: {len(X_train_fold)}")
     print_with_timestamp(f"Validation samples: {len(X_val_fold)}")
 
-    # Create model with enhanced GridSearchCV
-    print_with_timestamp("Running enhanced hyperparameter search...")
-    pipeline = create_lasso_polynomial_pipeline()
+    # Create model with GridSearchCV
+    print_with_timestamp("Running hyperparameter search...")
+    pipeline = create_ridge_polynomial_pipeline()
 
-    # Enhanced GridSearchCV with better error handling
+    # Use sklearn's built-in neg_mean_squared_error scorer
     grid_search = GridSearchCV(
         estimator=pipeline,
         param_grid=param_grid,
         cv=3,
-        scoring='neg_mean_squared_error',
+        scoring='neg_mean_squared_error',  # Use built-in scorer
         n_jobs=-1,
-        verbose=0,  # Reduce verbosity for cleaner output
-        error_score='raise'  # Ensure we catch convergence issues
+        verbose=1
     )
 
-    # Fit the model with convergence monitoring
+    # Fit the model
     fold_start_time = time.time()
-
-    # Suppress convergence warnings temporarily for cleaner output
-    import warnings
-    from sklearn.exceptions import ConvergenceWarning
-
-    with warnings.catch_warnings():
-        warnings.filterwarnings("ignore", category=ConvergenceWarning)
-        grid_search.fit(X_train_fold, y_train_fold)
-
+    grid_search.fit(X_train_fold, y_train_fold)
     fold_training_time = time.time() - fold_start_time
 
     # Get the best model
@@ -255,64 +263,40 @@ for fold, (train_idx, val_idx) in enumerate(kf.split(X), 1):
     print_with_timestamp(f"Best parameters: {best_params}")
     print_with_timestamp(f"Best CV score (neg MSE): {best_score:.4f}")
 
-    # Check convergence of the best model
-    lasso_model = best_model.named_steps['lasso']
-    if hasattr(lasso_model, 'n_iter_'):
-        print_with_timestamp(
-            f"Convergence: {lasso_model.n_iter_} iterations used (max: 25000)")
-        if lasso_model.n_iter_ >= 24500:  # Close to max_iter
-            print_with_timestamp(
-                "⚠️  Warning: Model may not have fully converged")
-        else:
-            print_with_timestamp("✅ Model converged successfully")
+    # Generate validation curve for this fold (MSE vs Alpha)
+    print_with_timestamp("📊 Generating validation curve (MSE vs Alpha)...")
+    alpha_range = param_grid['ridge__alpha']
 
-    # Generate validation curve for this fold (MAE vs Alpha)
-    print_with_timestamp("📊 Generating validation curve (MAE vs Alpha)...")
-    alpha_range = param_grid['lasso__alpha']
-
-    # Custom scoring function that returns MAE on original scale
-    def mae_scorer_original_scale(estimator, X_val, y_val):
-        y_pred_scaled = estimator.predict(X_val)
-        y_pred_original = inverse_transform_predictions(
-            y_pred_scaled, scaler_y)
-        # Get corresponding original targets
-        y_original = df.iloc[X_val.index]['Execution_Time_ms']
-        # Negative because sklearn maximizes
-        return -mean_absolute_error(y_original, y_pred_original)
-
-    with warnings.catch_warnings():
-        warnings.filterwarnings("ignore", category=ConvergenceWarning)
-        train_scores, val_scores = validation_curve(
-            pipeline, X_train_fold, y_train_fold,
-            param_name='lasso__alpha', param_range=alpha_range,
-            cv=3, scoring=mae_scorer_original_scale, n_jobs=-1
-        )
+    # Use built-in neg_mean_squared_error for validation curve
+    train_scores, val_scores = validation_curve(
+        pipeline, X_train_fold, y_train_fold,
+        param_name='ridge__alpha', param_range=alpha_range,
+        cv=3, scoring='neg_mean_squared_error', n_jobs=-1
+    )
 
     validation_curve_data.append({
         'fold': fold,
         'alpha_range': alpha_range,
-        'train_mae_scores': -train_scores,  # Convert back to positive MAE
-        'val_mae_scores': -val_scores
+        'train_mse_scores': -train_scores,  # Convert neg_mse to positive MSE
+        'val_mse_scores': -val_scores
     })
 
-    # Generate learning curve for this fold (MAE vs Training Size)
+    # Generate learning curve for this fold (MSE vs Training Size)
     print_with_timestamp(
-        "📊 Generating learning curve (MAE vs Training Size)...")
+        "📊 Generating learning curve (MSE vs Training Size)...")
     train_sizes = np.linspace(0.1, 1.0, 10)
 
-    with warnings.catch_warnings():
-        warnings.filterwarnings("ignore", category=ConvergenceWarning)
-        train_sizes_abs, train_scores_lc, val_scores_lc = learning_curve(
-            best_model, X_train_fold, y_train_fold,
-            train_sizes=train_sizes, cv=3,
-            scoring=mae_scorer_original_scale, n_jobs=-1
-        )
+    train_sizes_abs, train_scores_lc, val_scores_lc = learning_curve(
+        best_model, X_train_fold, y_train_fold,
+        train_sizes=train_sizes, cv=3,
+        scoring='neg_mean_squared_error', n_jobs=-1
+    )
 
     learning_curve_data.append({
         'fold': fold,
         'train_sizes': train_sizes_abs,
-        'train_mae_scores': -train_scores_lc,
-        'val_mae_scores': -val_scores_lc
+        'train_mse_scores': -train_scores_lc,  # Convert neg_mse to positive MSE
+        'val_mse_scores': -val_scores_lc
     })
 
     # Evaluate on training and validation sets with proper inverse transform
@@ -321,15 +305,10 @@ for fold, (train_idx, val_idx) in enumerate(kf.split(X), 1):
     val_metrics = evaluate_model(
         best_model, X_val_fold, y_val_fold, scaler_y, y_val_original)
 
-    # Get feature selection info (coefficients that are zero)
-    lasso_model = best_model.named_steps['lasso']
-    non_zero_coefs = np.sum(lasso_model.coef_ != 0)
-    total_coefs = len(lasso_model.coef_)
-
     # Store results for this fold
     fold_result = {
         'fold': fold,
-        'model_type': 'enhanced_lasso',
+        'model_type': 'ridge_fixed',
         'train_mape': train_metrics['mape'],
         'val_mape': val_metrics['mape'],
         'train_mae': train_metrics['mae'],
@@ -342,28 +321,23 @@ for fold, (train_idx, val_idx) in enumerate(kf.split(X), 1):
         'best_cv_score': best_score,
         'training_time': fold_training_time,
         'polynomial_degree': best_params['polynomialfeatures__degree'],
-        'alpha': best_params['lasso__alpha'],
-        'non_zero_coefs': non_zero_coefs,
-        'total_coefs': total_coefs,
-        'sparsity': (total_coefs - non_zero_coefs) / total_coefs
+        'alpha': best_params['ridge__alpha']
     }
 
     fold_results.append(fold_result)
     trained_models.append(best_model)
 
     # Print fold results
-    print_with_timestamp(f"🚀 Enhanced LASSO Fold {fold} Results:")
+    print_with_timestamp(f"🔢 FIXED RIDGE Fold {fold} Results:")
     print_metrics(train_metrics, f"  Training")
     print_metrics(val_metrics, f"  Validation")
     print_with_timestamp(
         f"  Polynomial Degree: {best_params['polynomialfeatures__degree']}")
     print_with_timestamp(
-        f"  Alpha (L1 regularization): {best_params['lasso__alpha']}")
-    print_with_timestamp(
-        f"  Feature Selection: {non_zero_coefs}/{total_coefs} features selected ({100*(1-fold_result['sparsity']):.1f}%)")
+        f"  Alpha (L2 regularization): {best_params['ridge__alpha']}")
 
     # Save model for this fold
-    model_filename = f'enhanced_lasso_model_fold_{fold}.joblib'
+    model_filename = f'ridge_model_fold_{fold}.joblib'
     joblib.dump(best_model, model_filename)
     print_with_timestamp(f"Model saved: {model_filename}")
 
@@ -378,10 +352,9 @@ avg_val_mape = np.mean([f['val_mape'] for f in fold_results])
 avg_val_r2 = np.mean([f['val_r2'] for f in fold_results])
 std_val_mape = np.std([f['val_mape'] for f in fold_results])
 avg_training_time = np.mean([f['training_time'] for f in fold_results])
-avg_sparsity = np.mean([f['sparsity'] for f in fold_results])
 
 print_with_timestamp(f"\n{'='*80}")
-print_with_timestamp("🚀 ENHANCED LASSO POLYNOMIAL REGRESSION SUMMARY")
+print_with_timestamp("🔢 FIXED RIDGE POLYNOMIAL REGRESSION SUMMARY")
 print_with_timestamp(f"{'='*80}")
 
 print_with_timestamp(f"📊 Average Performance:")
@@ -390,113 +363,68 @@ print_with_timestamp(
 print_with_timestamp(f"Average Val R²: {avg_val_r2:.4f}")
 print_with_timestamp(
     f"Average Training Time: {avg_training_time:.1f} seconds per fold")
-print_with_timestamp(
-    f"Average Sparsity: {avg_sparsity:.2f} ({100*avg_sparsity:.1f}% features removed)")
 
 print_with_timestamp(
     f"\n🏆 Best Fold: Fold {best_fold['fold']} (Val MAPE: {best_fold['val_mape']:.2f}%)")
 print_with_timestamp(f"📐 Polynomial Degree: {best_fold['polynomial_degree']}")
 print_with_timestamp(f"🎯 Best Alpha: {best_fold['alpha']}")
 print_with_timestamp(
-    f"🔍 Feature Selection: {best_fold['non_zero_coefs']}/{best_fold['total_coefs']} features ({100*(1-best_fold['sparsity']):.1f}% kept)")
-print_with_timestamp(
     f"⏱️  Total Training Time: {total_time:.1f} seconds ({total_time/60:.1f} minutes)")
 
 # Save the best model and scalers
 best_model_idx = best_fold['fold'] - 1
 best_model = trained_models[best_model_idx]
-joblib.dump(best_model, 'best_enhanced_lasso_model.joblib')
-joblib.dump(scaler_X, 'enhanced_scaler_X.joblib')
-joblib.dump(scaler_y, 'enhanced_scaler_y.joblib')
-print_with_timestamp(f"Best model saved as: best_enhanced_lasso_model.joblib")
-print_with_timestamp(
-    f"Scalers saved as: enhanced_scaler_X.joblib, enhanced_scaler_y.joblib")
+joblib.dump(best_model, 'best_ridge_model.joblib')
+joblib.dump(scaler_X, 'scaler_X.joblib')
+joblib.dump(scaler_y, 'scaler_y.joblib')
+print_with_timestamp(f"Best model saved as: best_ridge_model.joblib")
+print_with_timestamp(f"Scalers saved as: scaler_X.joblib, scaler_y.joblib")
 
 # Save results to CSV
 results_df = pd.DataFrame(fold_results)
-results_df.to_csv('enhanced_lasso_training_results.csv', index=False)
-print_with_timestamp(f"Results saved to: enhanced_lasso_training_results.csv")
+results_df.to_csv('ridge_training_results.csv', index=False)
+print_with_timestamp(f"Results saved to: ridge_training_results.csv")
 
-# Create enhanced visualization showing performance by polynomial degree
+# Create enhanced visualization with residual plots and learning curves
 print_with_timestamp(
-    "📊 Creating enhanced visualization with polynomial degree analysis...")
+    "📊 Creating enhanced visualization with residual plots and learning curves...")
 
 fig, axes = plt.subplots(3, 2, figsize=(16, 18))
-fig.suptitle('Enhanced Lasso Polynomial Regression Results',
+fig.suptitle('Fixed Ridge Polynomial Regression Results',
              fontsize=16, fontweight='bold')
 
-# Plot 1: Performance by fold (colored by polynomial degree)
+# Plot 1: Performance by fold
 ax = axes[0, 0]
 folds = [f['fold'] for f in fold_results]
 val_mapes = [f['val_mape'] for f in fold_results]
-degrees = [f['polynomial_degree'] for f in fold_results]
+val_r2s = [f['val_r2'] for f in fold_results]
 
-# Color by polynomial degree
-colors = ['red' if d == 1 else 'blue' if d == 2 else 'green' for d in degrees]
-bars = ax.bar(folds, val_mapes, color=colors, alpha=0.7)
-
-# Add degree labels on bars
-for i, (bar, degree) in enumerate(zip(bars, degrees)):
-    height = bar.get_height()
-    ax.text(bar.get_x() + bar.get_width()/2., height + 0.1,
-            f'Deg {degree}', ha='center', va='bottom', fontsize=9)
+ax2 = ax.twinx()
+bars1 = ax.bar([f - 0.2 for f in folds], val_mapes, 0.4,
+               label='Validation MAPE (%)', alpha=0.7, color='orange')
+bars2 = ax2.bar([f + 0.2 for f in folds], val_r2s, 0.4,
+                label='Validation R²', alpha=0.7, color='green')
 
 ax.set_xlabel('Fold')
-ax.set_ylabel('Validation MAPE (%)')
-ax.set_title('Performance by Fold (colored by polynomial degree)')
+ax.set_ylabel('MAPE (%)', color='orange')
+ax2.set_ylabel('R²', color='green')
+ax.set_title('Performance by Fold')
 ax.grid(True, alpha=0.3)
+ax.legend(loc='upper left')
+ax2.legend(loc='upper right')
 
-# Plot 2: Feature selection by polynomial degree
+# Plot 2: Alpha values used
 ax = axes[0, 1]
-degree_groups = {}
-for fold in fold_results:
-    degree = fold['polynomial_degree']
-    if degree not in degree_groups:
-        degree_groups[degree] = []
-    degree_groups[degree].append(100 * (1 - fold['sparsity']))
-
-degrees_list = sorted(degree_groups.keys())
-if degrees_list:
-    avg_features = [np.mean(degree_groups[d]) for d in degrees_list]
-    std_features = [np.std(degree_groups[d]) if len(
-        degree_groups[d]) > 1 else 0 for d in degrees_list]
-
-    colors_map = {1: 'red', 2: 'blue', 3: 'green'}
-    bar_colors = [colors_map.get(d, 'gray') for d in degrees_list]
-
-    ax.bar(degrees_list, avg_features, yerr=std_features,
-           capsize=5, alpha=0.7, color=bar_colors)
-
-ax.set_xlabel('Polynomial Degree')
-ax.set_ylabel('Features Selected (%)')
-ax.set_title('Feature Selection by Polynomial Degree')
+alphas = [f['alpha'] for f in fold_results]
+ax.bar(folds, alphas, alpha=0.7, color='blue')
+ax.set_xlabel('Fold')
+ax.set_ylabel('Best Alpha Value')
+ax.set_title('Best Alpha (L2 Regularization) by Fold')
+ax.set_yscale('log')
 ax.grid(True, alpha=0.3)
-if degrees_list:
-    ax.set_xticks(degrees_list)
 
-# Plot 3: MAPE vs Alpha for each polynomial degree
+# Plot 3: Predictions vs Actual for best model
 ax = axes[1, 0]
-if degrees_list:
-    for degree in degrees_list:
-        degree_folds = [
-            f for f in fold_results if f['polynomial_degree'] == degree]
-        if degree_folds:
-            alphas = [f['alpha'] for f in degree_folds]
-            mapes = [f['val_mape'] for f in degree_folds]
-            colors_map = {1: 'red', 2: 'blue', 3: 'green'}
-            ax.scatter(alphas, mapes, label=f'Degree {degree}',
-                       alpha=0.7, s=60, color=colors_map.get(degree, 'gray'))
-
-ax.set_xscale('log')
-ax.set_xlabel('Alpha (Regularization Parameter)')
-ax.set_ylabel('Validation MAPE (%)')
-ax.set_title('MAPE vs Alpha by Polynomial Degree')
-if degrees_list:
-    ax.legend()
-ax.grid(True, alpha=0.3)
-
-# Plot 4: Predictions vs Actual for best model
-ax = axes[1, 1]
 # Get all predictions from best model
 all_predictions = []
 all_actuals = []
@@ -543,39 +471,39 @@ ax.grid(True, alpha=0.3)
 # Add residual statistics
 residual_mean = np.mean(residuals)
 residual_std = np.std(residuals)
-ax.text(0.05, 0.95, f'Mean: {residual_mean:.2f}\\nStd: {residual_std:.2f}',
+ax.text(0.05, 0.95, f'Mean: {residual_mean:.2f}\nStd: {residual_std:.2f}',
         transform=ax.transAxes, bbox=dict(boxstyle="round,pad=0.3", facecolor="lightcyan"))
 
-# Plot 5: Validation Curve (MAE vs Alpha)
+# Plot 5: Validation Curve (MSE vs Alpha)
 ax = axes[2, 0]
 # Average validation curves across all folds
 alphas = validation_curve_data[0]['alpha_range']
-avg_train_mae = np.mean([fold['train_mae_scores']
+avg_train_mse = np.mean([fold['train_mse_scores']
                         for fold in validation_curve_data], axis=0)
-avg_val_mae = np.mean([fold['val_mae_scores']
+avg_val_mse = np.mean([fold['val_mse_scores']
                       for fold in validation_curve_data], axis=0)
-std_train_mae = np.std([fold['train_mae_scores']
+std_train_mse = np.std([fold['train_mse_scores']
                        for fold in validation_curve_data], axis=0)
-std_val_mae = np.std([fold['val_mae_scores']
+std_val_mse = np.std([fold['val_mse_scores']
                      for fold in validation_curve_data], axis=0)
 
-ax.semilogx(alphas, avg_train_mae.mean(axis=1), 'o-', color='blue',
-            label='Training MAE', alpha=0.8, linewidth=2)
+ax.semilogx(alphas, avg_train_mse.mean(axis=1), 'o-', color='blue',
+            label='Training MSE', alpha=0.8, linewidth=2)
 ax.fill_between(alphas,
-                avg_train_mae.mean(axis=1) - std_train_mae.mean(axis=1),
-                avg_train_mae.mean(axis=1) + std_train_mae.mean(axis=1),
+                avg_train_mse.mean(axis=1) - std_train_mse.mean(axis=1),
+                avg_train_mse.mean(axis=1) + std_train_mse.mean(axis=1),
                 alpha=0.2, color='blue')
 
-ax.semilogx(alphas, avg_val_mae.mean(axis=1), 'o-', color='red',
-            label='Validation MAE', alpha=0.8, linewidth=2)
+ax.semilogx(alphas, avg_val_mse.mean(axis=1), 'o-', color='red',
+            label='Validation MSE', alpha=0.8, linewidth=2)
 ax.fill_between(alphas,
-                avg_val_mae.mean(axis=1) - std_val_mae.mean(axis=1),
-                avg_val_mae.mean(axis=1) + std_val_mae.mean(axis=1),
+                avg_val_mse.mean(axis=1) - std_val_mse.mean(axis=1),
+                avg_val_mse.mean(axis=1) + std_val_mse.mean(axis=1),
                 alpha=0.2, color='red')
 
 ax.set_xlabel('Alpha (Regularization Parameter)')
-ax.set_ylabel('MAE (Original Scale)')
-ax.set_title('Validation Curve: MAE vs Alpha')
+ax.set_ylabel('MSE (Scaled Log Space)')
+ax.set_title('Validation Curve: MSE vs Alpha')
 ax.legend()
 ax.grid(True, alpha=0.3)
 
@@ -585,99 +513,84 @@ ax.axvline(x=best_alpha, color='green', linestyle='--', linewidth=2,
            label=f'Best Alpha: {best_alpha}')
 ax.legend()
 
-# Plot 6: Learning Curve (MAE vs Training Size)
+# Plot 6: Learning Curve (MSE vs Training Size)
 ax = axes[2, 1]
 # Average learning curves across all folds
 if learning_curve_data:
     # Get average training sizes (should be same across folds)
     train_sizes = learning_curve_data[0]['train_sizes']
-    avg_train_mae_lc = np.mean([fold['train_mae_scores']
+    avg_train_mse_lc = np.mean([fold['train_mse_scores']
                                for fold in learning_curve_data], axis=0)
-    avg_val_mae_lc = np.mean([fold['val_mae_scores']
+    avg_val_mse_lc = np.mean([fold['val_mse_scores']
                              for fold in learning_curve_data], axis=0)
-    std_train_mae_lc = np.std([fold['train_mae_scores']
+    std_train_mse_lc = np.std([fold['train_mse_scores']
                               for fold in learning_curve_data], axis=0)
-    std_val_mae_lc = np.std([fold['val_mae_scores']
+    std_val_mse_lc = np.std([fold['val_mse_scores']
                             for fold in learning_curve_data], axis=0)
 
-    ax.plot(train_sizes, avg_train_mae_lc.mean(axis=1), 'o-', color='blue',
-            label='Training MAE', alpha=0.8, linewidth=2)
+    ax.plot(train_sizes, avg_train_mse_lc.mean(axis=1), 'o-', color='blue',
+            label='Training MSE', alpha=0.8, linewidth=2)
     ax.fill_between(train_sizes,
-                    avg_train_mae_lc.mean(axis=1) -
-                    std_train_mae_lc.mean(axis=1),
-                    avg_train_mae_lc.mean(axis=1) +
-                    std_train_mae_lc.mean(axis=1),
+                    avg_train_mse_lc.mean(axis=1) -
+                    std_train_mse_lc.mean(axis=1),
+                    avg_train_mse_lc.mean(axis=1) +
+                    std_train_mse_lc.mean(axis=1),
                     alpha=0.2, color='blue')
 
-    ax.plot(train_sizes, avg_val_mae_lc.mean(axis=1), 'o-', color='red',
-            label='Validation MAE', alpha=0.8, linewidth=2)
+    ax.plot(train_sizes, avg_val_mse_lc.mean(axis=1), 'o-', color='red',
+            label='Validation MSE', alpha=0.8, linewidth=2)
     ax.fill_between(train_sizes,
-                    avg_val_mae_lc.mean(axis=1) - std_val_mae_lc.mean(axis=1),
-                    avg_val_mae_lc.mean(axis=1) + std_val_mae_lc.mean(axis=1),
+                    avg_val_mse_lc.mean(axis=1) - std_val_mse_lc.mean(axis=1),
+                    avg_val_mse_lc.mean(axis=1) + std_val_mse_lc.mean(axis=1),
                     alpha=0.2, color='red')
 
     ax.set_xlabel('Training Set Size')
-    ax.set_ylabel('MAE (Original Scale)')
-    ax.set_title('Learning Curve: MAE vs Training Size')
+    ax.set_ylabel('MSE (Scaled Log Space)')
+    ax.set_title('Learning Curve: MSE vs Training Size')
     ax.legend()
     ax.grid(True, alpha=0.3)
 else:
     ax.text(0.5, 0.5, 'Learning curve data not available',
             ha='center', va='center', transform=ax.transAxes)
-    ax.set_title('Learning Curve: MAE vs Training Size')
-
-# All plots are now complete - 6 total plots with residuals and learning curves
+    ax.set_title('Learning Curve: MSE vs Training Size')
 
 plt.tight_layout()
-plt.savefig('enhanced_lasso_polynomial_results.png',
-            dpi=300, bbox_inches='tight')
+plt.savefig('ridge_polynomial_results.png', dpi=300, bbox_inches='tight')
 plt.close()
 
 print_with_timestamp(
-    "✅ Enhanced visualization with polynomial degree analysis saved: enhanced_lasso_polynomial_results.png")
+    "✅ Enhanced visualization with residuals and MSE learning curves saved: ridge_polynomial_results.png")
 
 print_with_timestamp(
-    f"\n🎉 Enhanced Lasso Polynomial Regression Training Complete!")
+    f"\n🎉 FIXED Ridge Polynomial Regression Training Complete!")
 print_with_timestamp(
     f"⏱️  Total time: {total_time:.1f} seconds ({total_time/60:.1f} minutes)")
 print_with_timestamp(f"📊 Best performance: {best_fold['val_mape']:.2f}% MAPE")
-print_with_timestamp(
-    f"📐 Best polynomial degree: {best_fold['polynomial_degree']}")
 print_with_timestamp(f"🎯 Best regularization: Alpha = {best_fold['alpha']}")
-print_with_timestamp(
-    f"🔍 Feature selection: {100*(1-best_fold['sparsity']):.1f}% features kept")
 print_with_timestamp(f"Script completed at: {datetime.now()}")
 
 print_with_timestamp(f"\n📁 Generated Files:")
+print_with_timestamp(f"  • best_ridge_model.joblib - Best trained model")
+print_with_timestamp(f"  • scaler_X.joblib - Feature scaler")
+print_with_timestamp(f"  • scaler_y.joblib - Target scaler")
+print_with_timestamp(f"  • ridge_training_results.csv - Detailed results")
 print_with_timestamp(
-    f"  • best_enhanced_lasso_model.joblib - Best trained model")
-print_with_timestamp(f"  • enhanced_scaler_X.joblib - Feature scaler")
-print_with_timestamp(f"  • enhanced_scaler_y.joblib - Target scaler")
-print_with_timestamp(
-    f"  • enhanced_lasso_training_results.csv - Detailed results")
-print_with_timestamp(
-    f"  • enhanced_lasso_polynomial_results.png - Comprehensive visualization by polynomial degree")
-print_with_timestamp(
-    f"  • Individual fold models: enhanced_lasso_model_fold_*.joblib")
+    f"  • ridge_polynomial_results.png - Enhanced visualization with residuals & learning curves")
+print_with_timestamp(f"  • Individual fold models: ridge_model_fold_*.joblib")
 
-print_with_timestamp(f"\n🚀 ENHANCED FEATURES APPLIED:")
+print_with_timestamp(f"\n🔧 KEY FIXES APPLIED:")
 print_with_timestamp(
     f"  1. ✅ Log transformation of target variable (handles wide range)")
 print_with_timestamp(f"  2. ✅ Proper scaling of log-transformed target")
-print_with_timestamp(f"  3. ✅ Tests multiple polynomial degrees (1, 2, 3)")
 print_with_timestamp(
-    f"  4. ✅ More granular alpha range for better optimization")
+    f"  3. ✅ Expanded alpha range including very small values: {param_grid['ridge__alpha']}")
 print_with_timestamp(
-    f"  5. ✅ Increased max_iter to 25000 with tolerance=1e-4 (better convergence)")
+    f"  4. ✅ Overflow-protected inverse transform for evaluation on original scale")
 print_with_timestamp(
-    f"  6. ✅ Random feature selection for improved convergence")
+    f"  5. ✅ Reliable sklearn built-in neg_mean_squared_error scorer")
 print_with_timestamp(
-    f"  7. ✅ Enhanced convergence monitoring and warning suppression")
+    f"  6. ✅ Residual plots for model diagnostics")
 print_with_timestamp(
-    f"  8. ✅ Comprehensive visualization by polynomial degree")
+    f"  7. ✅ Learning curves tracking MSE vs training size")
 print_with_timestamp(
-    f"  9. ✅ Performance comparison across different degrees")
-print_with_timestamp(
-    f"  10. ✅ Proper inverse transform for evaluation on original scale")
-print_with_timestamp(
-    f"  11. ✅ Improved error handling in GridSearchCV")
+    f"  8. ✅ Validation curves showing MSE vs alpha parameters")

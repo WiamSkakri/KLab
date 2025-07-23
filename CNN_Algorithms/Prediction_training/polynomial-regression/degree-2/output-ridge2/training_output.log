@@ -1,0 +1,198 @@
+[2025-07-21 13:38:09] Starting FIXED RIDGE Polynomial Regression CNN Execution Time Prediction Training
+[2025-07-21 13:38:09] Loading data from combined.csv
+[2025-07-21 13:38:09] Data loaded successfully. Shape: (77000, 9)
+[2025-07-21 13:38:09] Original target variable statistics:
+[2025-07-21 13:38:09]   Min: 0.4120
+[2025-07-21 13:38:09]   Max: 3194.3893
+[2025-07-21 13:38:09]   Mean: 50.2547
+[2025-07-21 13:38:09]   Std: 145.4140
+[2025-07-21 13:38:09] 🔧 APPLYING LOG TRANSFORMATION to target variable
+[2025-07-21 13:38:09] Log-transformed target statistics:
+[2025-07-21 13:38:09]   Min: 0.3450
+[2025-07-21 13:38:09]   Max: 8.0695
+[2025-07-21 13:38:09]   Mean: 2.9474
+[2025-07-21 13:38:09]   Std: 1.2665
+[2025-07-21 13:38:09] Scaling numerical features: ['Batch_Size', 'Input_Size', 'In_Channels', 'Out_Channels', 'Kernel_Size', 'Stride', 'Padding']
+[2025-07-21 13:38:09] 🔧 SCALING LOG-TRANSFORMED TARGET variable
+[2025-07-21 13:38:09] Features: 9
+[2025-07-21 13:38:09] Feature columns: ['Batch_Size', 'Input_Size', 'In_Channels', 'Out_Channels', 'Kernel_Size', 'Stride', 'Padding', 'Algorithm_direct', 'Algorithm_smm']
+[2025-07-21 13:38:09] Data preprocessing complete. Features shape: (77000, 9), Target shape: (77000,)
+[2025-07-21 13:38:09] Training FIXED RIDGE Polynomial Regression with 5-Fold Cross Validation
+[2025-07-21 13:38:09] Total samples: 77000
+[2025-07-21 13:38:09] Features: 9
+[2025-07-21 13:38:09] 🔧 USING SMALLER ALPHA VALUES for better regularization
+[2025-07-21 13:38:09] 
+============================================================
+[2025-07-21 13:38:09] 🔢 TRAINING FIXED RIDGE POLYNOMIAL REGRESSION
+[2025-07-21 13:38:09] ============================================================
+[2025-07-21 13:38:09] 
+🔢 RIDGE - FOLD 1
+[2025-07-21 13:38:09] ----------------------------------------
+[2025-07-21 13:38:09] Training samples: 61600
+[2025-07-21 13:38:09] Validation samples: 15400
+[2025-07-21 13:38:09] Running hyperparameter search...
+Fitting 3 folds for each of 5 candidates, totalling 15 fits
+[2025-07-21 13:38:23] ✅ Training complete in 14.5 seconds
+[2025-07-21 13:38:23] Best parameters: {'polynomialfeatures__degree': 2, 'ridge__alpha': 1e-05}
+[2025-07-21 13:38:23] Best CV score (neg MSE): -0.5041
+[2025-07-21 13:38:23] 📊 Generating validation curve (MAE vs Alpha)...
+[2025-07-21 13:38:25] 📊 Generating learning curve (MAE vs Training Size)...
+[2025-07-21 13:38:26] 🔢 FIXED RIDGE Fold 1 Results:
+[2025-07-21 13:38:26]   Training:
+[2025-07-21 13:38:26]   MAPE: 46.83%
+[2025-07-21 13:38:26]   MAE:  26.3869
+[2025-07-21 13:38:26]   RMSE: 119.3893
+[2025-07-21 13:38:26]   R²:   0.3178
+[2025-07-21 13:38:26]   Validation:
+[2025-07-21 13:38:26]   MAPE: 47.25%
+[2025-07-21 13:38:26]   MAE:  26.9089
+[2025-07-21 13:38:26]   RMSE: 123.9855
+[2025-07-21 13:38:26]   R²:   0.3061
+[2025-07-21 13:38:26]   Polynomial Degree: 2
+[2025-07-21 13:38:26]   Alpha (L2 regularization): 1e-05
+[2025-07-21 13:38:26] Model saved: ridge_model_fold_1.joblib
+[2025-07-21 13:38:26] 
+🔢 RIDGE - FOLD 2
+[2025-07-21 13:38:26] ----------------------------------------
+[2025-07-21 13:38:26] Training samples: 61600
+[2025-07-21 13:38:26] Validation samples: 15400
+[2025-07-21 13:38:26] Running hyperparameter search...
+Fitting 3 folds for each of 5 candidates, totalling 15 fits
+[2025-07-21 13:38:27] ✅ Training complete in 0.4 seconds
+[2025-07-21 13:38:27] Best parameters: {'polynomialfeatures__degree': 2, 'ridge__alpha': 1e-05}
+[2025-07-21 13:38:27] Best CV score (neg MSE): -0.5139
+[2025-07-21 13:38:27] 📊 Generating validation curve (MAE vs Alpha)...
+[2025-07-21 13:38:28] 📊 Generating learning curve (MAE vs Training Size)...
+[2025-07-21 13:38:30] 🔢 FIXED RIDGE Fold 2 Results:
+[2025-07-21 13:38:30]   Training:
+[2025-07-21 13:38:30]   MAPE: 47.13%
+[2025-07-21 13:38:30]   MAE:  26.3491
+[2025-07-21 13:38:30]   RMSE: 119.1715
+[2025-07-21 13:38:30]   R²:   0.3204
+[2025-07-21 13:38:30]   Validation:
+[2025-07-21 13:38:30]   MAPE: 46.72%
+[2025-07-21 13:38:30]   MAE:  26.2572
+[2025-07-21 13:38:30]   RMSE: 114.9370
+[2025-07-21 13:38:30]   R²:   0.4032
+[2025-07-21 13:38:30]   Polynomial Degree: 2
+[2025-07-21 13:38:30]   Alpha (L2 regularization): 1e-05
+[2025-07-21 13:38:30] Model saved: ridge_model_fold_2.joblib
+[2025-07-21 13:38:30] 
+🔢 RIDGE - FOLD 3
+[2025-07-21 13:38:30] ----------------------------------------
+[2025-07-21 13:38:30] Training samples: 61600
+[2025-07-21 13:38:30] Validation samples: 15400
+[2025-07-21 13:38:30] Running hyperparameter search...
+Fitting 3 folds for each of 5 candidates, totalling 15 fits
+[2025-07-21 13:38:30] ✅ Training complete in 0.4 seconds
+[2025-07-21 13:38:30] Best parameters: {'polynomialfeatures__degree': 2, 'ridge__alpha': 1e-05}
+[2025-07-21 13:38:30] Best CV score (neg MSE): -0.4932
+[2025-07-21 13:38:30] 📊 Generating validation curve (MAE vs Alpha)...
+[2025-07-21 13:38:32] 📊 Generating learning curve (MAE vs Training Size)...
+[2025-07-21 13:38:33] 🔢 FIXED RIDGE Fold 3 Results:
+[2025-07-21 13:38:33]   Training:
+[2025-07-21 13:38:33]   MAPE: 46.66%
+[2025-07-21 13:38:33]   MAE:  26.5770
+[2025-07-21 13:38:33]   RMSE: 120.3724
+[2025-07-21 13:38:33]   R²:   0.3261
+[2025-07-21 13:38:33]   Validation:
+[2025-07-21 13:38:33]   MAPE: 47.12%
+[2025-07-21 13:38:33]   MAE:  24.4814
+[2025-07-21 13:38:33]   RMSE: 100.9130
+[2025-07-21 13:38:33]   R²:   0.4835
+[2025-07-21 13:38:33]   Polynomial Degree: 2
+[2025-07-21 13:38:33]   Alpha (L2 regularization): 1e-05
+[2025-07-21 13:38:33] Model saved: ridge_model_fold_3.joblib
+[2025-07-21 13:38:33] 
+🔢 RIDGE - FOLD 4
+[2025-07-21 13:38:33] ----------------------------------------
+[2025-07-21 13:38:33] Training samples: 61600
+[2025-07-21 13:38:33] Validation samples: 15400
+[2025-07-21 13:38:33] Running hyperparameter search...
+Fitting 3 folds for each of 5 candidates, totalling 15 fits
+[2025-07-21 13:38:34] ✅ Training complete in 0.5 seconds
+[2025-07-21 13:38:34] Best parameters: {'polynomialfeatures__degree': 2, 'ridge__alpha': 1e-05}
+[2025-07-21 13:38:34] Best CV score (neg MSE): -0.5039
+[2025-07-21 13:38:34] 📊 Generating validation curve (MAE vs Alpha)...
+[2025-07-21 13:38:35] 📊 Generating learning curve (MAE vs Training Size)...
+[2025-07-21 13:38:37] 🔢 FIXED RIDGE Fold 4 Results:
+[2025-07-21 13:38:37]   Training:
+[2025-07-21 13:38:37]   MAPE: 46.62%
+[2025-07-21 13:38:37]   MAE:  26.0180
+[2025-07-21 13:38:37]   RMSE: 116.1707
+[2025-07-21 13:38:37]   R²:   0.3462
+[2025-07-21 13:38:37]   Validation:
+[2025-07-21 13:38:37]   MAPE: 47.10%
+[2025-07-21 13:38:37]   MAE:  28.3617
+[2025-07-21 13:38:37]   RMSE: 137.0682
+[2025-07-21 13:38:37]   R²:   0.1887
+[2025-07-21 13:38:37]   Polynomial Degree: 2
+[2025-07-21 13:38:37]   Alpha (L2 regularization): 1e-05
+[2025-07-21 13:38:37] Model saved: ridge_model_fold_4.joblib
+[2025-07-21 13:38:37] 
+🔢 RIDGE - FOLD 5
+[2025-07-21 13:38:37] ----------------------------------------
+[2025-07-21 13:38:37] Training samples: 61600
+[2025-07-21 13:38:37] Validation samples: 15400
+[2025-07-21 13:38:37] Running hyperparameter search...
+Fitting 3 folds for each of 5 candidates, totalling 15 fits
+[2025-07-21 13:38:37] ✅ Training complete in 0.4 seconds
+[2025-07-21 13:38:37] Best parameters: {'polynomialfeatures__degree': 2, 'ridge__alpha': 1e-05}
+[2025-07-21 13:38:37] Best CV score (neg MSE): -0.4994
+[2025-07-21 13:38:37] 📊 Generating validation curve (MAE vs Alpha)...
+[2025-07-21 13:38:39] 📊 Generating learning curve (MAE vs Training Size)...
+[2025-07-21 13:38:40] 🔢 FIXED RIDGE Fold 5 Results:
+[2025-07-21 13:38:40]   Training:
+[2025-07-21 13:38:40]   MAPE: 46.86%
+[2025-07-21 13:38:40]   MAE:  26.4061
+[2025-07-21 13:38:40]   RMSE: 118.9077
+[2025-07-21 13:38:40]   R²:   0.3512
+[2025-07-21 13:38:40]   Validation:
+[2025-07-21 13:38:40]   MAPE: 46.08%
+[2025-07-21 13:38:40]   MAE:  25.9396
+[2025-07-21 13:38:40]   RMSE: 116.2191
+[2025-07-21 13:38:40]   R²:   0.2722
+[2025-07-21 13:38:40]   Polynomial Degree: 2
+[2025-07-21 13:38:40]   Alpha (L2 regularization): 1e-05
+[2025-07-21 13:38:40] Model saved: ridge_model_fold_5.joblib
+[2025-07-21 13:38:40] 
+================================================================================
+[2025-07-21 13:38:40] 🔢 FIXED RIDGE POLYNOMIAL REGRESSION SUMMARY
+[2025-07-21 13:38:40] ================================================================================
+[2025-07-21 13:38:40] 📊 Average Performance:
+[2025-07-21 13:38:40] Average Val MAPE: 46.86% ± 0.43%
+[2025-07-21 13:38:40] Average Val R²: 0.3307
+[2025-07-21 13:38:40] Average Training Time: 3.2 seconds per fold
+[2025-07-21 13:38:40] 
+🏆 Best Fold: Fold 5 (Val MAPE: 46.08%)
+[2025-07-21 13:38:40] 📐 Polynomial Degree: 2
+[2025-07-21 13:38:40] 🎯 Best Alpha: 1e-05
+[2025-07-21 13:38:40] ⏱️  Total Training Time: 31.6 seconds (0.5 minutes)
+[2025-07-21 13:38:41] Best model saved as: best_ridge_model.joblib
+[2025-07-21 13:38:41] Scalers saved as: scaler_X.joblib, scaler_y.joblib
+[2025-07-21 13:38:41] Results saved to: ridge_training_results.csv
+[2025-07-21 13:38:41] 📊 Creating enhanced visualization with residual plots and learning curves...
+[2025-07-21 13:38:44] ✅ Enhanced visualization with residuals and learning curves saved: ridge_polynomial_results.png
+[2025-07-21 13:38:44] 
+🎉 FIXED Ridge Polynomial Regression Training Complete!
+[2025-07-21 13:38:44] ⏱️  Total time: 31.6 seconds (0.5 minutes)
+[2025-07-21 13:38:44] 📊 Best performance: 46.08% MAPE
+[2025-07-21 13:38:44] 🎯 Best regularization: Alpha = 1e-05
+[2025-07-21 13:38:44] Script completed at: 2025-07-21 13:38:44.337152
+[2025-07-21 13:38:44] 
+📁 Generated Files:
+[2025-07-21 13:38:44]   • best_ridge_model.joblib - Best trained model
+[2025-07-21 13:38:44]   • scaler_X.joblib - Feature scaler
+[2025-07-21 13:38:44]   • scaler_y.joblib - Target scaler
+[2025-07-21 13:38:44]   • ridge_training_results.csv - Detailed results
+[2025-07-21 13:38:44]   • ridge_polynomial_results.png - Enhanced visualization with residuals & learning curves
+[2025-07-21 13:38:44]   • Individual fold models: ridge_model_fold_*.joblib
+[2025-07-21 13:38:44] 
+🔧 KEY FIXES APPLIED:
+[2025-07-21 13:38:44]   1. ✅ Log transformation of target variable (handles wide range)
+[2025-07-21 13:38:44]   2. ✅ Proper scaling of log-transformed target
+[2025-07-21 13:38:44]   3. ✅ Smaller alpha values: [1e-05, 0.0001, 0.001, 0.01, 0.1]
+[2025-07-21 13:38:44]   4. ✅ Proper inverse transform for evaluation on original scale
+[2025-07-21 13:38:44]   5. ✅ Residual plots for model diagnostics
+[2025-07-21 13:38:44]   6. ✅ Learning curves tracking MAE vs training size
+[2025-07-21 13:38:44]   7. ✅ Validation curves showing MAE vs alpha parameters

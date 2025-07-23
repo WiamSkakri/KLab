@@ -172,7 +172,7 @@ trained_models = []
 print_with_timestamp("🔧 USING ENHANCED PARAMETER GRID with multiple degrees")
 param_grid = {
     # Test multiple polynomial degrees
-    'polynomialfeatures__degree': [3],
+    'polynomialfeatures__degree': [2],
     # More granular alpha range for better optimization
     'lasso__alpha': [1e-4, 5e-4, 1e-3, 5e-3, 1e-2, 5e-2, 1e-1, 0.5, 1.0]
 }
@@ -681,3 +681,4 @@ print_with_timestamp(
     f"  10. ✅ Proper inverse transform for evaluation on original scale")
 print_with_timestamp(
     f"  11. ✅ Improved error handling in GridSearchCV")
+

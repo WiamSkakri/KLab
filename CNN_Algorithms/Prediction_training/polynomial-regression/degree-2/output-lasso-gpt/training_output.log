@@ -1,0 +1,337 @@
+[2025-07-21 12:57:57] Starting FIXED LASSO Polynomial Regression CNN Execution Time Prediction Training
+[2025-07-21 12:57:57] Loading data from combined.csv
+[2025-07-21 12:57:57] Data loaded successfully. Shape: (77000, 9)
+[2025-07-21 12:57:57] Original target variable statistics:
+[2025-07-21 12:57:57]   Min: 0.4120
+[2025-07-21 12:57:57]   Max: 3194.3893
+[2025-07-21 12:57:57]   Mean: 50.2547
+[2025-07-21 12:57:57]   Std: 145.4140
+[2025-07-21 12:57:57] 🔧 APPLYING LOG TRANSFORMATION to target variable
+[2025-07-21 12:57:57] Log-transformed target statistics:
+[2025-07-21 12:57:57]   Min: 0.3450
+[2025-07-21 12:57:57]   Max: 8.0695
+[2025-07-21 12:57:57]   Mean: 2.9474
+[2025-07-21 12:57:57]   Std: 1.2665
+[2025-07-21 12:57:57] Scaling numerical features: ['Batch_Size', 'Input_Size', 'In_Channels', 'Out_Channels', 'Kernel_Size', 'Stride', 'Padding']
+[2025-07-21 12:57:57] 🔧 SCALING LOG-TRANSFORMED TARGET variable
+[2025-07-21 12:57:57] Features: 9
+[2025-07-21 12:57:57] Feature columns: ['Batch_Size', 'Input_Size', 'In_Channels', 'Out_Channels', 'Kernel_Size', 'Stride', 'Padding', 'Algorithm_direct', 'Algorithm_smm']
+[2025-07-21 12:57:57] Data preprocessing complete. Features shape: (77000, 9), Target shape: (77000,)
+[2025-07-21 12:57:57] Training FIXED LASSO Polynomial Regression with 5-Fold Cross Validation
+[2025-07-21 12:57:57] Total samples: 77000
+[2025-07-21 12:57:57] Features: 9
+[2025-07-21 12:57:57] 🔧 USING SMALLER ALPHA VALUES for better regularization
+[2025-07-21 12:57:57] 
+============================================================
+[2025-07-21 12:57:57] 🔢 TRAINING FIXED LASSO POLYNOMIAL REGRESSION
+[2025-07-21 12:57:57] ============================================================
+[2025-07-21 12:57:57] 
+🔢 LASSO - FOLD 1
+[2025-07-21 12:57:57] ----------------------------------------
+[2025-07-21 12:57:57] Training samples: 61600
+[2025-07-21 12:57:57] Validation samples: 15400
+[2025-07-21 12:57:57] Running hyperparameter search...
+Fitting 3 folds for each of 5 candidates, totalling 15 fits
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 1.619e+03, tolerance: 3.473e+00
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 7.611e+02, tolerance: 2.802e+00
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 3.375e+03, tolerance: 5.432e+00
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 7.540e+02, tolerance: 2.802e+00
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 1.262e+03, tolerance: 3.473e+00
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 3.422e+03, tolerance: 5.432e+00
+  model = cd_fast.enet_coordinate_descent(
+[2025-07-21 12:58:32] ✅ Training complete in 34.8 seconds
+[2025-07-21 12:58:32] Best parameters: {'lasso__alpha': 0.001, 'polynomialfeatures__degree': 2}
+[2025-07-21 12:58:32] Best CV score (neg MSE): -0.5021
+[2025-07-21 12:58:32] 📊 Generating validation curve (MAE vs Alpha)...
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 7.611e+02, tolerance: 2.802e+00
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 1.262e+03, tolerance: 3.473e+00
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 7.540e+02, tolerance: 2.802e+00
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 1.619e+03, tolerance: 3.473e+00
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 3.422e+03, tolerance: 5.432e+00
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 3.375e+03, tolerance: 5.432e+00
+  model = cd_fast.enet_coordinate_descent(
+[2025-07-21 12:59:04] 📊 Generating learning curve (MAE vs Training Size)...
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 1.319e+00, tolerance: 5.140e-01
+  model = cd_fast.enet_coordinate_descent(
+[2025-07-21 12:59:17] 🔢 FIXED LASSO Fold 1 Results:
+[2025-07-21 12:59:17]   Training:
+[2025-07-21 12:59:17]   MAPE: 47.01%
+[2025-07-21 12:59:17]   MAE:  25.3694
+[2025-07-21 12:59:17]   RMSE: 107.3530
+[2025-07-21 12:59:17]   R²:   0.4484
+[2025-07-21 12:59:17]   Validation:
+[2025-07-21 12:59:17]   MAPE: 47.45%
+[2025-07-21 12:59:17]   MAE:  25.9953
+[2025-07-21 12:59:17]   RMSE: 112.9975
+[2025-07-21 12:59:17]   R²:   0.4236
+[2025-07-21 12:59:17]   Polynomial Degree: 2
+[2025-07-21 12:59:17]   Alpha (L1 regularization): 0.001
+[2025-07-21 12:59:17]   Feature Selection: 36/54 features selected (66.7%)
+[2025-07-21 12:59:17] Model saved: lasso_model_fold_1.joblib
+[2025-07-21 12:59:17] 
+🔢 LASSO - FOLD 2
+[2025-07-21 12:59:17] ----------------------------------------
+[2025-07-21 12:59:17] Training samples: 61600
+[2025-07-21 12:59:17] Validation samples: 15400
+[2025-07-21 12:59:17] Running hyperparameter search...
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 7.692e+02, tolerance: 2.821e+00
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 3.385e+03, tolerance: 5.423e+00
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 1.636e+03, tolerance: 3.458e+00
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 7.612e+02, tolerance: 2.821e+00
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 1.282e+03, tolerance: 3.458e+00
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 3.459e+03, tolerance: 5.423e+00
+  model = cd_fast.enet_coordinate_descent(
+Fitting 3 folds for each of 5 candidates, totalling 15 fits
+[2025-07-21 12:59:49] ✅ Training complete in 31.9 seconds
+[2025-07-21 12:59:49] Best parameters: {'lasso__alpha': 0.001, 'polynomialfeatures__degree': 2}
+[2025-07-21 12:59:49] Best CV score (neg MSE): -0.5112
+[2025-07-21 12:59:49] 📊 Generating validation curve (MAE vs Alpha)...
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 7.692e+02, tolerance: 2.821e+00
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 1.282e+03, tolerance: 3.458e+00
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 7.612e+02, tolerance: 2.821e+00
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 1.636e+03, tolerance: 3.458e+00
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 3.459e+03, tolerance: 5.423e+00
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 3.385e+03, tolerance: 5.423e+00
+  model = cd_fast.enet_coordinate_descent(
+[2025-07-21 13:00:23] 📊 Generating learning curve (MAE vs Training Size)...
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 1.234e+00, tolerance: 5.173e-01
+  model = cd_fast.enet_coordinate_descent(
+[2025-07-21 13:00:36] 🔢 FIXED LASSO Fold 2 Results:
+[2025-07-21 13:00:36]   Training:
+[2025-07-21 13:00:36]   MAPE: 47.32%
+[2025-07-21 13:00:36]   MAE:  25.3717
+[2025-07-21 13:00:36]   RMSE: 107.6182
+[2025-07-21 13:00:36]   R²:   0.4458
+[2025-07-21 13:00:36]   Validation:
+[2025-07-21 13:00:36]   MAPE: 46.91%
+[2025-07-21 13:00:36]   MAE:  25.1753
+[2025-07-21 13:00:36]   RMSE: 102.4404
+[2025-07-21 13:00:36]   R²:   0.5259
+[2025-07-21 13:00:36]   Polynomial Degree: 2
+[2025-07-21 13:00:36]   Alpha (L1 regularization): 0.001
+[2025-07-21 13:00:36]   Feature Selection: 35/54 features selected (64.8%)
+[2025-07-21 13:00:36] Model saved: lasso_model_fold_2.joblib
+[2025-07-21 13:00:36] 
+🔢 LASSO - FOLD 3
+[2025-07-21 13:00:36] ----------------------------------------
+[2025-07-21 13:00:36] Training samples: 61600
+[2025-07-21 13:00:36] Validation samples: 15400
+[2025-07-21 13:00:36] Running hyperparameter search...
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 7.550e+02, tolerance: 2.835e+00
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 3.387e+03, tolerance: 5.461e+00
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 7.465e+02, tolerance: 2.835e+00
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 1.642e+03, tolerance: 3.476e+00
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 1.294e+03, tolerance: 3.476e+00
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 3.430e+03, tolerance: 5.461e+00
+  model = cd_fast.enet_coordinate_descent(
+Fitting 3 folds for each of 5 candidates, totalling 15 fits
+[2025-07-21 13:01:08] ✅ Training complete in 31.2 seconds
+[2025-07-21 13:01:08] Best parameters: {'lasso__alpha': 0.001, 'polynomialfeatures__degree': 2}
+[2025-07-21 13:01:08] Best CV score (neg MSE): -0.4927
+[2025-07-21 13:01:08] 📊 Generating validation curve (MAE vs Alpha)...
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 7.550e+02, tolerance: 2.835e+00
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 1.294e+03, tolerance: 3.476e+00
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 7.465e+02, tolerance: 2.835e+00
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 1.642e+03, tolerance: 3.476e+00
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 3.430e+03, tolerance: 5.461e+00
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 3.387e+03, tolerance: 5.461e+00
+  model = cd_fast.enet_coordinate_descent(
+[2025-07-21 13:01:39] 📊 Generating learning curve (MAE vs Training Size)...
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 1.282e+00, tolerance: 5.201e-01
+  model = cd_fast.enet_coordinate_descent(
+[2025-07-21 13:01:52] 🔢 FIXED LASSO Fold 3 Results:
+[2025-07-21 13:01:52]   Training:
+[2025-07-21 13:01:52]   MAPE: 46.85%
+[2025-07-21 13:01:52]   MAE:  25.5938
+[2025-07-21 13:01:52]   RMSE: 108.7493
+[2025-07-21 13:01:52]   R²:   0.4500
+[2025-07-21 13:01:52]   Validation:
+[2025-07-21 13:01:52]   MAPE: 47.34%
+[2025-07-21 13:01:52]   MAE:  23.5875
+[2025-07-21 13:01:52]   RMSE: 91.5578
+[2025-07-21 13:01:52]   R²:   0.5748
+[2025-07-21 13:01:52]   Polynomial Degree: 2
+[2025-07-21 13:01:52]   Alpha (L1 regularization): 0.001
+[2025-07-21 13:01:52]   Feature Selection: 35/54 features selected (64.8%)
+[2025-07-21 13:01:52] Model saved: lasso_model_fold_3.joblib
+[2025-07-21 13:01:52] 
+🔢 LASSO - FOLD 4
+[2025-07-21 13:01:52] ----------------------------------------
+[2025-07-21 13:01:52] Training samples: 61600
+[2025-07-21 13:01:52] Validation samples: 15400
+[2025-07-21 13:01:52] Running hyperparameter search...
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 7.411e+02, tolerance: 2.811e+00
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 3.354e+03, tolerance: 5.423e+00
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 7.331e+02, tolerance: 2.811e+00
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 1.652e+03, tolerance: 3.481e+00
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 1.286e+03, tolerance: 3.481e+00
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 3.401e+03, tolerance: 5.423e+00
+  model = cd_fast.enet_coordinate_descent(
+Fitting 3 folds for each of 5 candidates, totalling 15 fits
+[2025-07-21 13:02:23] ✅ Training complete in 31.1 seconds
+[2025-07-21 13:02:23] Best parameters: {'lasso__alpha': 0.001, 'polynomialfeatures__degree': 2}
+[2025-07-21 13:02:23] Best CV score (neg MSE): -0.4998
+[2025-07-21 13:02:23] 📊 Generating validation curve (MAE vs Alpha)...
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 7.411e+02, tolerance: 2.811e+00
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 1.286e+03, tolerance: 3.481e+00
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 7.331e+02, tolerance: 2.811e+00
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 1.652e+03, tolerance: 3.481e+00
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 3.401e+03, tolerance: 5.423e+00
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 3.354e+03, tolerance: 5.423e+00
+  model = cd_fast.enet_coordinate_descent(
+[2025-07-21 13:02:55] 📊 Generating learning curve (MAE vs Training Size)...
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 1.195e+00, tolerance: 5.106e-01
+  model = cd_fast.enet_coordinate_descent(
+[2025-07-21 13:03:08] 🔢 FIXED LASSO Fold 4 Results:
+[2025-07-21 13:03:08]   Training:
+[2025-07-21 13:03:08]   MAPE: 46.81%
+[2025-07-21 13:03:08]   MAE:  25.0236
+[2025-07-21 13:03:08]   RMSE: 104.5038
+[2025-07-21 13:03:08]   R²:   0.4709
+[2025-07-21 13:03:08]   Validation:
+[2025-07-21 13:03:08]   MAPE: 47.22%
+[2025-07-21 13:03:08]   MAE:  27.2033
+[2025-07-21 13:03:08]   RMSE: 123.6857
+[2025-07-21 13:03:08]   R²:   0.3394
+[2025-07-21 13:03:08]   Polynomial Degree: 2
+[2025-07-21 13:03:08]   Alpha (L1 regularization): 0.001
+[2025-07-21 13:03:08]   Feature Selection: 34/54 features selected (63.0%)
+[2025-07-21 13:03:08] Model saved: lasso_model_fold_4.joblib
+[2025-07-21 13:03:08] 
+🔢 LASSO - FOLD 5
+[2025-07-21 13:03:08] ----------------------------------------
+[2025-07-21 13:03:08] Training samples: 61600
+[2025-07-21 13:03:08] Validation samples: 15400
+[2025-07-21 13:03:08] Running hyperparameter search...
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 7.571e+02, tolerance: 2.832e+00
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 7.499e+02, tolerance: 2.832e+00
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 1.677e+03, tolerance: 3.453e+00
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 3.407e+03, tolerance: 5.440e+00
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 1.309e+03, tolerance: 3.453e+00
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 3.437e+03, tolerance: 5.440e+00
+  model = cd_fast.enet_coordinate_descent(
+Fitting 3 folds for each of 5 candidates, totalling 15 fits
+[2025-07-21 13:03:39] ✅ Training complete in 30.7 seconds
+[2025-07-21 13:03:39] Best parameters: {'lasso__alpha': 0.001, 'polynomialfeatures__degree': 2}
+[2025-07-21 13:03:39] Best CV score (neg MSE): -0.4965
+[2025-07-21 13:03:39] 📊 Generating validation curve (MAE vs Alpha)...
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 7.571e+02, tolerance: 2.832e+00
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 1.309e+03, tolerance: 3.453e+00
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 7.499e+02, tolerance: 2.832e+00
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 1.677e+03, tolerance: 3.453e+00
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 3.437e+03, tolerance: 5.440e+00
+  model = cd_fast.enet_coordinate_descent(
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 3.407e+03, tolerance: 5.440e+00
+  model = cd_fast.enet_coordinate_descent(
+[2025-07-21 13:04:11] 📊 Generating learning curve (MAE vs Training Size)...
+/home/wxs428/ai3_env/lib/python3.12/site-packages/sklearn/linear_model/_coordinate_descent.py:695: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 1.352e+00, tolerance: 5.201e-01
+  model = cd_fast.enet_coordinate_descent(
+[2025-07-21 13:04:24] 🔢 FIXED LASSO Fold 5 Results:
+[2025-07-21 13:04:24]   Training:
+[2025-07-21 13:04:24]   MAPE: 47.05%
+[2025-07-21 13:04:24]   MAE:  25.4064
+[2025-07-21 13:04:24]   RMSE: 107.4708
+[2025-07-21 13:04:24]   R²:   0.4700
+[2025-07-21 13:04:24]   Validation:
+[2025-07-21 13:04:24]   MAPE: 46.29%
+[2025-07-21 13:04:24]   MAE:  25.0266
+[2025-07-21 13:04:24]   RMSE: 104.0069
+[2025-07-21 13:04:24]   R²:   0.4171
+[2025-07-21 13:04:24]   Polynomial Degree: 2
+[2025-07-21 13:04:24]   Alpha (L1 regularization): 0.001
+[2025-07-21 13:04:24]   Feature Selection: 35/54 features selected (64.8%)
+[2025-07-21 13:04:24] Model saved: lasso_model_fold_5.joblib
+[2025-07-21 13:04:24] 
+================================================================================
+[2025-07-21 13:04:24] 🔢 FIXED LASSO POLYNOMIAL REGRESSION SUMMARY
+[2025-07-21 13:04:24] ================================================================================
+[2025-07-21 13:04:24] 📊 Average Performance:
+[2025-07-21 13:04:24] Average Val MAPE: 47.04% ± 0.42%
+[2025-07-21 13:04:24] Average Val R²: 0.4562
+[2025-07-21 13:04:24] Average Training Time: 31.9 seconds per fold
+[2025-07-21 13:04:24] Average Sparsity: 0.35 (35.2% features removed)
+[2025-07-21 13:04:24] 
+�� Best Fold: Fold 5 (Val MAPE: 46.29%)
+[2025-07-21 13:04:24] 📐 Polynomial Degree: 2
+[2025-07-21 13:04:24] 🎯 Best Alpha: 0.001
+[2025-07-21 13:04:24] 🔍 Feature Selection: 35/54 features (64.8% kept)
+[2025-07-21 13:04:24] ⏱️  Total Training Time: 387.5 seconds (6.5 minutes)
+[2025-07-21 13:04:24] Best model saved as: best_lasso_model.joblib
+[2025-07-21 13:04:24] Scalers saved as: scaler_X.joblib, scaler_y.joblib
+[2025-07-21 13:04:24] Results saved to: lasso_training_results.csv
+[2025-07-21 13:04:24] 📊 Creating enhanced visualization with residual plots and learning curves...
+[2025-07-21 13:04:27] ✅ Enhanced visualization with residuals and learning curves saved: lasso_polynomial_results.png
+[2025-07-21 13:04:27] 
+🎉 FIXED Lasso Polynomial Regression Training Complete!
+[2025-07-21 13:04:27] ⏱️  Total time: 387.5 seconds (6.5 minutes)
+[2025-07-21 13:04:27] 📊 Best performance: 46.29% MAPE
+[2025-07-21 13:04:27] 🎯 Best regularization: Alpha = 0.001
+[2025-07-21 13:04:27] 🔍 Feature selection: 64.8% features kept
+[2025-07-21 13:04:27] Script completed at: 2025-07-21 13:04:27.861804
+[2025-07-21 13:04:27] 
+📁 Generated Files:
+[2025-07-21 13:04:27]   • best_lasso_model.joblib - Best trained model
+[2025-07-21 13:04:27]   • scaler_X.joblib - Feature scaler
+[2025-07-21 13:04:27]   • scaler_y.joblib - Target scaler
+[2025-07-21 13:04:27]   • lasso_training_results.csv - Detailed results
+[2025-07-21 13:04:27]   • lasso_polynomial_results.png - Enhanced visualization with residuals & learning curves
+[2025-07-21 13:04:27]   • Individual fold models: lasso_model_fold_*.joblib
+[2025-07-21 13:04:27] 
+🔧 KEY FIXES AND FEATURES APPLIED:
+[2025-07-21 13:04:27]   1. ✅ Log transformation of target variable (handles wide range)
+[2025-07-21 13:04:27]   2. ✅ Proper scaling of log-transformed target
+[2025-07-21 13:04:27]   3. ✅ Smaller alpha values: [1e-05, 0.0001, 0.001, 0.01, 0.1]
+[2025-07-21 13:04:27]   4. ✅ Increased max_iter to 5000 (avoids convergence warnings)
+[2025-07-21 13:04:27]   5. ✅ Proper inverse transform for evaluation on original scale
+[2025-07-21 13:04:27]   6. ✅ Residual plots for model diagnostics
+[2025-07-21 13:04:27]   7. ✅ Learning curves tracking MAE vs training size
+[2025-07-21 13:04:27]   8. ✅ Validation curves showing MAE vs alpha parameters
