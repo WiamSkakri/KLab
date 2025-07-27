@@ -1,0 +1,272 @@
+/home/wxs428/ai3_env/lib/python3.12/site-packages/xgboost/training.py:183: UserWarning: [14:04:18] WARNING: /workspace/src/common/error_msg.cc:45: `gpu_id` is deprecated since2.0.0, use `device` instead. E.g. device=cpu/cuda/cuda:0
+  bst.update(dtrain, iteration=i, fobj=obj)
+/home/wxs428/ai3_env/lib/python3.12/site-packages/xgboost/training.py:183: UserWarning: [14:04:18] WARNING: /workspace/src/common/error_msg.cc:27: The tree method `gpu_hist` is deprecated since 2.0.0. To use GPU training, set the `device` parameter to CUDA instead.
+
+    E.g. tree_method = "hist", device = "cuda"
+
+  bst.update(dtrain, iteration=i, fobj=obj)
+/scratch/pioneer/jobs/job.2701378.pioneer/xgb_optimized_2701378/python.py:552: UserWarning: Glyph 128640 (\N{ROCKET}) missing from font(s) DejaVu Sans Mono.
+  plt.tight_layout()
+/scratch/pioneer/jobs/job.2701378.pioneer/xgb_optimized_2701378/python.py:552: UserWarning: Glyph 9201 (\N{STOPWATCH}) missing from font(s) DejaVu Sans Mono.
+  plt.tight_layout()
+/scratch/pioneer/jobs/job.2701378.pioneer/xgb_optimized_2701378/python.py:552: UserWarning: Glyph 65039 (\N{VARIATION SELECTOR-16}) missing from font(s) DejaVu Sans Mono.
+  plt.tight_layout()
+/scratch/pioneer/jobs/job.2701378.pioneer/xgb_optimized_2701378/python.py:552: UserWarning: Glyph 128202 (\N{BAR CHART}) missing from font(s) DejaVu Sans Mono.
+  plt.tight_layout()
+/scratch/pioneer/jobs/job.2701378.pioneer/xgb_optimized_2701378/python.py:552: UserWarning: Glyph 127919 (\N{DIRECT HIT}) missing from font(s) DejaVu Sans Mono.
+  plt.tight_layout()
+/scratch/pioneer/jobs/job.2701378.pioneer/xgb_optimized_2701378/python.py:553: UserWarning: Glyph 128640 (\N{ROCKET}) missing from font(s) DejaVu Sans Mono.
+  plt.savefig('xgb_optimized_training_results.png', dpi=300, bbox_inches='tight')
+/scratch/pioneer/jobs/job.2701378.pioneer/xgb_optimized_2701378/python.py:553: UserWarning: Glyph 9201 (\N{STOPWATCH}) missing from font(s) DejaVu Sans Mono.
+  plt.savefig('xgb_optimized_training_results.png', dpi=300, bbox_inches='tight')
+/scratch/pioneer/jobs/job.2701378.pioneer/xgb_optimized_2701378/python.py:553: UserWarning: Glyph 65039 (\N{VARIATION SELECTOR-16}) missing from font(s) DejaVu Sans Mono.
+  plt.savefig('xgb_optimized_training_results.png', dpi=300, bbox_inches='tight')
+/scratch/pioneer/jobs/job.2701378.pioneer/xgb_optimized_2701378/python.py:553: UserWarning: Glyph 128202 (\N{BAR CHART}) missing from font(s) DejaVu Sans Mono.
+  plt.savefig('xgb_optimized_training_results.png', dpi=300, bbox_inches='tight')
+/scratch/pioneer/jobs/job.2701378.pioneer/xgb_optimized_2701378/python.py:553: UserWarning: Glyph 127919 (\N{DIRECT HIT}) missing from font(s) DejaVu Sans Mono.
+  plt.savefig('xgb_optimized_training_results.png', dpi=300, bbox_inches='tight')
+✅ XGBoost detected
+🚀 XGBoost GPU support detected - will use GPU acceleration
+Starting OPTIMIZED XGBoost HPC Training
+============================================================
+Script started at: 2025-07-24 14:04:18.548571
+Python version: 3.12.3 (main, Oct 16 2024, 21:26:15) [GCC 13.3.0]
+Current working directory: /scratch/pioneer/jobs/job.2701378.pioneer/xgb_optimized_2701378
+Available files: ['combined.csv', 'python.py', 'python_output.log']
+XGBoost version: 3.0.2
+GPU Acceleration: Enabled
+
+📊 Loading data...
+Data loaded successfully: 77000 rows, 9 columns
+Columns: ['Algorithm', 'Batch_Size', 'Input_Size', 'In_Channels', 'Out_Channels', 'Kernel_Size', 'Stride', 'Padding', 'Execution_Time_ms']
+
+📈 Data preprocessing:
+Features: 9 columns
+Target: Execution_Time_ms
+Feature columns: ['Batch_Size', 'Input_Size', 'In_Channels', 'Out_Channels', 'Kernel_Size', 'Stride', 'Padding', 'Algorithm_direct', 'Algorithm_smm']
+X shape: (77000, 9)
+y shape: (77000,)
+y statistics: min=0.41, max=3194.39, mean=50.25
+
+🔀 K-Fold Cross Validation Setup:
+Number of folds: 5
+
+=== FOLD 1 ===
+Training samples: 61600
+Validation samples: 15400
+
+=== FOLD 2 ===
+Training samples: 61600
+Validation samples: 15400
+
+=== FOLD 3 ===
+Training samples: 61600
+Validation samples: 15400
+
+=== FOLD 4 ===
+Training samples: 61600
+Validation samples: 15400
+
+=== FOLD 5 ===
+Training samples: 61600
+Validation samples: 15400
+
+🌲 OPTIMIZED XGBoost Configuration:
+Backend: GPU-accelerated
+🚀 Using RandomizedSearchCV for faster hyperparameter optimization
+Total hyperparameter combinations: 384 (reduced from 4,320)
+RandomizedSearchCV iterations: 50
+
+🚀 Starting OPTIMIZED XGBoost K-Fold Cross Validation Training
+============================================================
+⚡ Optimization features:
+  • RandomizedSearchCV instead of GridSearchCV
+  • Reduced hyperparameter search space
+  • Evaluation tracking for model monitoring
+  • Maximum 50 hyperparameter combinations per fold
+
+🌲 FOLD 1
+--------------------
+Training samples: 61600
+Validation samples: 15400
+Running optimized hyperparameter search (50 iterations)...
+Fitting 3 folds for each of 50 candidates, totalling 150 fits
+✅ Training complete in 28.7 seconds
+Best parameters: {'subsample': 1.0, 'reg_lambda': 1.5, 'reg_alpha': 0.1, 'n_estimators': 200, 'max_depth': 6, 'learning_rate': 0.1, 'colsample_bytree': 1.0}
+Best CV score (neg MAE): -56.7936
+Training final model with evaluation tracking...
+🌳 Fold 1 Results:
+
+  Training:
+  MAPE: 16.69%
+  MAE:  4.7659
+  RMSE: 17.6703
+  R²:   0.9851
+
+  Validation:
+  MAPE: 17.05%
+  MAE:  5.1926
+  RMSE: 21.0102
+  R²:   0.9801
+  Best iteration: 200
+Model saved: xgb_optimized_model_fold_1.joblib
+
+🌲 FOLD 2
+--------------------
+Training samples: 61600
+Validation samples: 15400
+Running optimized hyperparameter search (50 iterations)...
+Fitting 3 folds for each of 50 candidates, totalling 150 fits
+✅ Training complete in 28.7 seconds
+Best parameters: {'subsample': 0.8, 'reg_lambda': 1.5, 'reg_alpha': 0, 'n_estimators': 300, 'max_depth': 6, 'learning_rate': 0.2, 'colsample_bytree': 1.0}
+Best CV score (neg MAE): -53.0861
+Training final model with evaluation tracking...
+🌳 Fold 2 Results:
+
+  Training:
+  MAPE: 16.15%
+  MAE:  4.3602
+  RMSE: 17.3820
+  R²:   0.9855
+
+  Validation:
+  MAPE: 16.95%
+  MAE:  4.6145
+  RMSE: 19.1035
+  R²:   0.9835
+  Best iteration: 300
+Model saved: xgb_optimized_model_fold_2.joblib
+
+🌲 FOLD 3
+--------------------
+Training samples: 61600
+Validation samples: 15400
+Running optimized hyperparameter search (50 iterations)...
+Fitting 3 folds for each of 50 candidates, totalling 150 fits
+✅ Training complete in 28.6 seconds
+Best parameters: {'subsample': 1.0, 'reg_lambda': 1, 'reg_alpha': 0.1, 'n_estimators': 200, 'max_depth': 6, 'learning_rate': 0.1, 'colsample_bytree': 1.0}
+Best CV score (neg MAE): -53.6402
+Training final model with evaluation tracking...
+🌳 Fold 3 Results:
+
+  Training:
+  MAPE: 15.92%
+  MAE:  4.6781
+  RMSE: 17.9958
+  R²:   0.9849
+
+  Validation:
+  MAPE: 16.27%
+  MAE:  4.8451
+  RMSE: 18.9130
+  R²:   0.9819
+  Best iteration: 200
+Model saved: xgb_optimized_model_fold_3.joblib
+
+🌲 FOLD 4
+--------------------
+Training samples: 61600
+Validation samples: 15400
+Running optimized hyperparameter search (50 iterations)...
+Fitting 3 folds for each of 50 candidates, totalling 150 fits
+✅ Training complete in 29.4 seconds
+Best parameters: {'subsample': 0.8, 'reg_lambda': 1.5, 'reg_alpha': 0, 'n_estimators': 300, 'max_depth': 6, 'learning_rate': 0.1, 'colsample_bytree': 1.0}
+Best CV score (neg MAE): -57.5392
+Training final model with evaluation tracking...
+🌳 Fold 4 Results:
+
+  Training:
+  MAPE: 17.52%
+  MAE:  4.8209
+  RMSE: 17.4500
+  R²:   0.9852
+
+  Validation:
+  MAPE: 17.65%
+  MAE:  5.0924
+  RMSE: 20.3997
+  R²:   0.9820
+  Best iteration: 300
+Model saved: xgb_optimized_model_fold_4.joblib
+
+🌲 FOLD 5
+--------------------
+Training samples: 61600
+Validation samples: 15400
+Running optimized hyperparameter search (50 iterations)...
+Fitting 3 folds for each of 50 candidates, totalling 150 fits
+✅ Training complete in 28.4 seconds
+Best parameters: {'subsample': 1.0, 'reg_lambda': 1, 'reg_alpha': 0.1, 'n_estimators': 200, 'max_depth': 6, 'learning_rate': 0.1, 'colsample_bytree': 1.0}
+Best CV score (neg MAE): -58.2309
+Training final model with evaluation tracking...
+🌳 Fold 5 Results:
+
+  Training:
+  MAPE: 15.24%
+  MAE:  4.5220
+  RMSE: 18.6313
+  R²:   0.9841
+
+  Validation:
+  MAPE: 15.17%
+  MAE:  4.5718
+  RMSE: 16.6731
+  R²:   0.9850
+  Best iteration: 200
+Model saved: xgb_optimized_model_fold_5.joblib
+
+============================================================
+🌲 OPTIMIZED XGBOOST CROSS VALIDATION SUMMARY
+============================================================
+Backend Used: XGBoost (GPU)
+Optimization: RandomizedSearchCV with early stopping
+Search iterations per fold: 50
+Average Train MAPE: 16.30%
+Average Val MAPE:   16.62% ± 0.85%
+Average Train MAE:  4.6294
+Average Val MAE:    4.8633 ± 0.2483
+Average Train R²:   0.9850
+Average Val R²:     0.9825 ± 0.0017
+Average Training Time: 28.8 seconds per fold
+Average Best Iteration: 240.0
+Total Training Time: 145.3 seconds (2.4 minutes)
+
+Detailed Results by Fold:
+Fold Train MAPE  Val MAPE  Train R² Val R²  Best Iter Time(s) 
+----------------------------------------------------------------------
+1    16.69       17.05     0.9851   0.9801  200       28.7    
+2    16.15       16.95     0.9855   0.9835  300       28.7    
+3    15.92       16.27     0.9849   0.9819  200       28.6    
+4    17.52       17.65     0.9852   0.9820  300       29.4    
+5    15.24       15.17     0.9841   0.9850  200       28.4    
+
+🏆 Best performing fold: Fold 5 (Val MAPE: 15.17%)
+Best model saved as: best_xgb_optimized_model.joblib
+
+Most common best parameters:
+  n_estimators: 200 (appeared in 3/5 folds)
+  max_depth: 6 (appeared in 5/5 folds)
+  learning_rate: 0.1 (appeared in 4/5 folds)
+  subsample: 1.0 (appeared in 3/5 folds)
+  colsample_bytree: 1.0 (appeared in 5/5 folds)
+
+Results saved to: xgb_optimized_training_results.csv
+Summary metrics saved to: xgb_optimized_summary_metrics.csv
+
+📊 Creating optimized training visualization...
+Optimized visualization saved to: xgb_optimized_training_results.png
+
+🎉 OPTIMIZED XGBoost Training Complete!
+⏱️  Total time: 145.3 seconds (2.4 minutes)
+📊 Best model performance: 15.17% MAPE
+🚀 Backend used: XGBoost (GPU)
+⚡ Optimization: RandomizedSearchCV + Evaluation Tracking
+🎯 Estimated speedup: ~96% faster than original GridSearchCV
+Script completed at: 2025-07-24 14:06:45.140283
+
+💡 Optimization Summary:
+   - Reduced hyperparameter combinations from 4,320 to 384
+   - Used RandomizedSearchCV with 50 iterations instead of exhaustive search
+   - Added evaluation tracking for model monitoring
+   - Total model fits: 250 vs 5760 (original)
+   - Estimated time savings: 95.7%

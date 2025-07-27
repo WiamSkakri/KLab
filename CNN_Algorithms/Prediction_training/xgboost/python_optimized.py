@@ -16,7 +16,8 @@ try:
         # Test GPU availability by creating a small DMatrix and training
         test_data = xgb.DMatrix(np.random.rand(
             10, 5), label=np.random.rand(10))
-        test_params = {'tree_method': 'gpu_hist', 'gpu_id': 0}
+        # Modern XGBoost 3.0+ syntax
+        test_params = {'tree_method': 'hist', 'device': 'cuda'}
         xgb.train(test_params, test_data,
                   num_boost_round=1, verbose_eval=False)
         GPU_AVAILABLE = True
@@ -128,18 +129,19 @@ base_params = {
     'eval_metric': 'mae',
     'random_state': 42,
     'verbosity': 0,
-    'early_stopping_rounds': 50,  # Add early stopping
+    # Note: early_stopping_rounds removed - only used for final model training
 }
 
 # Add GPU-specific parameters if available
 if GPU_AVAILABLE:
     base_params.update({
-        'tree_method': 'gpu_hist',
-        'gpu_id': 0
+        'tree_method': 'hist',  # Use 'hist' with device parameter
+        'device': 'cuda'        # Modern XGBoost 3.0+ syntax
     })
 else:
     base_params.update({
         'tree_method': 'hist',
+        'device': 'cpu',        # Explicit CPU device
         'n_jobs': -1
     })
 
@@ -232,7 +234,7 @@ print("=" * 60)
 print("⚡ Optimization features:")
 print("  • RandomizedSearchCV instead of GridSearchCV")
 print("  • Reduced hyperparameter search space")
-print("  • Early stopping enabled")
+print("  • Evaluation tracking for model monitoring")
 print("  • Maximum 50 hyperparameter combinations per fold")
 
 # Store results from all folds
@@ -275,13 +277,14 @@ for fold_info in fold_data:
     print(f"Best CV score (neg MAE): {best_score:.4f}")
 
     # Train final model with progress tracking and early stopping
-    print("Training final model with early stopping...")
+    print("Training final model with evaluation tracking...")
     final_model = xgb.XGBRegressor(**{**base_params, **best_params})
 
     # Set up evaluation sets for progress tracking
     eval_set = [(X_train, y_train), (X_val, y_val)]
 
-    # Train with evaluation tracking and early stopping
+    # Train final model with evaluation tracking
+    # Note: Early stopping removed due to XGBoost 3.0+ compatibility issues on HPC
     final_model.fit(
         X_train, y_train,
         eval_set=eval_set,
@@ -293,7 +296,9 @@ for fold_info in fold_data:
         'fold': fold,
         'evals_result': final_model.evals_result(),
         'best_params': best_params,
-        'best_iteration': final_model.best_iteration if hasattr(final_model, 'best_iteration') else len(final_model.evals_result()['validation_0']['mae'])
+        'best_iteration': getattr(final_model, 'best_iteration',
+                                  getattr(final_model, 'best_ntree_limit',
+                                          len(final_model.evals_result().get('validation_0', {}).get('mae', [1]))))
     }
     training_histories.append(training_history)
 
@@ -414,7 +419,7 @@ print(f"\nResults saved to: xgb_optimized_training_results.csv")
 # Create summary metrics
 summary_metrics = {
     'backend': 'XGBoost (GPU)' if GPU_AVAILABLE else 'XGBoost (CPU)',
-    'optimization': 'RandomizedSearchCV + Early Stopping',
+    'optimization': 'RandomizedSearchCV + Evaluation Tracking',
     'search_iterations': N_ITER,
     'total_training_time': total_time,
     'avg_train_mape': avg_train_mape,
@@ -557,7 +562,7 @@ print(
 print(f"📊 Best model performance: {best_fold['val_mape']:.2f}% MAPE")
 print(
     f"🚀 Backend used: {'XGBoost (GPU)' if GPU_AVAILABLE else 'XGBoost (CPU)'}")
-print(f"⚡ Optimization: RandomizedSearchCV + Early Stopping")
+print(f"⚡ Optimization: RandomizedSearchCV + Evaluation Tracking")
 print(f"🎯 Estimated speedup: ~96% faster than original GridSearchCV")
 print(f"Script completed at: {datetime.now()}")
 
@@ -566,7 +571,7 @@ print(
     f"   - Reduced hyperparameter combinations from 4,320 to {total_combinations}")
 print(
     f"   - Used RandomizedSearchCV with {N_ITER} iterations instead of exhaustive search")
-print(f"   - Added early stopping to prevent overfitting")
+print(f"   - Added evaluation tracking for model monitoring")
 print(
     f"   - Total model fits: {N_ITER*k} vs {total_combinations*k*3} (original)")
 print(

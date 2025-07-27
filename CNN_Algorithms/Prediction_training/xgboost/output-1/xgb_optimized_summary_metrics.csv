@@ -1,0 +1,2 @@
+backend,optimization,search_iterations,total_training_time,avg_train_mape,avg_val_mape,std_val_mape,avg_train_mae,avg_val_mae,std_val_mae,avg_train_r2,avg_val_r2,std_val_r2,avg_best_iteration,best_fold,best_val_mape,num_folds,timestamp
+XGBoost (GPU),RandomizedSearchCV + Evaluation Tracking,50,145.32497334480286,16.30240794666921,16.615795659866503,0.8466046914116933,4.629406087454263,4.8632837616437445,0.2482521877931709,0.9849708472990952,0.9824989427010499,0.001667489205506783,240.0,5,15.165204897363157,5,2025-07-24T14:06:43.996634
