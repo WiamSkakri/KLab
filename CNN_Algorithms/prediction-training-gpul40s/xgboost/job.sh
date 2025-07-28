@@ -1,20 +1,19 @@
 #!/bin/bash
-#SBATCH -J xgb_l40s_gpu_training          # Job name for L40s XGBoost training
-#SBATCH -o xgb_l40s_training.out          # Output file
-#SBATCH --time=4:00:00                    # 4 hours of wall time (XGBoost typically faster)
-#SBATCH -p gpu                            # GPU partition for L40s
-#SBATCH -A sxk1942                        # Account/Project ID
-#SBATCH -c 8                              # 8 processors (L40s benefits from more CPUs)
-#SBATCH --mem=64GB                        # 64GB memory (L40s has 48GB VRAM)
-#SBATCH --gpus=rtx_l40s:1                 # Request 1 L40s GPU specifically
-#SBATCH --constraint=l40s                 # Ensure L40s GPU allocation
+#SBATCH -J xgb_prediction_training_gpu   # Job name with GPU designation
+#SBATCH -o xgb_prediction_training.out   # Output file
+#SBATCH --time=24:00:00                  # 24 hours of wall time for comprehensive training
+#SBATCH -p gpu                           # GPU partition for XGBoost acceleration
+#SBATCH -A sxk1942                       # Account/Project ID
+#SBATCH -c 4                             # 4 processors (GPU workloads need fewer CPUs)
+#SBATCH --mem=32GB                       # 32GB memory (GPU handles compute-heavy tasks)
+#SBATCH --gpus=1                         # Request 1 GPU for XGBoost acceleration
 
 # Exit on any error
 set -e
 
 # Print debug information
 echo "============================================="
-echo "L40s GPU XGBoost Training Job Started"
+echo "GPU XGBoost Training Job Started"
 echo "============================================="
 echo "Job ID: $SLURM_JOB_ID"
 echo "Job name: $SLURM_JOB_NAME"
@@ -33,9 +32,9 @@ echo "Partition: $SLURM_JOB_PARTITION"
 echo -e "\nDirectory Contents:"
 ls -la
 
-# Check L40s GPU availability and configuration
+# Check GPU availability and configuration
 echo -e "\n========================================="
-echo "L40s GPU Configuration Check"
+echo "GPU Configuration Check"
 echo "========================================="
 if command -v nvidia-smi &> /dev/null; then
     echo "GPU Information:"
@@ -50,19 +49,14 @@ if command -v nvidia-smi &> /dev/null; then
     echo -e "\nCUDA Runtime Version:"
     python -c "import torch; print(f'PyTorch CUDA version: {torch.version.cuda}')" 2>/dev/null || echo "PyTorch not available"
 else
-    echo "Error: nvidia-smi not found. L40s GPU may not be available."
+    echo "Error: nvidia-smi not found. GPU may not be available."
     exit 1
 fi
 
-# Verify L40s GPU specifically
-echo -e "\nVerifying L40s GPU..."
+# Verify GPU allocation
+echo -e "\nVerifying GPU allocation..."
 GPU_NAME=$(nvidia-smi --query-gpu=name --format=csv,noheader,nounits | head -n1)
-if [[ "$GPU_NAME" == *"L40S"* ]] || [[ "$GPU_NAME" == *"L40s"* ]]; then
-    echo "✅ L40s GPU detected: $GPU_NAME"
-else
-    echo "⚠️  Warning: Expected L40s GPU but found: $GPU_NAME"
-    echo "Continuing with available GPU..."
-fi
+echo "✅ GPU detected: $GPU_NAME"
 
 # Check if virtual environment exists
 if [ ! -d "$HOME/ai3_env" ]; then
@@ -85,8 +79,8 @@ echo "✅ Virtual environment activated"
 echo "Python path: $(which python)"
 echo "Python version: $(python --version)"
 
-# Verify required packages for L40s GPU acceleration
-echo -e "\nChecking L40s GPU-optimized packages..."
+# Verify required packages for GPU acceleration
+echo -e "\nChecking GPU-optimized packages..."
 
 echo "Checking XGBoost (GPU)..."
 python -c "
@@ -110,12 +104,12 @@ python -c "import sklearn; print(f'✅ Scikit-learn version: {sklearn.__version_
 python -c "import matplotlib; print(f'✅ Matplotlib version: {matplotlib.__version__}')" 2>/dev/null || echo "❌ Matplotlib not available"
 python -c "import joblib; print(f'✅ Joblib version: {joblib.__version__}')" 2>/dev/null || echo "❌ Joblib not available"
 
-# Check for the L40s data file
+# Check for the data file
 echo -e "\n========================================="
 echo "Data File Verification"
 echo "========================================="
 if [ -f "combined_l40s.csv" ]; then
-    echo "✅ L40s data file found: combined_l40s.csv"
+    echo "✅ Data file found: combined_l40s.csv"
     echo "File size: $(ls -lh combined_l40s.csv | awk '{print $5}')"
     echo "Number of lines: $(wc -l < combined_l40s.csv)"
     echo "First few lines:"
@@ -128,53 +122,67 @@ else
     exit 1
 fi
 
-# Set environment variables for optimal L40s XGBoost performance
+# Set environment variables for optimal XGBoost GPU performance
 echo -e "\n========================================="
-echo "L40s XGBoost GPU Optimization Settings"
+echo "XGBoost GPU Optimization Settings"
 echo "========================================="
 export CUDA_VISIBLE_DEVICES=0
 export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
+export MKL_NUM_THREADS=$SLURM_CPUS_PER_TASK
+export OPENBLAS_NUM_THREADS=$SLURM_CPUS_PER_TASK
 export CUDA_LAUNCH_BLOCKING=0  # Allow asynchronous GPU operations for better performance
 
-echo "✅ Environment variables set for L40s XGBoost optimization"
+echo "✅ Environment variables set for XGBoost GPU optimization"
 echo "CUDA_VISIBLE_DEVICES: $CUDA_VISIBLE_DEVICES"
 echo "OMP_NUM_THREADS: $OMP_NUM_THREADS"
 
-# Set output directory for results
-OUTPUT_DIR="output_xgb_l40s_$(date +%Y%m%d_%H%M%S)"
-mkdir -p $OUTPUT_DIR
+# Create timestamp for unique results directory
+TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+RESULTS_DIR=$SLURM_SUBMIT_DIR/results_xgb_gpu_${TIMESTAMP}
+mkdir -p $RESULTS_DIR
+
+# Create a directory in scratch for the job
+SCRATCH_DIR=$PFSDIR/xgb_prediction_training_gpu_${SLURM_JOB_ID}
+if ! mkdir -p $SCRATCH_DIR; then
+    echo "Failed to create scratch directory: $SCRATCH_DIR"
+    exit 1
+fi
+echo "Created scratch directory: $SCRATCH_DIR"
+
+# Copy the script and data to the scratch directory
+cp python.py $SCRATCH_DIR/
+cp combined_l40s.csv $SCRATCH_DIR/
+echo "Copied Python script and data to scratch directory"
+
+# Change to the scratch directory
+cd $SCRATCH_DIR
+echo "Changed to scratch directory: $(pwd)"
 
 echo -e "\n========================================="
-echo "Starting L40s GPU XGBoost Training"
+echo "Starting GPU XGBoost Training"
 echo "========================================="
-echo "Output directory: $OUTPUT_DIR"
+echo "Results directory: $RESULTS_DIR"
+echo "Scratch directory: $SCRATCH_DIR"
 echo "Script: python.py"
 echo "Data: combined_l40s.csv"
-echo "Hardware: L40s GPU"
+echo "Hardware: Any available GPU"
 echo "Algorithm: XGBoost"
 echo "Start time: $(date)"
 
-# Change to output directory and copy files
-cd $OUTPUT_DIR
-cp ../python.py .
-cp ../combined_l40s.csv .
-
-echo -e "\nWorking directory: $(pwd)"
-
-# Run the L40s GPU XGBoost training script with comprehensive logging
-echo -e "\n🚀 Executing L40s GPU XGBoost training..."
+# Run the GPU XGBoost training script with comprehensive logging
+echo -e "\n🚀 Executing GPU XGBoost training..."
 python python.py 2>&1 | tee training_output.log
 
 TRAINING_EXIT_CODE=$?
 
 echo -e "\n========================================="
-echo "L40s GPU XGBoost Training Completion"
+echo "GPU XGBoost Training Completion"
 echo "========================================="
 echo "End time: $(date)"
 echo "Training exit code: $TRAINING_EXIT_CODE"
 
 if [ $TRAINING_EXIT_CODE -eq 0 ]; then
-    echo "✅ L40s GPU XGBoost training completed successfully!"
+    echo "✅ GPU XGBoost training completed successfully!"
     
     echo -e "\nGenerated files:"
     ls -la *.csv *.png *.joblib *.log 2>/dev/null || echo "No output files found"
@@ -182,52 +190,125 @@ if [ $TRAINING_EXIT_CODE -eq 0 ]; then
     echo -e "\nFile sizes:"
     du -h * 2>/dev/null | sort -hr || echo "No files to show"
     
+    # Copy all results to the timestamped results directory
+    echo "Copying results to: $RESULTS_DIR"
+    cp -v training_output.log $RESULTS_DIR/
+    cp -v xgb_*training_results.csv $RESULTS_DIR/ 2>/dev/null || echo "Training results CSV not found"
+    cp -v xgb_*summary_metrics.csv $RESULTS_DIR/ 2>/dev/null || echo "Summary metrics CSV not found"
+    cp -v best_*xgb_model.joblib $RESULTS_DIR/ 2>/dev/null || echo "Best model not found"
+    cp -v xgb_model_fold_*.joblib $RESULTS_DIR/ 2>/dev/null || echo "Individual fold models not found"
+    
+    # Copy visualization files
+    cp -v xgb_*.png $RESULTS_DIR/ 2>/dev/null || echo "Visualization plots not found"
+    
     # Display training summary if available
-    if [ -f "xgb_l40s_summary_metrics.csv" ]; then
+    if [ -f "xgb_*summary_metrics.csv" ]; then
         echo -e "\n📊 XGBoost Training Summary:"
-        cat xgb_l40s_summary_metrics.csv
+        cat xgb_*summary_metrics.csv 2>/dev/null || echo "Could not display summary"
     fi
     
     # Show the best performance achieved
-    if [ -f "xgb_l40s_training_results.csv" ]; then
+    if [ -f "xgb_*training_results.csv" ]; then
         echo -e "\n🏆 Best XGBoost Performance:"
         python -c "
 import pandas as pd
+import glob
 try:
-    df = pd.read_csv('xgb_l40s_training_results.csv')
-    best_fold = df.loc[df['val_mape'].idxmin()]
-    print(f'Best Fold: {best_fold[\"fold\"]}')
-    print(f'Validation MAPE: {best_fold[\"val_mape\"]:.2f}%')
-    print(f'Validation R²: {best_fold[\"val_r2\"]:.4f}')
-    print(f'Training Time: {best_fold[\"training_time\"]:.1f} seconds')
+    csv_files = glob.glob('xgb_*training_results.csv')
+    if csv_files:
+        df = pd.read_csv(csv_files[0])
+        best_fold = df.loc[df['val_mape'].idxmin()]
+        print(f'Best Fold: {best_fold[\"fold\"]}')
+        print(f'Validation MAPE: {best_fold[\"val_mape\"]:.2f}%')
+        print(f'Validation R²: {best_fold[\"val_r2\"]:.4f}')
+        print(f'Training Time: {best_fold[\"training_time\"]:.1f} seconds')
+    else:
+        print('No training results CSV found')
 except Exception as e:
     print(f'Could not read results: {e}')
 " 2>/dev/null || echo "Could not display performance summary"
     fi
     
 else
-    echo "❌ L40s GPU XGBoost training failed with exit code: $TRAINING_EXIT_CODE"
+    echo "❌ GPU XGBoost training failed with exit code: $TRAINING_EXIT_CODE"
     echo -e "\nLast 50 lines of output:"
     tail -n 50 training_output.log 2>/dev/null || echo "No log file available"
+    
+    # Copy logs even if script failed
+    cp training_output.log $RESULTS_DIR/ 2>/dev/null || echo "Could not copy log file"
+fi
+
+# Create a summary report
+echo "Creating summary report..."
+cat > $RESULTS_DIR/job_summary.txt << EOF
+GPU-Accelerated XGBoost Training Job Summary
+============================================
+Job ID: $SLURM_JOB_ID
+Start Time: $(date)
+Submit Directory: $SLURM_SUBMIT_DIR
+Results Directory: $RESULTS_DIR
+
+Job Resources:
+- CPUs: $SLURM_CPUS_PER_TASK
+- Memory: $SLURM_MEM_PER_NODE
+- GPUs: $SLURM_GPUS
+- Time Limit: 24 hours
+- Partition: gpu
+
+GPU Information:
+$(nvidia-smi --query-gpu=name,memory.total --format=csv,noheader 2>/dev/null || echo "GPU info not available")
+
+Algorithm: XGBoost
+Training Status: $([ $TRAINING_EXIT_CODE -eq 0 ] && echo "SUCCESS" || echo "FAILED")
+EOF
+
+# Extract key metrics from the log file for quick reference
+if [ -f training_output.log ] && [ $TRAINING_EXIT_CODE -eq 0 ]; then
+    echo "" >> $RESULTS_DIR/job_summary.txt
+    echo "Key Performance Metrics:" >> $RESULTS_DIR/job_summary.txt
+    echo "========================" >> $RESULTS_DIR/job_summary.txt
+    
+    # Extract GPU usage confirmation
+    grep -i "xgboost.*gpu\|device.*cuda" training_output.log | head -5 >> $RESULTS_DIR/job_summary.txt 2>/dev/null || echo "GPU usage info not found"
+    
+    # Extract average validation MAPE
+    grep "Average Val MAPE:" training_output.log | tail -1 >> $RESULTS_DIR/job_summary.txt 2>/dev/null || echo "Val MAPE not found"
+    
+    # Extract average validation R²
+    grep "Average Val R²:" training_output.log | tail -1 >> $RESULTS_DIR/job_summary.txt 2>/dev/null || echo "Val R² not found"
+    
+    # Extract total training time
+    grep "Total Training Time:" training_output.log | tail -1 >> $RESULTS_DIR/job_summary.txt 2>/dev/null || echo "Training time not found"
 fi
 
 # GPU memory status after training
 echo -e "\n========================================="
-echo "Final L40s GPU Status"
+echo "Final GPU Status"
 echo "========================================="
 nvidia-smi --query-gpu=name,memory.total,memory.free,memory.used,utilization.gpu --format=csv
 
+# Cleanup scratch directory
+if [ -d "$SCRATCH_DIR" ]; then
+    rm -rf $SCRATCH_DIR
+    echo "Cleaned up scratch directory"
+fi
+
 # Final summary
 echo -e "\n========================================="
-echo "L40s GPU XGBoost Job Summary"
+echo "GPU XGBoost Job Summary"
 echo "========================================="
 echo "Job ID: $SLURM_JOB_ID"
-echo "Hardware: L40s GPU"
+echo "Hardware: Any GPU"
 echo "Algorithm: XGBoost"
 echo "Dataset: combined_l40s.csv"
-echo "Output directory: $OUTPUT_DIR"
+echo "Results directory: $RESULTS_DIR"
 echo "Final status: $([ $TRAINING_EXIT_CODE -eq 0 ] && echo "SUCCESS" || echo "FAILED")"
 echo "Job completed at: $(date)"
+
+echo ""
+echo "To view results:"
+echo "  Training log: cat $RESULTS_DIR/training_output.log"
+echo "  Job summary:  cat $RESULTS_DIR/job_summary.txt"
 echo "============================================="
 
 # Exit with the same code as the training script
