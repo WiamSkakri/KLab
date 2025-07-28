@@ -89,34 +89,6 @@ print_with_timestamp(
     f"Data preprocessing complete. Features shape: {X.shape}, Target shape: {y.shape}")
 
 
-# # ===========================
-# Custom MAPE Loss Function
-# # ===========================
-# class MAPELoss(nn.Module):
-#     def __init__(self, eps=1e-8):
-#         super(MAPELoss, self).__init__()
-#         self.eps = eps
-
-#     def forward(self, y_pred, y_true):
-#         mask = y_true != 0
-#         return torch.mean(torch.abs((y_true[mask] - y_pred[mask]) / (y_true[mask] + self.eps))) * 100
-
-# ===========================
-# Custom hybrid loss function
-# ===========================
-
-
-# class HybridLoss(nn.Module):
-#     def __init__(self, alpha=0.8, eps=1e-8):
-#         super(HybridLoss, self).__init__()
-#         self.alpha = alpha
-#         self.mape = MAPELoss(eps)
-#         self.mae = nn.L1Loss()
-
-#     def forward(self, y_pred, y_true):
-#         return self.alpha * self.mape(y_pred, y_true) + (1 - self.alpha) * self.mae(y_pred, y_true)
-
-
 # Pytorch Dataset wrapper that prepare the data for the model
 """
 Pandas DataFrame → CNNExecutionDataset → DataLoader → Neural Network
