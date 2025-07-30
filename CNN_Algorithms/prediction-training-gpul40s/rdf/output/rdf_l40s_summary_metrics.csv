@@ -1,0 +1,2 @@
+hardware,backend,dataset,total_training_time,avg_train_mape,avg_val_mape,std_val_mape,avg_train_mae,avg_val_mae,std_val_mae,avg_train_r2,avg_val_r2,std_val_r2,best_fold,best_val_mape,num_folds,timestamp
+L40s GPU,sklearn (CPU),combined_l40s.csv,3517.7780225276947,3.3401018052151428,3.8053022756315587,0.18371303082292723,0.024557858690182437,0.03116765423508976,0.0022187422068072646,0.9910479467707825,0.9800714895159185,0.0031191691793019836,4,3.5592200675718533,5,2025-07-28T11:08:35.949013

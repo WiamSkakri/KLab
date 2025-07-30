@@ -1,0 +1,2 @@
+hardware,backend,dataset,total_training_time,avg_train_mape,avg_val_mape,std_val_mape,avg_train_mae,avg_val_mae,std_val_mae,avg_train_r2,avg_val_r2,std_val_r2,best_fold,best_val_mape,num_folds,timestamp
+L40s GPU,XGBoost GPU (CUDA),combined_l40s.csv,2004.3241164684296,4.070614923640325,4.408509110843922,0.11018324411919868,0.02824967358239751,0.03462335330463838,0.0015859249481489826,0.9927033098004783,0.9820539289135792,0.002845842557386145,4,4.208339299575745,5,2025-07-28T10:52:23.110975

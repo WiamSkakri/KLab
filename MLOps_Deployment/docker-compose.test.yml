@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  # Main ML API service for testing
+  ml-api-test:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - PYTHONPATH=/app
+      - LOG_LEVEL=INFO
+      - REDIS_URL=redis://redis-test:6379
+    volumes:
+      - ./logs:/app/logs
+    depends_on:
+      - redis-test
+    networks:
+      - test-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  # Redis for testing
+  redis-test:
+    image: redis:7-alpine
+    ports:
+      - "6380:6379"  # Different port to avoid conflicts
+    networks:
+      - test-network
+    command: redis-server --appendonly yes
+
+  # Prometheus for testing metrics
+  prometheus-test:
+    image: prom/prometheus:latest
+    ports:
+      - "9091:9090"  # Different port to avoid conflicts
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.enable-lifecycle'
+    networks:
+      - test-network
+
+networks:
+  test-network:
+    driver: bridge
+
+volumes:
+  test-prometheus-data: 

@@ -1,0 +1,233 @@
+⚠️  GPU libraries not available: No module named 'cuml'
+📌 Falling back to CPU-based sklearn
+Starting Random Forest L40s GPU Training
+============================================================
+Script started at: 2025-07-28 10:09:57.727123
+Python version: 3.12.3 (main, Oct 16 2024, 21:26:15) [GCC 13.3.0]
+Current working directory: /scratch/pioneer/jobs/job.2712936.pioneer/rdf_prediction_training_gpu_2712936
+Available files: ['combined_l40s.csv', 'python.py', 'training_output.log']
+GPU Acceleration: Disabled
+
+📊 Loading L40s GPU experiment data...
+L40s data loaded successfully: 69000 rows, 9 columns
+Columns: ['Algorithm', 'Batch_Size', 'Input_Size', 'In_Channels', 'Out_Channels', 'Kernel_Size', 'Stride', 'Padding', 'Execution_Time_ms']
+✅ Algorithm column one-hot encoded
+
+📈 Data preprocessing:
+Features: 9 columns
+Target: Execution_Time_ms
+Feature columns: ['Batch_Size', 'Input_Size', 'In_Channels', 'Out_Channels', 'Kernel_Size', 'Stride', 'Padding', 'Algorithm_gemm', 'Algorithm_implicit_gemm']
+X shape: (69000, 9)
+y shape: (69000,)
+y statistics: min=0.05, max=25.52, mean=0.81
+
+🔀 K-Fold Cross Validation Setup:
+Number of folds: 5
+
+=== FOLD 1 ===
+Training samples: 55200
+Validation samples: 13800
+
+=== FOLD 2 ===
+Training samples: 55200
+Validation samples: 13800
+
+=== FOLD 3 ===
+Training samples: 55200
+Validation samples: 13800
+
+=== FOLD 4 ===
+Training samples: 55200
+Validation samples: 13800
+
+=== FOLD 5 ===
+Training samples: 55200
+Validation samples: 13800
+
+🌲 Random Forest Configuration for L40s GPU:
+Backend: sklearn (CPU)
+Hyperparameter grid combinations: 162
+
+🚀 Starting Random Forest L40s GPU K-Fold Cross Validation Training
+============================================================
+
+🌲 FOLD 1
+--------------------
+Training samples: 55200
+Validation samples: 13800
+Running hyperparameter search on L40s...
+Fitting 3 folds for each of 162 candidates, totalling 486 fits
+✅ Training complete in 723.1 seconds
+Best parameters: {'max_depth': 15, 'max_features': 'sqrt', 'min_samples_leaf': 1, 'min_samples_split': 2, 'n_estimators': 200}
+Best CV score (neg MSE): -0.5472
+🌳 Fold 1 Results:
+
+  Training:
+  MAPE: 3.40%
+  MAE:  0.0244
+  RMSE: 0.0937
+  R²:   0.9919
+
+  Validation:
+  MAPE: 3.91%
+  MAE:  0.0305
+  RMSE: 0.1306
+  R²:   0.9823
+Model saved: rf_l40s_model_fold_1.joblib
+
+🌲 FOLD 2
+--------------------
+Training samples: 55200
+Validation samples: 13800
+Running hyperparameter search on L40s...
+Fitting 3 folds for each of 162 candidates, totalling 486 fits
+✅ Training complete in 698.8 seconds
+Best parameters: {'max_depth': 15, 'max_features': 'sqrt', 'min_samples_leaf': 2, 'min_samples_split': 2, 'n_estimators': 200}
+Best CV score (neg MSE): -0.5521
+🌳 Fold 2 Results:
+
+  Training:
+  MAPE: 3.45%
+  MAE:  0.0257
+  RMSE: 0.0987
+  R²:   0.9907
+
+  Validation:
+  MAPE: 3.99%
+  MAE:  0.0339
+  RMSE: 0.1641
+  R²:   0.9756
+Model saved: rf_l40s_model_fold_2.joblib
+
+🌲 FOLD 3
+--------------------
+Training samples: 55200
+Validation samples: 13800
+Running hyperparameter search on L40s...
+Fitting 3 folds for each of 162 candidates, totalling 486 fits
+✅ Training complete in 696.8 seconds
+Best parameters: {'max_depth': 15, 'max_features': 'sqrt', 'min_samples_leaf': 2, 'min_samples_split': 5, 'n_estimators': 200}
+Best CV score (neg MSE): -0.5534
+🌳 Fold 3 Results:
+
+  Training:
+  MAPE: 3.52%
+  MAE:  0.0260
+  RMSE: 0.1023
+  R²:   0.9900
+
+  Validation:
+  MAPE: 3.96%
+  MAE:  0.0336
+  RMSE: 0.1621
+  R²:   0.9770
+Model saved: rf_l40s_model_fold_3.joblib
+
+🌲 FOLD 4
+--------------------
+Training samples: 55200
+Validation samples: 13800
+Running hyperparameter search on L40s...
+Fitting 3 folds for each of 162 candidates, totalling 486 fits
+✅ Training complete in 698.2 seconds
+Best parameters: {'max_depth': 25, 'max_features': 'log2', 'min_samples_leaf': 1, 'min_samples_split': 5, 'n_estimators': 200}
+Best CV score (neg MSE): -0.5813
+🌳 Fold 4 Results:
+
+  Training:
+  MAPE: 3.22%
+  MAE:  0.0242
+  RMSE: 0.1032
+  R²:   0.9904
+
+  Validation:
+  MAPE: 3.56%
+  MAE:  0.0284
+  RMSE: 0.1249
+  R²:   0.9824
+Model saved: rf_l40s_model_fold_4.joblib
+
+🌲 FOLD 5
+--------------------
+Training samples: 55200
+Validation samples: 13800
+Running hyperparameter search on L40s...
+Fitting 3 folds for each of 162 candidates, totalling 486 fits
+✅ Training complete in 698.1 seconds
+Best parameters: {'max_depth': 25, 'max_features': 'sqrt', 'min_samples_leaf': 1, 'min_samples_split': 2, 'n_estimators': 200}
+Best CV score (neg MSE): -0.5513
+🌳 Fold 5 Results:
+
+  Training:
+  MAPE: 3.11%
+  MAE:  0.0225
+  RMSE: 0.0893
+  R²:   0.9922
+
+  Validation:
+  MAPE: 3.61%
+  MAE:  0.0294
+  RMSE: 0.1436
+  R²:   0.9831
+Model saved: rf_l40s_model_fold_5.joblib
+
+============================================================
+🌲 RANDOM FOREST L40s GPU CROSS VALIDATION SUMMARY
+============================================================
+Hardware: L40s GPU
+Backend Used: sklearn (CPU)
+Dataset: combined_l40s.csv
+Average Train MAPE: 3.34%
+Average Val MAPE:   3.81% ± 0.18%
+Average Train MAE:  0.0246
+Average Val MAE:    0.0312 ± 0.0022
+Average Train R²:   0.9910
+Average Val R²:     0.9801 ± 0.0031
+Average Training Time: 703.0 seconds per fold
+Total Training Time: 3517.8 seconds
+
+Detailed Results by Fold:
+Fold Train MAPE  Val MAPE  Train R² Val R²  Time(s) 
+------------------------------------------------------------
+1    3.40        3.91      0.9919   0.9823  723.1   
+2    3.45        3.99      0.9907   0.9756  698.8   
+3    3.52        3.96      0.9900   0.9770  696.8   
+4    3.22        3.56      0.9904   0.9824  698.2   
+5    3.11        3.61      0.9922   0.9831  698.1   
+
+🏆 Best performing fold: Fold 4 (Val MAPE: 3.56%)
+Best L40s model saved as: best_rf_l40s_model.joblib
+
+Most common best parameters for L40s:
+  n_estimators: 200 (appeared in 5/5 folds)
+  max_depth: 15 (appeared in 3/5 folds)
+  min_samples_split: 2 (appeared in 3/5 folds)
+  min_samples_leaf: 1 (appeared in 3/5 folds)
+  max_features: sqrt (appeared in 4/5 folds)
+
+Results saved to: rdf_l40s_training_results.csv
+Summary metrics saved to: rdf_l40s_summary_metrics.csv
+
+🎨 Generating L40s GPU Random Forest visualizations...
+============================================================
+
+📊 Creating L40s GPU Random Forest evaluation dashboard...
+✅ L40s evaluation dashboard saved: rdf_l40s_evaluation_dashboard.png
+
+✅ L40s visualizations created successfully!
+📊 Generated files:
+  • rdf_l40s_evaluation_dashboard.png - L40s evaluation dashboard
+
+🎉 L40s GPU Random Forest Training Complete!
+⏱️  Total time: 3517.8 seconds (58.6 minutes)
+📊 Best model performance: 3.56% MAPE
+🚀 Hardware: L40s GPU
+🚀 Backend used: sklearn (CPU)
+📁 Dataset: combined_l40s.csv
+Script completed at: 2025-07-28 11:08:39.637142
+
+💡 To enable L40s GPU acceleration:
+   - Install cuML: conda install -c rapidsai -c nvidia cuml
+   - Install CuPy: pip install cupy-cuda12x
+   - Ensure L40s GPU with CUDA support is available
+   - Load appropriate CUDA modules on HPC

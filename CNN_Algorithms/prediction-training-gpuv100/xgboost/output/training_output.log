@@ -1,0 +1,253 @@
+/home/wxs428/ai3_env/lib/python3.12/site-packages/xgboost/core.py:729: UserWarning: [10:44:56] WARNING: /workspace/src/common/error_msg.cc:58: Falling back to prediction using DMatrix due to mismatched devices. This might lead to higher memory usage and slower performance. XGBoost is running on: cuda:0, while the input data is on: cpu.
+Potential solutions:
+- Use a data structure that matches the device ordinal in the booster.
+- Set the device for booster before call to inplace_predict.
+
+This warning will only be shown once.
+
+  return func(**kwargs)
+/scratch/pioneer/jobs/job.2712999.pioneer/xgb_v100_training_gpu_2712999/python.py:524: UserWarning: Glyph 128640 (\N{ROCKET}) missing from font(s) DejaVu Sans Mono.
+  plt.tight_layout()
+/scratch/pioneer/jobs/job.2712999.pioneer/xgb_v100_training_gpu_2712999/python.py:524: UserWarning: Glyph 128202 (\N{BAR CHART}) missing from font(s) DejaVu Sans Mono.
+  plt.tight_layout()
+/scratch/pioneer/jobs/job.2712999.pioneer/xgb_v100_training_gpu_2712999/python.py:524: UserWarning: Glyph 9201 (\N{STOPWATCH}) missing from font(s) DejaVu Sans Mono.
+  plt.tight_layout()
+/scratch/pioneer/jobs/job.2712999.pioneer/xgb_v100_training_gpu_2712999/python.py:524: UserWarning: Glyph 65039 (\N{VARIATION SELECTOR-16}) missing from font(s) DejaVu Sans Mono.
+  plt.tight_layout()
+/scratch/pioneer/jobs/job.2712999.pioneer/xgb_v100_training_gpu_2712999/python.py:524: UserWarning: Glyph 127919 (\N{DIRECT HIT}) missing from font(s) DejaVu Sans Mono.
+  plt.tight_layout()
+/scratch/pioneer/jobs/job.2712999.pioneer/xgb_v100_training_gpu_2712999/python.py:524: UserWarning: Glyph 128200 (\N{CHART WITH UPWARDS TREND}) missing from font(s) DejaVu Sans Mono.
+  plt.tight_layout()
+/scratch/pioneer/jobs/job.2712999.pioneer/xgb_v100_training_gpu_2712999/python.py:525: UserWarning: Glyph 128640 (\N{ROCKET}) missing from font(s) DejaVu Sans Mono.
+  plt.savefig('xgb_v100_training_results.png', dpi=300, bbox_inches='tight')
+/scratch/pioneer/jobs/job.2712999.pioneer/xgb_v100_training_gpu_2712999/python.py:525: UserWarning: Glyph 128202 (\N{BAR CHART}) missing from font(s) DejaVu Sans Mono.
+  plt.savefig('xgb_v100_training_results.png', dpi=300, bbox_inches='tight')
+/scratch/pioneer/jobs/job.2712999.pioneer/xgb_v100_training_gpu_2712999/python.py:525: UserWarning: Glyph 9201 (\N{STOPWATCH}) missing from font(s) DejaVu Sans Mono.
+  plt.savefig('xgb_v100_training_results.png', dpi=300, bbox_inches='tight')
+/scratch/pioneer/jobs/job.2712999.pioneer/xgb_v100_training_gpu_2712999/python.py:525: UserWarning: Glyph 65039 (\N{VARIATION SELECTOR-16}) missing from font(s) DejaVu Sans Mono.
+  plt.savefig('xgb_v100_training_results.png', dpi=300, bbox_inches='tight')
+/scratch/pioneer/jobs/job.2712999.pioneer/xgb_v100_training_gpu_2712999/python.py:525: UserWarning: Glyph 127919 (\N{DIRECT HIT}) missing from font(s) DejaVu Sans Mono.
+  plt.savefig('xgb_v100_training_results.png', dpi=300, bbox_inches='tight')
+/scratch/pioneer/jobs/job.2712999.pioneer/xgb_v100_training_gpu_2712999/python.py:525: UserWarning: Glyph 128200 (\N{CHART WITH UPWARDS TREND}) missing from font(s) DejaVu Sans Mono.
+  plt.savefig('xgb_v100_training_results.png', dpi=300, bbox_inches='tight')
+✅ XGBoost detected
+🚀 XGBoost V100 GPU support detected - will use GPU acceleration
+🔧 XGBoost build info:
+   Version: 3.0.2
+   GPU detected: Tesla V100-PCIE-32GB
+Starting V100 GPU XGBoost HPC Training
+============================================================
+Script started at: 2025-07-28 10:44:55.953307
+Python version: 3.12.3 (main, Oct 16 2024, 21:26:15) [GCC 13.3.0]
+Current working directory: /scratch/pioneer/jobs/job.2712999.pioneer/xgb_v100_training_gpu_2712999
+Available files: ['combined_v100.csv', 'python.py', 'training_output.log']
+XGBoost version: 3.0.2
+GPU Acceleration: Enabled
+
+📊 Loading V100 GPU experiment data...
+V100 data loaded successfully: 69000 rows, 9 columns
+Columns: ['Algorithm', 'Batch_Size', 'Input_Size', 'In_Channels', 'Out_Channels', 'Kernel_Size', 'Stride', 'Padding', 'Execution_Time_ms']
+✅ Algorithm column one-hot encoded
+
+📈 Data preprocessing:
+Features: 9 columns
+Target: Execution_Time_ms
+Feature columns: ['Batch_Size', 'Input_Size', 'In_Channels', 'Out_Channels', 'Kernel_Size', 'Stride', 'Padding', 'Algorithm_gemm', 'Algorithm_implicit_gemm']
+X shape: (69000, 9)
+y shape: (69000,)
+y statistics: min=0.09, max=42.96, mean=1.37
+
+🔀 K-Fold Cross Validation Setup:
+Number of folds: 5
+
+=== FOLD 1 ===
+Training samples: 55200
+Validation samples: 13800
+
+=== FOLD 2 ===
+Training samples: 55200
+Validation samples: 13800
+
+=== FOLD 3 ===
+Training samples: 55200
+Validation samples: 13800
+
+=== FOLD 4 ===
+Training samples: 55200
+Validation samples: 13800
+
+=== FOLD 5 ===
+Training samples: 55200
+Validation samples: 13800
+
+🚀 XGBoost Configuration for V100 GPU:
+Backend: GPU (CUDA)
+Parameter space combinations: 139968
+Using RandomizedSearchCV with 100 iterations
+
+🚀 Starting XGBoost V100 GPU K-Fold Cross Validation Training
+============================================================
+
+🚀 FOLD 1
+--------------------
+Training samples: 55200
+Validation samples: 13800
+Running V100 GPU hyperparameter search...
+Fitting 3 folds for each of 100 candidates, totalling 300 fits
+✅ Training complete in 333.8 seconds
+Best parameters: {'subsample': 0.9, 'reg_lambda': 5, 'reg_alpha': 0, 'n_estimators': 800, 'min_child_weight': 3, 'max_depth': 8, 'learning_rate': 0.2, 'gamma': 0.1, 'colsample_bytree': 0.8, 'colsample_bylevel': 0.8}
+Best CV score (neg MSE): -0.1971
+🌳 Fold 1 Results:
+
+  Training:
+  MAPE: 4.19%
+  MAE:  0.0663
+  RMSE: 0.2910
+  R²:   0.9749
+
+  Validation:
+  MAPE: 4.20%
+  MAE:  0.0652
+  RMSE: 0.2754
+  R²:   0.9787
+Model saved: xgb_v100_model_fold_1.joblib
+
+🚀 FOLD 2
+--------------------
+Training samples: 55200
+Validation samples: 13800
+Running V100 GPU hyperparameter search...
+Fitting 3 folds for each of 100 candidates, totalling 300 fits
+✅ Training complete in 323.9 seconds
+Best parameters: {'subsample': 1.0, 'reg_lambda': 1, 'reg_alpha': 0, 'n_estimators': 200, 'min_child_weight': 1, 'max_depth': 8, 'learning_rate': 0.2, 'gamma': 0, 'colsample_bytree': 0.8, 'colsample_bylevel': 0.8}
+Best CV score (neg MSE): -0.1840
+🌳 Fold 2 Results:
+
+  Training:
+  MAPE: 2.31%
+  MAE:  0.0481
+  RMSE: 0.2799
+  R²:   0.9771
+
+  Validation:
+  MAPE: 2.44%
+  MAE:  0.0464
+  RMSE: 0.2534
+  R²:   0.9812
+Model saved: xgb_v100_model_fold_2.joblib
+
+🚀 FOLD 3
+--------------------
+Training samples: 55200
+Validation samples: 13800
+Running V100 GPU hyperparameter search...
+Fitting 3 folds for each of 100 candidates, totalling 300 fits
+✅ Training complete in 325.8 seconds
+Best parameters: {'subsample': 1.0, 'reg_lambda': 1, 'reg_alpha': 0, 'n_estimators': 200, 'min_child_weight': 1, 'max_depth': 8, 'learning_rate': 0.2, 'gamma': 0, 'colsample_bytree': 0.8, 'colsample_bylevel': 0.8}
+Best CV score (neg MSE): -0.2176
+🌳 Fold 3 Results:
+
+  Training:
+  MAPE: 2.29%
+  MAE:  0.0482
+  RMSE: 0.2761
+  R²:   0.9786
+
+  Validation:
+  MAPE: 2.46%
+  MAE:  0.0481
+  RMSE: 0.2569
+  R²:   0.9769
+Model saved: xgb_v100_model_fold_3.joblib
+
+🚀 FOLD 4
+--------------------
+Training samples: 55200
+Validation samples: 13800
+Running V100 GPU hyperparameter search...
+Fitting 3 folds for each of 100 candidates, totalling 300 fits
+✅ Training complete in 326.1 seconds
+Best parameters: {'subsample': 1.0, 'reg_lambda': 1, 'reg_alpha': 0, 'n_estimators': 200, 'min_child_weight': 1, 'max_depth': 8, 'learning_rate': 0.2, 'gamma': 0, 'colsample_bytree': 0.8, 'colsample_bylevel': 0.8}
+Best CV score (neg MSE): -0.2007
+🌳 Fold 4 Results:
+
+  Training:
+  MAPE: 2.30%
+  MAE:  0.0486
+  RMSE: 0.2905
+  R²:   0.9752
+
+  Validation:
+  MAPE: 2.44%
+  MAE:  0.0516
+  RMSE: 0.3019
+  R²:   0.9739
+Model saved: xgb_v100_model_fold_4.joblib
+
+🚀 FOLD 5
+--------------------
+Training samples: 55200
+Validation samples: 13800
+Running V100 GPU hyperparameter search...
+Fitting 3 folds for each of 100 candidates, totalling 300 fits
+✅ Training complete in 322.2 seconds
+Best parameters: {'subsample': 0.9, 'reg_lambda': 5, 'reg_alpha': 0, 'n_estimators': 800, 'min_child_weight': 3, 'max_depth': 8, 'learning_rate': 0.2, 'gamma': 0.1, 'colsample_bytree': 0.8, 'colsample_bylevel': 0.8}
+Best CV score (neg MSE): -0.1872
+🌳 Fold 5 Results:
+
+  Training:
+  MAPE: 4.21%
+  MAE:  0.0644
+  RMSE: 0.2657
+  R²:   0.9788
+
+  Validation:
+  MAPE: 4.35%
+  MAE:  0.0743
+  RMSE: 0.3343
+  R²:   0.9703
+Model saved: xgb_v100_model_fold_5.joblib
+
+============================================================
+🌲 V100 XGBOOST CROSS VALIDATION SUMMARY
+============================================================
+Backend Used: XGBoost (V100 GPU)
+Average Train MAPE: 3.06%
+Average Val MAPE:   3.18% ± 0.90%
+Average Train MAE:  0.0551
+Average Val MAE:    0.0571 ± 0.0108
+Average Train R²:   0.9769
+Average Val R²:     0.9762 ± 0.0038
+Average Training Time: 326.4 seconds per fold
+Total Training Time: 1632.1 seconds (27.2 minutes)
+
+Detailed V100 Results by Fold:
+Fold Train MAPE  Val MAPE  Train R² Val R²  Time(s) 
+------------------------------------------------------------
+1    4.19        4.20      0.9749   0.9787  333.8   
+2    2.31        2.44      0.9771   0.9812  323.9   
+3    2.29        2.46      0.9786   0.9769  325.8   
+4    2.30        2.44      0.9752   0.9739  326.1   
+5    4.21        4.35      0.9788   0.9703  322.2   
+
+🏆 Best performing fold: Fold 4 (Val MAPE: 2.44%)
+Best model saved as: best_xgb_v100_model.joblib
+
+Most common best parameters:
+  n_estimators: 200 (appeared in 3/5 folds)
+  max_depth: 8 (appeared in 5/5 folds)
+  learning_rate: 0.2 (appeared in 5/5 folds)
+  subsample: 1.0 (appeared in 3/5 folds)
+  colsample_bytree: 0.8 (appeared in 5/5 folds)
+
+Results saved to: xgb_v100_training_results.csv
+Summary metrics saved to: xgb_v100_summary_metrics.csv
+
+📊 Creating V100 XGBoost training visualization...
+V100 visualization saved to: xgb_v100_training_results.png
+
+🎉 V100 XGBoost Training Complete!
+⏱️  Total time: 1632.1 seconds (27.2 minutes)
+📊 Best model performance: 2.44% MAPE
+🚀 Backend used: XGBoost (V100 GPU)
+Script completed at: 2025-07-28 11:12:10.013979

@@ -1,0 +1,246 @@
+/home/wxs428/ai3_env/lib/python3.12/site-packages/xgboost/core.py:729: UserWarning: [10:18:59] WARNING: /workspace/src/common/error_msg.cc:58: Falling back to prediction using DMatrix due to mismatched devices. This might lead to higher memory usage and slower performance. XGBoost is running on: cuda:0, while the input data is on: cpu.
+Potential solutions:
+- Use a data structure that matches the device ordinal in the booster.
+- Set the device for booster before call to inplace_predict.
+
+This warning will only be shown once.
+
+  return func(**kwargs)
+✅ XGBoost detected
+🚀 XGBoost L40s GPU support detected - will use GPU acceleration
+🔧 XGBoost build info:
+   Version: 3.0.2
+   GPU detected: Tesla V100-SXM2-32GB
+Starting L40s GPU XGBoost HPC Training
+============================================================
+Script started at: 2025-07-28 10:18:58.654499
+Python version: 3.12.3 (main, Oct 16 2024, 21:26:15) [GCC 13.3.0]
+Current working directory: /scratch/pioneer/jobs/job.2712982.pioneer/xgb_prediction_training_gpu_2712982
+Available files: ['combined_l40s.csv', 'python.py', 'training_output.log']
+XGBoost version: 3.0.2
+GPU Acceleration: Enabled
+
+📊 Loading L40s GPU experiment data...
+L40s data loaded successfully: 69000 rows, 9 columns
+Columns: ['Algorithm', 'Batch_Size', 'Input_Size', 'In_Channels', 'Out_Channels', 'Kernel_Size', 'Stride', 'Padding', 'Execution_Time_ms']
+✅ Algorithm column one-hot encoded
+
+📈 Data preprocessing:
+Features: 9 columns
+Target: Execution_Time_ms
+Feature columns: ['Batch_Size', 'Input_Size', 'In_Channels', 'Out_Channels', 'Kernel_Size', 'Stride', 'Padding', 'Algorithm_gemm', 'Algorithm_implicit_gemm']
+X shape: (69000, 9)
+y shape: (69000,)
+y statistics: min=0.05, max=25.52, mean=0.81
+
+🔀 K-Fold Cross Validation Setup:
+Number of folds: 5
+
+=== FOLD 1 ===
+Training samples: 55200
+Validation samples: 13800
+
+=== FOLD 2 ===
+Training samples: 55200
+Validation samples: 13800
+
+=== FOLD 3 ===
+Training samples: 55200
+Validation samples: 13800
+
+=== FOLD 4 ===
+Training samples: 55200
+Validation samples: 13800
+
+=== FOLD 5 ===
+Training samples: 55200
+Validation samples: 13800
+
+🚀 XGBoost Configuration for L40s GPU:
+Backend: GPU (CUDA)
+Parameter space combinations: 139968
+Using RandomizedSearchCV with 100 iterations
+
+🚀 Starting XGBoost L40s GPU K-Fold Cross Validation Training
+============================================================
+
+🚀 FOLD 1
+--------------------
+Training samples: 55200
+Validation samples: 13800
+Running L40s GPU hyperparameter search...
+Fitting 3 folds for each of 100 candidates, totalling 300 fits
+✅ Training complete in 398.6 seconds
+Best parameters: {'subsample': 1.0, 'reg_lambda': 5, 'reg_alpha': 0.1, 'n_estimators': 300, 'min_child_weight': 1, 'max_depth': 8, 'learning_rate': 0.2, 'gamma': 0, 'colsample_bytree': 0.9, 'colsample_bylevel': 0.8}
+Best CV score (neg MSE): -0.5294
+🚀 Fold 1 Results:
+
+  Training:
+  MAPE: 4.03%
+  MAE:  0.0278
+  RMSE: 0.0906
+  R²:   0.9924
+
+  Validation:
+  MAPE: 4.39%
+  MAE:  0.0332
+  RMSE: 0.1177
+  R²:   0.9857
+Model saved: xgb_l40s_model_fold_1.joblib
+
+🚀 FOLD 2
+--------------------
+Training samples: 55200
+Validation samples: 13800
+Running L40s GPU hyperparameter search...
+Fitting 3 folds for each of 100 candidates, totalling 300 fits
+✅ Training complete in 397.8 seconds
+Best parameters: {'subsample': 1.0, 'reg_lambda': 2, 'reg_alpha': 0.1, 'n_estimators': 300, 'min_child_weight': 5, 'max_depth': 8, 'learning_rate': 0.2, 'gamma': 0, 'colsample_bytree': 1.0, 'colsample_bylevel': 0.8}
+Best CV score (neg MSE): -0.4728
+🚀 Fold 2 Results:
+
+  Training:
+  MAPE: 4.14%
+  MAE:  0.0289
+  RMSE: 0.0839
+  R²:   0.9933
+
+  Validation:
+  MAPE: 4.53%
+  MAE:  0.0365
+  RMSE: 0.1513
+  R²:   0.9793
+Model saved: xgb_l40s_model_fold_2.joblib
+
+🚀 FOLD 3
+--------------------
+Training samples: 55200
+Validation samples: 13800
+Running L40s GPU hyperparameter search...
+Fitting 3 folds for each of 100 candidates, totalling 300 fits
+✅ Training complete in 401.0 seconds
+Best parameters: {'subsample': 1.0, 'reg_lambda': 5, 'reg_alpha': 0.1, 'n_estimators': 300, 'min_child_weight': 1, 'max_depth': 8, 'learning_rate': 0.2, 'gamma': 0, 'colsample_bytree': 0.9, 'colsample_bylevel': 0.8}
+Best CV score (neg MSE): -0.4965
+🚀 Fold 3 Results:
+
+  Training:
+  MAPE: 4.05%
+  MAE:  0.0276
+  RMSE: 0.0862
+  R²:   0.9929
+
+  Validation:
+  MAPE: 4.44%
+  MAE:  0.0357
+  RMSE: 0.1565
+  R²:   0.9785
+Model saved: xgb_l40s_model_fold_3.joblib
+
+🚀 FOLD 4
+--------------------
+Training samples: 55200
+Validation samples: 13800
+Running L40s GPU hyperparameter search...
+Fitting 3 folds for each of 100 candidates, totalling 300 fits
+✅ Training complete in 403.8 seconds
+Best parameters: {'subsample': 1.0, 'reg_lambda': 5, 'reg_alpha': 0.1, 'n_estimators': 300, 'min_child_weight': 1, 'max_depth': 8, 'learning_rate': 0.2, 'gamma': 0, 'colsample_bytree': 0.9, 'colsample_bylevel': 0.8}
+Best CV score (neg MSE): -0.5368
+🚀 Fold 4 Results:
+
+  Training:
+  MAPE: 3.97%
+  MAE:  0.0274
+  RMSE: 0.0912
+  R²:   0.9925
+
+  Validation:
+  MAPE: 4.21%
+  MAE:  0.0323
+  RMSE: 0.1161
+  R²:   0.9848
+Model saved: xgb_l40s_model_fold_4.joblib
+
+🚀 FOLD 5
+--------------------
+Training samples: 55200
+Validation samples: 13800
+Running L40s GPU hyperparameter search...
+Fitting 3 folds for each of 100 candidates, totalling 300 fits
+✅ Training complete in 403.0 seconds
+Best parameters: {'subsample': 1.0, 'reg_lambda': 2, 'reg_alpha': 0.1, 'n_estimators': 300, 'min_child_weight': 5, 'max_depth': 8, 'learning_rate': 0.2, 'gamma': 0, 'colsample_bytree': 1.0, 'colsample_bylevel': 0.8}
+Best CV score (neg MSE): -0.5195
+🚀 Fold 5 Results:
+
+  Training:
+  MAPE: 4.16%
+  MAE:  0.0294
+  RMSE: 0.0882
+  R²:   0.9924
+
+  Validation:
+  MAPE: 4.48%
+  MAE:  0.0354
+  RMSE: 0.1478
+  R²:   0.9820
+Model saved: xgb_l40s_model_fold_5.joblib
+
+============================================================
+🚀 XGBOOST L40s GPU CROSS VALIDATION SUMMARY
+============================================================
+Hardware: L40s GPU
+Backend Used: XGBoost GPU (CUDA)
+Dataset: combined_l40s.csv
+Average Train MAPE: 4.07%
+Average Val MAPE:   4.41% ± 0.11%
+Average Train MAE:  0.0282
+Average Val MAE:    0.0346 ± 0.0016
+Average Train R²:   0.9927
+Average Val R²:     0.9821 ± 0.0028
+Average Training Time: 400.8 seconds per fold
+Total Training Time: 2004.3 seconds
+
+Detailed Results by Fold:
+Fold Train MAPE  Val MAPE  Train R² Val R²  Time(s) 
+------------------------------------------------------------
+1    4.03        4.39      0.9924   0.9857  398.6   
+2    4.14        4.53      0.9933   0.9793  397.8   
+3    4.05        4.44      0.9929   0.9785  401.0   
+4    3.97        4.21      0.9925   0.9848  403.8   
+5    4.16        4.48      0.9924   0.9820  403.0   
+
+🏆 Best performing fold: Fold 4 (Val MAPE: 4.21%)
+Best L40s XGBoost model saved as: best_xgb_l40s_model.joblib
+
+Most common best parameters for L40s XGBoost:
+  n_estimators: 300 (appeared in 5/5 folds)
+  max_depth: 8 (appeared in 5/5 folds)
+  learning_rate: 0.2 (appeared in 5/5 folds)
+  subsample: 1.0 (appeared in 5/5 folds)
+  colsample_bytree: 0.9 (appeared in 3/5 folds)
+
+Results saved to: xgb_l40s_training_results.csv
+Summary metrics saved to: xgb_l40s_summary_metrics.csv
+
+🎨 Generating L40s GPU XGBoost visualizations...
+============================================================
+
+📊 Creating L40s GPU XGBoost evaluation dashboard...
+✅ L40s XGBoost evaluation dashboard saved: xgb_l40s_evaluation_dashboard.png
+
+✅ L40s XGBoost visualizations created successfully!
+📊 Generated files:
+  • xgb_l40s_evaluation_dashboard.png - L40s XGBoost evaluation dashboard
+
+🎉 L40s GPU XGBoost Training Complete!
+⏱️  Total time: 2004.3 seconds (33.4 minutes)
+📊 Best model performance: 4.21% MAPE
+🚀 Hardware: L40s GPU
+🚀 Backend used: XGBoost GPU (CUDA)
+📁 Dataset: combined_l40s.csv
+Script completed at: 2025-07-28 10:52:26.530729
+
+💡 L40s GPU XGBoost Performance Notes:
+   - Used GPU-accelerated XGBoost with CUDA
+   - Tree method: hist (optimized for L40s)
+   - Device: cuda:0 (L40s GPU)
+   - Enhanced parameter space for GPU optimization
