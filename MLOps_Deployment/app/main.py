@@ -13,7 +13,7 @@ import os
 from prometheus_client import Counter, Histogram, generate_latest, CONTENT_TYPE_LATEST
 from starlette.responses import Response
 
-from models.model_loader import ModelLoader
+from app.models.model_loader import ModelLoader
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -66,6 +66,8 @@ class CNNConfig(BaseModel):
     kernel_size: int = Field(..., ge=1, le=64,
                              description="Convolution kernel size")
     stride: int = Field(..., ge=1, le=32, description="Convolution stride")
+    padding: int = Field(
+        0, ge=0, le=32, description="Padding size (optional, defaults to 0)")
 
 
 class PredictionRequest(BaseModel):
@@ -219,7 +221,8 @@ async def predict_execution_time(request: PredictionRequest):
         'input_width': request.cnn_config.input_width,
         'output_channels': request.cnn_config.output_channels,
         'kernel_size': request.cnn_config.kernel_size,
-        'stride': request.cnn_config.stride
+        'stride': request.cnn_config.stride,
+        'padding': request.cnn_config.padding
     }
 
     # Measure prediction latency

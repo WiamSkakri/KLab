@@ -1,0 +1,268 @@
+INFO:     Will watch for changes in these directories: ['/Users/wiamskakri/Desktop/KLab/MLOps_Deployment']
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+INFO:     Started reloader process [78809] using WatchFiles
+INFO:     Started server process [78863]
+INFO:     Waiting for application startup.
+INFO:app.main:Starting CNN Execution Time Prediction API...
+INFO:app.models.model_loader:Using models directory: /Users/wiamskakri/Desktop/KLab/MLOps_Deployment/../CNN_Algorithms
+INFO:app.models.model_loader:Models directory exists: True
+/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/sklearn/base.py:380: InconsistentVersionWarning: Trying to unpickle estimator PolynomialFeatures from version 1.7.0 when using version 1.6.1. This might lead to breaking code or invalid results. Use at your own risk. For more info please refer to:
+https://scikit-learn.org/stable/model_persistence.html#security-maintainability-limitations
+  warnings.warn(
+/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/sklearn/base.py:380: InconsistentVersionWarning: Trying to unpickle estimator Lasso from version 1.7.0 when using version 1.6.1. This might lead to breaking code or invalid results. Use at your own risk. For more info please refer to:
+https://scikit-learn.org/stable/model_persistence.html#security-maintainability-limitations
+  warnings.warn(
+/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/sklearn/base.py:380: InconsistentVersionWarning: Trying to unpickle estimator Pipeline from version 1.7.0 when using version 1.6.1. This might lead to breaking code or invalid results. Use at your own risk. For more info please refer to:
+https://scikit-learn.org/stable/model_persistence.html#security-maintainability-limitations
+  warnings.warn(
+INFO:app.models.model_loader:Successfully loaded sklearn model: poly_best_enhanced_lasso_model
+INFO:app.main:Model loading complete: 1/1 models loaded successfully
+INFO:app.main:Available models:
+INFO:app.main:  ✓ poly_best_enhanced_lasso_model
+INFO:     Application startup complete.
+INFO:app.models.model_loader:Making prediction with poly_best_enhanced_lasso_model, input shape: (1, 7), values: [32, 3, 224, 224, 64, 3, 1]
+/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/sklearn/utils/validation.py:2739: UserWarning: X does not have valid feature names, but PolynomialFeatures was fitted with feature names
+  warnings.warn(
+ERROR:app.models.model_loader:Prediction failed for poly_best_enhanced_lasso_model: X has 7 features, but PolynomialFeatures is expecting 9 features as input.
+Traceback (most recent call last):
+  File "/Users/wiamskakri/Desktop/KLab/MLOps_Deployment/app/models/model_loader.py", line 211, in predict
+    prediction = model.predict(input_array)[0]
+                 ~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/sklearn/pipeline.py", line 787, in predict
+    Xt = transform.transform(Xt)
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/sklearn/utils/_set_output.py", line 319, in wrapped
+    data_to_wrap = f(self, X, *args, **kwargs)
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/sklearn/preprocessing/_polynomial.py", line 437, in transform
+    X = validate_data(
+        self,
+    ...<4 lines>...
+        accept_sparse=("csr", "csc"),
+    )
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/sklearn/utils/validation.py", line 2965, in validate_data
+    _check_n_features(_estimator, X, reset=reset)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/sklearn/utils/validation.py", line 2829, in _check_n_features
+    raise ValueError(
+    ...<2 lines>...
+    )
+ValueError: X has 7 features, but PolynomialFeatures is expecting 9 features as input.
+ERROR:app.main:Prediction error: 400: Prediction failed: X has 7 features, but PolynomialFeatures is expecting 9 features as input.
+INFO:     127.0.0.1:58624 - "POST /predict HTTP/1.1" 500 Internal Server Error
+INFO:     127.0.0.1:58630 - "GET /models HTTP/1.1" 200 OK
+INFO:app.models.model_loader:Making prediction with poly_best_enhanced_lasso_model, input shape: (1, 7), values: [32, 3, 224, 224, 64, 3, 1]
+/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/sklearn/utils/validation.py:2739: UserWarning: X does not have valid feature names, but PolynomialFeatures was fitted with feature names
+  warnings.warn(
+ERROR:app.models.model_loader:Prediction failed for poly_best_enhanced_lasso_model: X has 7 features, but PolynomialFeatures is expecting 9 features as input.
+Traceback (most recent call last):
+  File "/Users/wiamskakri/Desktop/KLab/MLOps_Deployment/app/models/model_loader.py", line 211, in predict
+    prediction = model.predict(input_array)[0]
+                 ~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/sklearn/pipeline.py", line 787, in predict
+    Xt = transform.transform(Xt)
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/sklearn/utils/_set_output.py", line 319, in wrapped
+    data_to_wrap = f(self, X, *args, **kwargs)
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/sklearn/preprocessing/_polynomial.py", line 437, in transform
+    X = validate_data(
+        self,
+    ...<4 lines>...
+        accept_sparse=("csr", "csc"),
+    )
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/sklearn/utils/validation.py", line 2965, in validate_data
+    _check_n_features(_estimator, X, reset=reset)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/sklearn/utils/validation.py", line 2829, in _check_n_features
+    raise ValueError(
+    ...<2 lines>...
+    )
+ValueError: X has 7 features, but PolynomialFeatures is expecting 9 features as input.
+ERROR:app.main:Prediction error: 400: Prediction failed: X has 7 features, but PolynomialFeatures is expecting 9 features as input.
+INFO:     127.0.0.1:58648 - "POST /predict HTTP/1.1" 500 Internal Server Error
+WARNING:  WatchFiles detected changes in 'app/models/model_loader.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [78863]
+INFO:     Started server process [81470]
+INFO:     Waiting for application startup.
+INFO:app.main:Starting CNN Execution Time Prediction API...
+INFO:app.models.model_loader:Using models directory: /Users/wiamskakri/Desktop/KLab/MLOps_Deployment/../CNN_Algorithms
+INFO:app.models.model_loader:Models directory exists: True
+/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/sklearn/base.py:380: InconsistentVersionWarning: Trying to unpickle estimator PolynomialFeatures from version 1.7.0 when using version 1.6.1. This might lead to breaking code or invalid results. Use at your own risk. For more info please refer to:
+https://scikit-learn.org/stable/model_persistence.html#security-maintainability-limitations
+  warnings.warn(
+/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/sklearn/base.py:380: InconsistentVersionWarning: Trying to unpickle estimator Lasso from version 1.7.0 when using version 1.6.1. This might lead to breaking code or invalid results. Use at your own risk. For more info please refer to:
+https://scikit-learn.org/stable/model_persistence.html#security-maintainability-limitations
+  warnings.warn(
+/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/sklearn/base.py:380: InconsistentVersionWarning: Trying to unpickle estimator Pipeline from version 1.7.0 when using version 1.6.1. This might lead to breaking code or invalid results. Use at your own risk. For more info please refer to:
+https://scikit-learn.org/stable/model_persistence.html#security-maintainability-limitations
+  warnings.warn(
+INFO:app.models.model_loader:Successfully loaded sklearn model: poly_best_enhanced_lasso_model
+INFO:app.main:Model loading complete: 1/1 models loaded successfully
+INFO:app.main:Available models:
+INFO:app.main:  ✓ poly_best_enhanced_lasso_model
+INFO:     Application startup complete.
+WARNING:  WatchFiles detected changes in 'app/models/model_loader.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [81470]
+INFO:     Started server process [81592]
+INFO:     Waiting for application startup.
+INFO:app.main:Starting CNN Execution Time Prediction API...
+INFO:app.models.model_loader:Using models directory: /Users/wiamskakri/Desktop/KLab/MLOps_Deployment/../CNN_Algorithms
+INFO:app.models.model_loader:Models directory exists: True
+/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/sklearn/base.py:380: InconsistentVersionWarning: Trying to unpickle estimator PolynomialFeatures from version 1.7.0 when using version 1.6.1. This might lead to breaking code or invalid results. Use at your own risk. For more info please refer to:
+https://scikit-learn.org/stable/model_persistence.html#security-maintainability-limitations
+  warnings.warn(
+/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/sklearn/base.py:380: InconsistentVersionWarning: Trying to unpickle estimator Lasso from version 1.7.0 when using version 1.6.1. This might lead to breaking code or invalid results. Use at your own risk. For more info please refer to:
+https://scikit-learn.org/stable/model_persistence.html#security-maintainability-limitations
+  warnings.warn(
+/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/sklearn/base.py:380: InconsistentVersionWarning: Trying to unpickle estimator Pipeline from version 1.7.0 when using version 1.6.1. This might lead to breaking code or invalid results. Use at your own risk. For more info please refer to:
+https://scikit-learn.org/stable/model_persistence.html#security-maintainability-limitations
+  warnings.warn(
+INFO:app.models.model_loader:Successfully loaded sklearn model: poly_best_enhanced_lasso_model
+INFO:app.main:Model loading complete: 1/1 models loaded successfully
+INFO:app.main:Available models:
+INFO:app.main:  ✓ poly_best_enhanced_lasso_model
+INFO:     Application startup complete.
+WARNING:  WatchFiles detected changes in 'app/main.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [81592]
+INFO:     Started server process [81683]
+INFO:     Waiting for application startup.
+INFO:app.main:Starting CNN Execution Time Prediction API...
+INFO:app.models.model_loader:Using models directory: /Users/wiamskakri/Desktop/KLab/MLOps_Deployment/../CNN_Algorithms
+INFO:app.models.model_loader:Models directory exists: True
+WARNING:  WatchFiles detected changes in 'app/main.py'. Reloading...
+/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/sklearn/base.py:380: InconsistentVersionWarning: Trying to unpickle estimator PolynomialFeatures from version 1.7.0 when using version 1.6.1. This might lead to breaking code or invalid results. Use at your own risk. For more info please refer to:
+https://scikit-learn.org/stable/model_persistence.html#security-maintainability-limitations
+  warnings.warn(
+/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/sklearn/base.py:380: InconsistentVersionWarning: Trying to unpickle estimator Lasso from version 1.7.0 when using version 1.6.1. This might lead to breaking code or invalid results. Use at your own risk. For more info please refer to:
+https://scikit-learn.org/stable/model_persistence.html#security-maintainability-limitations
+  warnings.warn(
+/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/sklearn/base.py:380: InconsistentVersionWarning: Trying to unpickle estimator Pipeline from version 1.7.0 when using version 1.6.1. This might lead to breaking code or invalid results. Use at your own risk. For more info please refer to:
+https://scikit-learn.org/stable/model_persistence.html#security-maintainability-limitations
+  warnings.warn(
+INFO:app.models.model_loader:Successfully loaded sklearn model: poly_best_enhanced_lasso_model
+INFO:app.main:Model loading complete: 1/1 models loaded successfully
+INFO:app.main:Available models:
+INFO:app.main:  ✓ poly_best_enhanced_lasso_model
+INFO:     Application startup complete.
+INFO:     Started server process [81686]
+INFO:     Waiting for application startup.
+INFO:app.main:Starting CNN Execution Time Prediction API...
+INFO:app.models.model_loader:Using models directory: /Users/wiamskakri/Desktop/KLab/MLOps_Deployment/../CNN_Algorithms
+INFO:app.models.model_loader:Models directory exists: True
+/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/sklearn/base.py:380: InconsistentVersionWarning: Trying to unpickle estimator PolynomialFeatures from version 1.7.0 when using version 1.6.1. This might lead to breaking code or invalid results. Use at your own risk. For more info please refer to:
+https://scikit-learn.org/stable/model_persistence.html#security-maintainability-limitations
+  warnings.warn(
+/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/sklearn/base.py:380: InconsistentVersionWarning: Trying to unpickle estimator Lasso from version 1.7.0 when using version 1.6.1. This might lead to breaking code or invalid results. Use at your own risk. For more info please refer to:
+https://scikit-learn.org/stable/model_persistence.html#security-maintainability-limitations
+  warnings.warn(
+/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/sklearn/base.py:380: InconsistentVersionWarning: Trying to unpickle estimator Pipeline from version 1.7.0 when using version 1.6.1. This might lead to breaking code or invalid results. Use at your own risk. For more info please refer to:
+https://scikit-learn.org/stable/model_persistence.html#security-maintainability-limitations
+  warnings.warn(
+INFO:app.models.model_loader:Successfully loaded sklearn model: poly_best_enhanced_lasso_model
+INFO:app.main:Model loading complete: 1/1 models loaded successfully
+INFO:app.main:Available models:
+INFO:app.main:  ✓ poly_best_enhanced_lasso_model
+INFO:     Application startup complete.
+WARNING:  WatchFiles detected changes in 'app/models/model_loader.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [81686]
+INFO:     Started server process [81805]
+INFO:     Waiting for application startup.
+INFO:app.main:Starting CNN Execution Time Prediction API...
+INFO:app.models.model_loader:Using models directory: /Users/wiamskakri/Desktop/KLab/MLOps_Deployment/../CNN_Algorithms
+INFO:app.models.model_loader:Models directory exists: True
+WARNING:  WatchFiles detected changes in 'app/models/model_loader.py'. Reloading...
+/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/sklearn/base.py:380: InconsistentVersionWarning: Trying to unpickle estimator PolynomialFeatures from version 1.7.0 when using version 1.6.1. This might lead to breaking code or invalid results. Use at your own risk. For more info please refer to:
+https://scikit-learn.org/stable/model_persistence.html#security-maintainability-limitations
+  warnings.warn(
+/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/sklearn/base.py:380: InconsistentVersionWarning: Trying to unpickle estimator Lasso from version 1.7.0 when using version 1.6.1. This might lead to breaking code or invalid results. Use at your own risk. For more info please refer to:
+https://scikit-learn.org/stable/model_persistence.html#security-maintainability-limitations
+  warnings.warn(
+/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/sklearn/base.py:380: InconsistentVersionWarning: Trying to unpickle estimator Pipeline from version 1.7.0 when using version 1.6.1. This might lead to breaking code or invalid results. Use at your own risk. For more info please refer to:
+https://scikit-learn.org/stable/model_persistence.html#security-maintainability-limitations
+  warnings.warn(
+INFO:app.models.model_loader:Successfully loaded sklearn model: poly_best_enhanced_lasso_model
+INFO:app.main:Model loading complete: 1/1 models loaded successfully
+INFO:app.main:Available models:
+INFO:app.main:  ✓ poly_best_enhanced_lasso_model
+INFO:     Application startup complete.
+INFO:     Started server process [81833]
+INFO:     Waiting for application startup.
+INFO:app.main:Starting CNN Execution Time Prediction API...
+INFO:app.models.model_loader:Using models directory: /Users/wiamskakri/Desktop/KLab/MLOps_Deployment/../CNN_Algorithms
+INFO:app.models.model_loader:Models directory exists: True
+/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/sklearn/base.py:380: InconsistentVersionWarning: Trying to unpickle estimator PolynomialFeatures from version 1.7.0 when using version 1.6.1. This might lead to breaking code or invalid results. Use at your own risk. For more info please refer to:
+https://scikit-learn.org/stable/model_persistence.html#security-maintainability-limitations
+  warnings.warn(
+/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/sklearn/base.py:380: InconsistentVersionWarning: Trying to unpickle estimator Lasso from version 1.7.0 when using version 1.6.1. This might lead to breaking code or invalid results. Use at your own risk. For more info please refer to:
+https://scikit-learn.org/stable/model_persistence.html#security-maintainability-limitations
+  warnings.warn(
+/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/sklearn/base.py:380: InconsistentVersionWarning: Trying to unpickle estimator Pipeline from version 1.7.0 when using version 1.6.1. This might lead to breaking code or invalid results. Use at your own risk. For more info please refer to:
+https://scikit-learn.org/stable/model_persistence.html#security-maintainability-limitations
+  warnings.warn(
+INFO:app.models.model_loader:Successfully loaded sklearn model: poly_best_enhanced_lasso_model
+INFO:app.main:Model loading complete: 1/1 models loaded successfully
+INFO:app.main:Available models:
+INFO:app.main:  ✓ poly_best_enhanced_lasso_model
+INFO:     Application startup complete.
+WARNING:  WatchFiles detected changes in 'app/main.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [81833]
+INFO:     Started server process [81947]
+INFO:     Waiting for application startup.
+INFO:app.main:Starting CNN Execution Time Prediction API...
+INFO:app.models.model_loader:Using models directory: /Users/wiamskakri/Desktop/KLab/MLOps_Deployment/../CNN_Algorithms
+INFO:app.models.model_loader:Models directory exists: True
+/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/sklearn/base.py:380: InconsistentVersionWarning: Trying to unpickle estimator PolynomialFeatures from version 1.7.0 when using version 1.6.1. This might lead to breaking code or invalid results. Use at your own risk. For more info please refer to:
+https://scikit-learn.org/stable/model_persistence.html#security-maintainability-limitations
+  warnings.warn(
+/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/sklearn/base.py:380: InconsistentVersionWarning: Trying to unpickle estimator Lasso from version 1.7.0 when using version 1.6.1. This might lead to breaking code or invalid results. Use at your own risk. For more info please refer to:
+https://scikit-learn.org/stable/model_persistence.html#security-maintainability-limitations
+  warnings.warn(
+/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/sklearn/base.py:380: InconsistentVersionWarning: Trying to unpickle estimator Pipeline from version 1.7.0 when using version 1.6.1. This might lead to breaking code or invalid results. Use at your own risk. For more info please refer to:
+https://scikit-learn.org/stable/model_persistence.html#security-maintainability-limitations
+  warnings.warn(
+INFO:app.models.model_loader:Successfully loaded sklearn model: poly_best_enhanced_lasso_model
+INFO:app.main:Model loading complete: 1/1 models loaded successfully
+INFO:app.main:Available models:
+INFO:app.main:  ✓ poly_best_enhanced_lasso_model
+INFO:     Application startup complete.
+WARNING:  WatchFiles detected changes in 'app/main.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [81947]
+INFO:     Started server process [82036]
+INFO:     Waiting for application startup.
+INFO:app.main:Starting CNN Execution Time Prediction API...
+INFO:app.models.model_loader:Using models directory: /Users/wiamskakri/Desktop/KLab/MLOps_Deployment/../CNN_Algorithms
+INFO:app.models.model_loader:Models directory exists: True
+/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/sklearn/base.py:380: InconsistentVersionWarning: Trying to unpickle estimator PolynomialFeatures from version 1.7.0 when using version 1.6.1. This might lead to breaking code or invalid results. Use at your own risk. For more info please refer to:
+https://scikit-learn.org/stable/model_persistence.html#security-maintainability-limitations
+  warnings.warn(
+/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/sklearn/base.py:380: InconsistentVersionWarning: Trying to unpickle estimator Lasso from version 1.7.0 when using version 1.6.1. This might lead to breaking code or invalid results. Use at your own risk. For more info please refer to:
+https://scikit-learn.org/stable/model_persistence.html#security-maintainability-limitations
+  warnings.warn(
+/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/sklearn/base.py:380: InconsistentVersionWarning: Trying to unpickle estimator Pipeline from version 1.7.0 when using version 1.6.1. This might lead to breaking code or invalid results. Use at your own risk. For more info please refer to:
+https://scikit-learn.org/stable/model_persistence.html#security-maintainability-limitations
+  warnings.warn(
+INFO:app.models.model_loader:Successfully loaded sklearn model: poly_best_enhanced_lasso_model
+INFO:app.main:Model loading complete: 1/1 models loaded successfully
+INFO:app.main:Available models:
+INFO:app.main:  ✓ poly_best_enhanced_lasso_model
+INFO:     Application startup complete.
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [82036]
+INFO:     Stopping reloader process [78809]

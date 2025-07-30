@@ -16,8 +16,8 @@ st.set_page_config(
 )
 
 # API endpoint configuration
-API_BASE_URL = "http://ml-api:8000"  # Use service name in Docker
-# API_BASE_URL = "http://localhost:8000"  # For local development
+# API_BASE_URL = "http://ml-api:8000"  # Use service name in Docker
+API_BASE_URL = "http://localhost:8000"  # For local development
 
 
 def get_available_models():

@@ -40,7 +40,19 @@ class ModelLoader:
     """Unified model loader for different ML models"""
 
     def __init__(self, models_dir: str = "../CNN_Algorithms"):
-        self.models_dir = Path(models_dir)
+        # Handle both relative and absolute paths
+        if os.path.isabs(models_dir):
+            self.models_dir = Path(models_dir)
+        else:
+            # For relative paths, resolve from the current working directory
+            self.models_dir = Path(os.getcwd()) / models_dir
+            # If that doesn't exist, try from the app directory
+            if not self.models_dir.exists():
+                app_dir = Path(__file__).parent.parent.parent
+                self.models_dir = app_dir / models_dir.lstrip("../")
+
+        logger.info(f"Using models directory: {self.models_dir}")
+        logger.info(f"Models directory exists: {self.models_dir.exists()}")
         self.loaded_models = {}
         self.model_metadata = {}
 
@@ -85,7 +97,7 @@ class ModelLoader:
             elif 'polynomial' in model_name.lower() or 'lasso' in model_name.lower() or 'ridge' in model_name.lower():
                 # Polynomial models might have more features due to polynomial expansion
                 input_features = ['batch_size', 'input_channels', 'input_height', 'input_width',
-                                  'output_channels', 'kernel_size', 'stride']
+                                  'output_channels', 'kernel_size', 'stride', 'padding']
             else:
                 input_features = ['batch_size', 'input_channels', 'input_height', 'input_width',
                                   'output_channels', 'kernel_size', 'stride']
@@ -121,12 +133,19 @@ class ModelLoader:
         # Search for joblib models
         for joblib_file in self.models_dir.rglob("*.joblib"):
             file_str = str(joblib_file).lower()
+
+            # Skip scalers and preprocessing objects
+            if any(skip_word in file_str for skip_word in ['scaler', 'preprocessor', 'encoder', 'transformer']):
+                continue
+
             if "xgb" in file_str or "xgboost" in file_str:
                 discovered_models['xgboost'].append(str(joblib_file))
             elif "rf" in file_str or "random_forest" in file_str:
                 discovered_models['random_forest'].append(str(joblib_file))
             elif any(keyword in file_str for keyword in ['lasso', 'ridge', 'polynomial', 'elasticnet']):
-                discovered_models['polynomial'].append(str(joblib_file))
+                # Only include best models, not individual folds or scalers
+                if 'best' in file_str and 'model' in file_str:
+                    discovered_models['polynomial'].append(str(joblib_file))
 
         return discovered_models
 
@@ -163,43 +182,84 @@ class ModelLoader:
 
     def predict(self, model_name: str, input_features: Dict[str, float]) -> Dict[str, Any]:
         """Make prediction using specified model"""
-        if model_name not in self.loaded_models:
-            raise ValueError(f"Model {model_name} not loaded")
-
-        model_info = self.loaded_models[model_name]
-        model = model_info['model']
-
-        # Prepare input array
-        feature_values = []
-        for feature in model_info['input_features']:
-            if feature not in input_features:
-                raise ValueError(f"Missing required feature: {feature}")
-            feature_values.append(input_features[feature])
-
-        input_array = np.array([feature_values])
-
-        # Make prediction based on model type
         try:
+            if model_name not in self.loaded_models:
+                raise ValueError(
+                    f"Model {model_name} not loaded. Available models: {list(self.loaded_models.keys())}")
+
+            model_info = self.loaded_models[model_name]
+            model = model_info['model']
+
+            # Prepare input array based on model type
+            if model_info['type'] == 'polynomial':
+                # Polynomial models expect these 9 features in this order:
+                # ['Batch_Size', 'Input_Size', 'In_Channels', 'Out_Channels', 'Kernel_Size', 'Stride', 'Padding', 'Algorithm_direct_cpu', 'Algorithm_gemm']
+
+                # Map from API features to training features
+                batch_size = input_features.get('batch_size', 32)
+                input_size = input_features.get(
+                    'input_height', 224) * input_features.get('input_width', 224)
+                in_channels = input_features.get('input_channels', 3)
+                out_channels = input_features.get('output_channels', 64)
+                kernel_size = input_features.get('kernel_size', 3)
+                stride = input_features.get('stride', 1)
+                padding = input_features.get(
+                    'padding', 0)  # Default padding is 0
+
+                # For the algorithm columns, we'll assume 'gemm' algorithm (1, 0)
+                # This can be made configurable later
+                algorithm_direct_cpu = 0
+                algorithm_gemm = 1
+
+                feature_values = [
+                    batch_size, input_size, in_channels, out_channels,
+                    kernel_size, stride, padding, algorithm_direct_cpu, algorithm_gemm
+                ]
+
+            else:
+                # For other models (pytorch, xgboost, random_forest), use the standard 7 features
+                feature_values = []
+                for feature in model_info['input_features']:
+                    if feature not in input_features:
+                        raise ValueError(
+                            f"Missing required feature: {feature}")
+                    feature_values.append(input_features[feature])
+
+            input_array = np.array([feature_values])
+            logger.info(
+                f"Making prediction with {model_name}, input shape: {input_array.shape}, values: {feature_values}")
+
+            # Make prediction based on model type
             if model_info['type'] == 'pytorch':
                 with torch.no_grad():
                     input_tensor = torch.FloatTensor(input_array)
                     prediction = model(input_tensor).numpy().flatten()[0]
-            else:
+            elif model_info['type'] in ['polynomial', 'xgboost', 'random_forest']:
+                # For sklearn-based models
                 prediction = model.predict(input_array)[0]
+            else:
+                raise ValueError(f"Unknown model type: {model_info['type']}")
+
+            # Ensure prediction is a positive number (execution time can't be negative)
+            prediction = max(0, float(prediction))
+
+            logger.info(
+                f"Prediction successful for {model_name}: {prediction}")
 
             return {
-                'prediction': float(prediction),
+                'prediction': prediction,
                 'model_name': model_name,
                 'model_type': model_info['type'],
                 'status': 'success'
             }
 
         except Exception as e:
-            logger.error(f"Prediction failed for {model_name}: {str(e)}")
+            logger.error(
+                f"Prediction failed for {model_name}: {str(e)}", exc_info=True)
             return {
                 'prediction': None,
                 'model_name': model_name,
-                'model_type': model_info['type'],
+                'model_type': model_info.get('type', 'unknown') if model_name in self.loaded_models else 'unknown',
                 'status': 'error',
                 'error': str(e)
             }
